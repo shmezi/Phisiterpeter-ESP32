@@ -1,0 +1,18 @@
+//
+// Created by Ezra Golombek on 13/11/2025.
+//
+
+#ifndef PHISILANDINTERPRETER_EXPRESSIONTYPE_H
+#define PHISILANDINTERPRETER_EXPRESSIONTYPE_H
+
+/**
+
+*/
+enum ExpressionType {
+    VALUE,
+    ACTION
+
+};
+
+
+#endif //PHISILANDINTERPRETER_EXPRESSIONTYPE_H

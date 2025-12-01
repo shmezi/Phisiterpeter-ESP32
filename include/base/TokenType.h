@@ -1,0 +1,19 @@
+//
+// Created by Ezra Golombek on 02/11/2025.
+//
+
+#ifndef PHISILANDINTERPRETER_TOKENTYPE_H
+#define PHISILANDINTERPRETER_TOKENTYPE_H
+
+inline enum TokenType {
+    NUMBER,
+    TEXT,
+    FLOATYTEXT,
+    KEYWORD,
+    CLARIFYER,
+    CODEBLOCK,
+    UNKNOWN,
+    COMMENT,
+    BOOL
+} TokenType;
+#endif //PHISILANDINTERPRETER_TOKENTYPE_H
