@@ -23,6 +23,7 @@
 #include "../../include/factories/action/control/ReturnExpressionFactory.h"
 #include "base/Token.h"
 #include "base/Tokenizer.h"
+#include "expressions/game/StatusLEDExpression.h"
 #include "factories/action/arithmetic/DivisionExpressionFactorty.h"
 #include "factories/action/arithmetic/EqualsExpressionFactory.h"
 #include "factories/action/arithmetic/GreaterExpressionFactorty.h"
@@ -36,6 +37,7 @@
 #include "factories/action/bool/AndExpressionFactory.h"
 #include "factories/action/bool/OrExpressionFactory.h"
 #include "factories/action/bool/NotExpressionFactory.h"
+#include "factories/game/StatusLEDExpressionFactory.h"
 
 using namespace std;
 
@@ -61,6 +63,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<LesserExpressionFactorty>());
     headScope->registerKeyWord(make_unique<GreaterExpressionFactorty>());
     headScope->registerKeyWord(make_unique<SubtractionExpressionFactorty>());
+    headScope->registerKeyWord(make_unique<StatusLEDExpressionFactory>());
+
 }
 
 void Interpreter::printStartupMessage() {

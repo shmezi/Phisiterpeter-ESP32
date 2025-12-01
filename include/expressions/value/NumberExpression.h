@@ -9,10 +9,10 @@
 #include "../Expression.h"
 
 class NumberExpression : public Expression {
-    int contents;
-
 public:
     explicit NumberExpression(int contents);
+
+    int contents;
 
     ~NumberExpression() override = default;
 
