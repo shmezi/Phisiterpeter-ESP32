@@ -71,14 +71,14 @@ extern "C" void app_main(void) {
 
     // --- Write a file ---
     const char *file_path = "/sdcard/test.txt";
-    FILE *f = fopen(file_path, "w");
-    if (f == nullptr) {
-        std::cout << "Failed to open file for writing\n";
-    } else {
-        fprintf(f, "Hello SD card!\n");
-        fclose(f);
-        std::cout << "File written successfully!\n";
-    }
+    FILE *f = fopen(file_path, "r");
+    // if (f == nullptr) {
+    //     std::cout << "Failed to open file for writing\n";
+    // } else {
+    //     // fprintf(f, "Hello SD card!\n");
+    //     fclose(f);
+    //     std::cout << "File written successfully!\n";
+    // }
 
     // --- Read back the file ---
     f = fopen(file_path, "r");
@@ -89,6 +89,7 @@ extern "C" void app_main(void) {
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
+        interpreter.run();
         fclose(f);
         std::cout << "\nFile read complete.\n";
     }
