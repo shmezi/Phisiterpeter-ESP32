@@ -10,15 +10,24 @@
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
 #include "base/Interpreter.h"
+#include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "base/Tokenizer.h"
 
+#define PIN_NUM_POWER 8
 #define PIN_NUM_MISO 4
 #define PIN_NUM_MOSI 5
 #define PIN_NUM_CLK  6
 #define PIN_NUM_CS   7
 
+
+
 extern "C" void app_main(void) {
+    gpio_set_direction(static_cast<gpio_num_t>(PIN_NUM_POWER), GPIO_MODE_OUTPUT);
+    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 0); // Power OFF
+    vTaskDelay(pdMS_TO_TICKS(50)); // Wait for power discharge
+    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 1); // Power ON
+    vTaskDelay(pdMS_TO_TICKS(200)); // Wait for SD card internal boot
     vTaskDelay(pdMS_TO_TICKS(2000)); // Wait for peripherals
 
     esp_err_t ret;
@@ -88,6 +97,7 @@ extern "C" void app_main(void) {
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
+
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         interpreter.run();
         fclose(f);
@@ -97,5 +107,6 @@ extern "C" void app_main(void) {
     // --- Cleanup ---
     esp_vfs_fat_sdcard_unmount("/sdcard", card);
     spi_bus_free(SPI2_HOST);
+
     std::cout << "SD card unmounted, SPI bus freed.\n";
 }

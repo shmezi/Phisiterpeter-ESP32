@@ -9,6 +9,8 @@
 #include <string>
 #include <random>
 
+#include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/chrono"
+
 namespace debug {
     enum class Color {
         RED = 31,
@@ -69,6 +71,11 @@ namespace debug {
 
     inline void print(const std::string &value) {
         pq<std::string>(value);
+    }
+
+    inline std::chrono::milliseconds getCurrentMs() {
+        auto now = std::chrono::system_clock::now();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch());
     }
 } // namespace debug
 #include <string>

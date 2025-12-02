@@ -37,34 +37,44 @@
 #include "factories/action/bool/AndExpressionFactory.h"
 #include "factories/action/bool/OrExpressionFactory.h"
 #include "factories/action/bool/NotExpressionFactory.h"
+#include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
 
 using namespace std;
 
 
 void Interpreter::registerFactories() const {
-    headScope->registerKeyWord(make_shared<AdditionExpressionFactory>());
-    headScope->registerKeyWord(make_unique<AdditionExpressionFactory>());
-    headScope->registerKeyWord(make_unique<SetExpressionFactory>());
+    //Utility factories
     headScope->registerKeyWord(make_unique<PrintExpressionFactory>());
+
+    //Codeblock factories
+    headScope->registerKeyWord(make_unique<SetExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClarificationBracketExpressionFactory>());
-    headScope->registerKeyWord(make_unique<ReturnExpressionFactory>());
     headScope->registerKeyWord(make_unique<CodeblockExpressionFactory>());
+    headScope->registerKeyWord(make_unique<ReturnExpressionFactory>());
     headScope->registerKeyWord(make_unique<FunctionExpressionFactory>());
+
+    //Control statement factories
     headScope->registerKeyWord(make_unique<IfExpressionFactory>());
     headScope->registerKeyWord(make_unique<AndExpressionFactory>());
     headScope->registerKeyWord(make_unique<OrExpressionFactory>());
     headScope->registerKeyWord(make_unique<NotExpressionFactory>());
 
+    //Math factories
+    headScope->registerKeyWord(make_shared<AdditionExpressionFactory>());
+    headScope->registerKeyWord(make_unique<SubtractionExpressionFactorty>());
     headScope->registerKeyWord(make_unique<DivisionExpressionFactorty>());
     headScope->registerKeyWord(make_unique<MultiplicationExpressionFactorty>());
+
+    //Equality factories
     headScope->registerKeyWord(make_unique<EqualsExpressionFactory>());
     headScope->registerKeyWord(make_unique<UnEqualExpressionFactorty>());
     headScope->registerKeyWord(make_unique<LesserExpressionFactorty>());
     headScope->registerKeyWord(make_unique<GreaterExpressionFactorty>());
-    headScope->registerKeyWord(make_unique<SubtractionExpressionFactorty>());
-    headScope->registerKeyWord(make_unique<StatusLEDExpressionFactory>());
 
+    //Game factories
+    headScope->registerKeyWord(make_unique<StatusLEDExpressionFactory>());
+    headScope->registerKeyWord(make_unique<DigitalReadExpressionFactory>());
 }
 
 void Interpreter::printStartupMessage() {
