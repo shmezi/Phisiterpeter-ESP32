@@ -42,6 +42,7 @@
 #include "factories/action/control/WhileExpressionFactory.h"
 #include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
+#include "../../include/factories/action/control/RangeOperatorExpressionFactory.h"
 
 using namespace std;
 
@@ -63,6 +64,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<NotExpressionFactory>());
     headScope->registerKeyWord(make_unique<WhileExpressionFactory>());
     headScope->registerKeyWord(make_unique<WhenExpressionFactory>());
+    headScope->registerKeyWord(make_unique<RangeOperatorExpressionFactory>());
 
 
     //Math factories

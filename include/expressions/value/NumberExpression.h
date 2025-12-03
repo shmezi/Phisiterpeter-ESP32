@@ -45,6 +45,9 @@ public:
 
     std::unique_ptr<Expression>
     subtract(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+
+    std::unique_ptr<Expression> toOperator(std::unique_ptr<Expression> &&expression,
+                                           std::shared_ptr<Scope> &parentScope) override;
 };
 
 #endif //PHISILANDINTERPRETER_NUMBEREXPRESSION_H

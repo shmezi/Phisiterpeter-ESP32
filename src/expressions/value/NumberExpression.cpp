@@ -8,6 +8,7 @@
 
 #include "Utils.h"
 #include "expressions/value/BooleanExpression.h"
+#include "expressions/value/IntRangeExpression.h"
 
 
 NumberExpression::NumberExpression(const int contents)
@@ -72,4 +73,10 @@ std::unique_ptr<Expression> NumberExpression::subtract(std::unique_ptr<Expressio
                                                        std::shared_ptr<Scope> &parentScope) {
     auto number = dynamic_cast<NumberExpression *>(expression.get());
     return std::make_unique<NumberExpression>(contents - number->contents);
+}
+
+std::unique_ptr<Expression> NumberExpression::toOperator(std::unique_ptr<Expression> &&expression,
+                                                         std::shared_ptr<Scope> &parentScope) {
+    auto number = dynamic_cast<NumberExpression *>(expression.get());
+    return std::make_unique<IntRangeExpression>(contents, number->contents);
 }
