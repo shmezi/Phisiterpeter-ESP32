@@ -91,7 +91,13 @@ extern "C" void app_main(void) {
     // --- Write a file ---
     const char *file_path = "/sdcard/test.txt";
     FILE *f = fopen(file_path, "r");
-
+    // if (f == nullptr) {
+    //     std::cout << "Failed to open file for writing\n";
+    // } else {
+    //     fprintf(f, "Hello SD card!\n");
+    //     fclose(f);
+    //     std::cout << "File written successfully!\n";
+    // }
 
     // --- Read back the file ---
     f = fopen(file_path, "r");
