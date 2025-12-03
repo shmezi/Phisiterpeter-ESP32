@@ -9,7 +9,7 @@
 
 class MoveExpression : public Expression {
     std::unique_ptr<Expression> motor;
-    std::unique_ptr<Expression> direction;
+    std::unique_ptr<Expression> speed;
 
 public:
     std::string expressionName() override;
@@ -18,7 +18,7 @@ public:
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    MoveExpression(std::unique_ptr<Expression> motor, std::unique_ptr<Expression> direction );
+    MoveExpression(std::unique_ptr<Expression> motor, std::unique_ptr<Expression> speed);
 };
 
 

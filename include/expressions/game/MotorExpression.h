@@ -16,7 +16,7 @@ public:
     std::unique_ptr<Expression> speed;
     std::unique_ptr<Expression> encoderA;
     std::unique_ptr<Expression> encoderB;
-    void move(bool direction);
+    void move(int speedValue) const;
     void stop();
 
     std::string expressionName() override;

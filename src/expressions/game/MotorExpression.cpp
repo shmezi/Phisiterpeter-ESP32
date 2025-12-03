@@ -9,18 +9,33 @@
 #include "Utils.h"
 #include "driver/gpio.h"
 #include "expressions/value/NumberExpression.h"
+#include "driver/mcpwm.h"
+#include "esp_log.h"
 
-void MotorExpression::move(bool direction) {
+void MotorExpression::move(const int speedValue) const {
     auto pinA = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(a.get())->contents);
     auto pinB = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(b.get())->contents);
+    auto pinSpeed = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(speed.get())->contents);
+
     if (!GPIO_IS_VALID_GPIO(pinA) || !GPIO_IS_VALID_GPIO(pinB)) {
-        debug::error("Pin is invalid" );
+        debug::error("Pin is invalid");
     }
     gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
     gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
-    gpio_set_level(pinA, !direction);
-    gpio_set_level(pinB, direction);
+    gpio_set_level(pinA, speedValue > 0);
+    gpio_set_level(pinB, speedValue < 0);
+    // Setup GPIO 18 for MCPWM0A
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
 
+    // Init MCPWM with 1 kHz frequency, 50% duty
+    mcpwm_config_t pwm_config;
+    pwm_config.frequency = 1000; // 1 kHz
+    pwm_config.cmpr_a = speedValue; // 50% duty cycle
+    pwm_config.cmpr_b = 0.0; // unused
+    pwm_config.counter_mode = MCPWM_UP_COUNTER;
+    pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
+
+    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
 }
 
 void MotorExpression::stop() {
@@ -50,5 +65,4 @@ MotorExpression::MotorExpression(std::unique_ptr<Expression> a, std::unique_ptr<
                                  std::unique_ptr<Expression> encoderB)
     : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(encoderA)),
       encoderB(std::move(encoderB)) {
-
 }
