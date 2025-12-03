@@ -71,6 +71,7 @@ namespace debug {
 
     inline void print(const std::string &value) {
         pq<std::string>(value);
+
     }
 
     inline std::chrono::milliseconds getCurrentMs() {

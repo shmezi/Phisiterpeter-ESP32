@@ -1,9 +1,18 @@
 #include "base/Scope.h"
 
+#include "Utils.h"
+
 bool Scope::isKeyWord(const std::string &id) const { return keyWords.contains(id); }
 
 void Scope::registerKeyWord(std::shared_ptr<Factory> &&factory) {
     keyWords[factory->startToken()] = std::move(factory);
+}
+
+std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
+    if (keyWords.contains(id))
+        return keyWords[id];
+    debug::error("Unknown ExpressionFactory of id '" + id + "' Are you sure it's registered?");
+    return nullptr;
 }
 
 std::unique_ptr<Expression> Scope::interpretVariable(const std::string &id) {

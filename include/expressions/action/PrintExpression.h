@@ -14,10 +14,10 @@ public:
 
     std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    PrintExpression(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {
-
+    explicit PrintExpression(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {
     }
-    std::string expressionName() override {return "print";};
+
+    std::string expressionName() override { return "print"; };
 
     ~PrintExpression() override;
 

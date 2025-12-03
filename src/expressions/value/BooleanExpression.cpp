@@ -16,7 +16,7 @@ std::unique_ptr<Expression> BooleanExpression::interpret(std::shared_ptr<Scope> 
 }
 
 std::string BooleanExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return std::to_string(contents);
+    return this->contents ? "true" : "false";
 }
 
 std::string BooleanExpression::instanceId() {
@@ -28,11 +28,13 @@ std::unique_ptr<Expression> BooleanExpression::notOperator(std::shared_ptr<Scope
 }
 
 std::unique_ptr<Expression> BooleanExpression::orOperator(std::unique_ptr<Expression> &&expression,
-                                                           std::shared_ptr<Scope> &parentScope) {
-    return std::make_unique<BooleanExpression>(dynamic_cast<BooleanExpression*>(expression.get())->contents || contents);
+                                                          std::shared_ptr<Scope> &parentScope) {
+    return std::make_unique<BooleanExpression>(
+        dynamic_cast<BooleanExpression *>(expression.get())->contents || contents);
 }
 
 std::unique_ptr<Expression> BooleanExpression::andOperator(std::unique_ptr<Expression> &&expression,
-                                                          std::shared_ptr<Scope> &parentScope) {
-    return std::make_unique<BooleanExpression>(dynamic_cast<BooleanExpression*>(expression.get())->contents && contents);
+                                                           std::shared_ptr<Scope> &parentScope) {
+    return std::make_unique<BooleanExpression>(
+        dynamic_cast<BooleanExpression *>(expression.get())->contents && contents);
 }

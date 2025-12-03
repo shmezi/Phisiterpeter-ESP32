@@ -9,9 +9,9 @@
 
 #include "Utils.h"
 
-// static auto MAINSCHEDULER = ScheduleLoop();
 
-void ScheduleLoop::checkFunction(const int &cooldown, std::chrono::milliseconds &lastRun) {
+
+void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun) {
     const auto currentTime = debug::getCurrentMs();
 
     if ((currentTime - lastRun).count() >= cooldown) {
@@ -24,21 +24,27 @@ void ScheduleLoop::checkFunction(const int &cooldown, std::chrono::milliseconds 
 
 
 void ScheduleLoop::loop() {
-    while (active) {
-        for (auto [condition, task]: conditionalTasks) {
-            if (condition()) {
-                task();
-            }
-        }
-        for (auto task: always) {
+    for (auto [condition, task]: conditionalTasks) {
+        if (condition()) {
             task();
         }
-        for (auto &[cooldown, lastRun]: lastScheduleRun) {
-            checkFunction(cooldown, lastRun);
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    for (auto task: always) {
+        task();
+    }
+    for (auto &[cooldown, lastRun]: lastScheduleRun) {
+        evaluateAndRunCooldown(cooldown, lastRun);
+    }
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
+static ScheduleLoop* instance;
+ScheduleLoop *ScheduleLoop::getInstance() {
+    if (instance == nullptr) {
+        instance = new ScheduleLoop();
+    }
+    return instance;
+}
+
 
 ScheduleLoop::ScheduleLoop() {
     start();
@@ -50,7 +56,7 @@ void ScheduleLoop::stop() {
 
 void ScheduleLoop::start() {
     active = true;
-    std::thread(&ScheduleLoop::loop, this).detach();
+
 }
 
 void ScheduleLoop::addTask(std::function<void()> task) {

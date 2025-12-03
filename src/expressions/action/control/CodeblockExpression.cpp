@@ -35,7 +35,12 @@ std::unique_ptr<Expression> CodeblockExpression::interpret(std::shared_ptr<Scope
             continue;
         }
         if (scope->scopeId == "headScope") {
+
             const auto returnedValue = dynamic_cast<ReturnValue *>(evaluatedResult.get());
+            if (!returnedValue) {
+                debug::error("Expected ReturnValue but got something else!");
+                return std::make_unique<VoidExpression>();
+            }
             return std::move(returnedValue->contents);
         }
         return (evaluatedResult);

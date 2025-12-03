@@ -9,10 +9,13 @@
 #include "driver/spi_common.h"
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
+#include "Utils.h"
+#include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/thread"
 #include "base/Interpreter.h"
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "base/Tokenizer.h"
+#include "esp_task_wdt.h" // Make sure you include this header
 
 #define PIN_NUM_POWER 8
 #define PIN_NUM_MISO 4
@@ -20,7 +23,14 @@
 #define PIN_NUM_CLK  6
 #define PIN_NUM_CS   7
 
+void runClock(void *pvParameters) {
 
+    for (;;) {
+        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
+        ScheduleLoop::getInstance()->loop();
+        // debug::print("loop test");
+    }
+}
 
 extern "C" void app_main(void) {
     gpio_set_direction(static_cast<gpio_num_t>(PIN_NUM_POWER), GPIO_MODE_OUTPUT);
@@ -101,6 +111,14 @@ extern "C" void app_main(void) {
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         interpreter.run();
         fclose(f);
+        xTaskCreate(
+            runClock, // Function that implements the task.
+            "MyForeverTask", // Text name for the task.
+            32768, // Stack size in bytes, adjust as needed.
+            nullptr, // Parameter passed into the task.
+            1, // Priority, with 0 being the lowest.
+            nullptr // Used to pass back the created task's handle.
+        );
         std::cout << "\nFile read complete.\n";
     }
 

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "ScheduleLoop.h"
 #include "../expressions/Expression.h"
 #include "Scope.h"
 class Token;
@@ -15,6 +16,7 @@ class Factory;
 using namespace std;
 
 class Interpreter {
+
     shared_ptr<Scope> headScope;
     vector<Token> tokens;
 
@@ -27,7 +29,7 @@ public:
 
     static void printStartupMessage();
 
-    explicit Interpreter(const shared_ptr<Scope> &headScope, const vector<Token>& tokens);
+    explicit Interpreter(const shared_ptr<Scope> &headScope, const vector<Token> &tokens);
 
     void run() const;
 

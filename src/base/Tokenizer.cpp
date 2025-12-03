@@ -43,7 +43,6 @@ void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
 
 void Tokenizer::tokenize() {
     char streamingChar = ' ';
-    char operatorStream = ' ';
     int c;
 
     while (((c = fgetc(&stream)) != EOF)) {

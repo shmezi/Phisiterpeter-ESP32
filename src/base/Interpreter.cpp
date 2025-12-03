@@ -21,6 +21,7 @@
 #include "../../include/factories/action/control/FunctionExpressionFactory.h"
 #include "factories/PrintExpressionFactory.h"
 #include "../../include/factories/action/control/ReturnExpressionFactory.h"
+#include "base/ScheduleLoop.h"
 #include "base/Token.h"
 #include "base/Tokenizer.h"
 #include "expressions/game/StatusLEDExpression.h"
@@ -37,11 +38,12 @@
 #include "factories/action/bool/AndExpressionFactory.h"
 #include "factories/action/bool/OrExpressionFactory.h"
 #include "factories/action/bool/NotExpressionFactory.h"
+#include "factories/action/control/WhenExpressionFactory.h"
+#include "factories/action/control/WhileExpressionFactory.h"
 #include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
 
 using namespace std;
-
 
 void Interpreter::registerFactories() const {
     //Utility factories
@@ -59,6 +61,9 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<AndExpressionFactory>());
     headScope->registerKeyWord(make_unique<OrExpressionFactory>());
     headScope->registerKeyWord(make_unique<NotExpressionFactory>());
+    headScope->registerKeyWord(make_unique<WhileExpressionFactory>());
+    headScope->registerKeyWord(make_unique<WhenExpressionFactory>());
+
 
     //Math factories
     headScope->registerKeyWord(make_shared<AdditionExpressionFactory>());
@@ -71,6 +76,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<UnEqualExpressionFactorty>());
     headScope->registerKeyWord(make_unique<LesserExpressionFactorty>());
     headScope->registerKeyWord(make_unique<GreaterExpressionFactorty>());
+
 
     //Game factories
     headScope->registerKeyWord(make_unique<StatusLEDExpressionFactory>());
@@ -124,7 +130,7 @@ void Interpreter::run() const {
 
 void Interpreter::interpretKeyWordExpression(const Token &token) {
     const auto originalExpressionCount = abstractSyntaxTree.size();
-    const auto tokenFactory = headScope->keyWords[token.tokenId].get();
+    const auto tokenFactory = headScope->getFactoryById(token.tokenId).get();
     const bool doesLookAhead = abs(tokenFactory->indexStart()) < tokenFactory->paramSize();
     auto expressionsForFactory = vector<unique_ptr<Expression> >();
 

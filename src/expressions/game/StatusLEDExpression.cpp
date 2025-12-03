@@ -18,22 +18,25 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <SmartLeds.h>
+#include <thread>
 
 
 std::string StatusLEDExpression::expressionName() {
     return "statusLED";
 }
 
+static SmartLed leds(LED_WS2812B, 1, 48, 0, DoubleBuffer);
+
 std::unique_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope> scope) {
     unsigned char rLED = dynamic_cast<NumberExpression *>(r.get())->contents;
     unsigned char gLED = dynamic_cast<NumberExpression *>(g.get())->contents;
     unsigned char bLED = dynamic_cast<NumberExpression *>(b.get())->contents;
 
-    debug::print("Testing");
-    SmartLed leds(LED_WS2812B, 1, 48, 0, DoubleBuffer);
 
     leds[0] = Rgb{rLED, gLED, bLED};
     leds.show();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
     return std::make_unique<VoidExpression>();
 }
 

@@ -43,8 +43,7 @@ std::unique_ptr<Expression> FunctionExpressionFactory::generate(
     );
 
 
-
-    scope->keyWords.insert_or_assign(id, std::move(std::make_shared<DynamicExpressionFactory>(std::move(factory))));
+    scope->registerKeyWord((std::make_shared<DynamicExpressionFactory>(std::move(factory))));
 
 
     return std::make_unique<DummyExpression>();
