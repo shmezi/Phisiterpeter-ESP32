@@ -45,6 +45,7 @@
 #include "../../include/factories/action/control/RangeOperatorExpressionFactory.h"
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
+#include "factories/game/WriteExpressionFactory.h"
 
 using namespace std;
 
@@ -87,6 +88,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<DigitalReadExpressionFactory>());
     headScope->registerKeyWord(make_unique<MoveExpressionFactory>());
     headScope->registerKeyWord(make_unique<MotorExpressionFactory>());
+    headScope->registerKeyWord(make_unique<WriteExpressionFactory>());
+
 }
 
 void Interpreter::printStartupMessage() {
