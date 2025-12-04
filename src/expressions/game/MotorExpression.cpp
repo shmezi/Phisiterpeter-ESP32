@@ -3,14 +3,31 @@
 //
 
 #include "../../../include/expressions/game/MotorExpression.h"
+#include <esp_intr_alloc.h>
+#include <driver/gpio.h>
+#include "esp_intr_alloc.h"
 
 #include <algorithm>
+#include <stdio.h>
+#include "driver/pcnt.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #include "Utils.h"
 #include "driver/gpio.h"
 #include "expressions/value/NumberExpression.h"
 #include "driver/mcpwm.h"
 #include "esp_log.h"
+
+
+#include "driver/gpio.h"
+#include "esp_log.h"
+#include "RmtDriver.h"
+#include "base/ScheduleLoop.h"
+#include "base/Scope.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 
 void MotorExpression::move(const int speedValue) const {
     auto pinA = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(a.get())->contents);
@@ -24,7 +41,7 @@ void MotorExpression::move(const int speedValue) const {
     gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
     gpio_set_level(pinA, speedValue > 0);
     gpio_set_level(pinB, speedValue < 0);
-    // Setup GPIO 18 for MCPWM0A
+
     mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
 
     // Init MCPWM with 1 kHz frequency, 50% duty
@@ -45,6 +62,7 @@ std::string MotorExpression::expressionName() {
     return "motor";
 }
 
+
 std::unique_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> scope) {
     return std::make_unique<MotorExpression>(
         (a->interpret(scope)),
@@ -54,15 +72,51 @@ std::unique_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> sc
         (encoderB->interpret(scope)));
 }
 
+volatile int rotations = 0;
+
 std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return "A: " + a->interpertAsString(scope) + " B: " + b->interpertAsString(scope) + " Speed: " + speed->
-           interpertAsString(scope) + " EncoderA: "
-           + encoderA->interpertAsString(scope) + " EncoderB: " + encoderB->interpertAsString(scope);
+    return std::to_string(rotations);
+    // return "A: " + a->interpertAsString(scope) + " B: " + b->interpertAsString(scope) + " Speed: " + speed->
+    //        interpertAsString(scope) + " EncoderA: "
+    //        + encoderA->interpertAsString(scope) + " EncoderB: " + encoderB->interpertAsString(scope);
 }
 
+
+
+
+gpio_num_t pin;
+// ISR function for the button
+extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
+   rotations+=1;
+}
+
+void MotorExpression::initEncoder() const {
+    auto encoderAPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderA.get())->contents);
+    auto encoderBPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderB.get())->contents);
+
+    // debug::print(std::to_string(encoderAPin));
+    pin = encoderAPin;
+    gpio_config_t io_conf = {
+        .pin_bit_mask = (1ULL << encoderAPin),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_ENABLE,
+        .intr_type = GPIO_INTR_NEGEDGE, // Trigger on falling edge (button press)
+    };
+    gpio_config(&io_conf);
+
+
+    // Add the ISR handler for the button pin
+    gpio_isr_handler_add(encoderAPin, gpio_isr_handler, (void *) encoderAPin);
+    gpio_set_direction(encoderBPin, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(encoderBPin, GPIO_PULLDOWN_ONLY);
+}
+
+
 MotorExpression::MotorExpression(std::unique_ptr<Expression> a, std::unique_ptr<Expression> b,
-                                 std::unique_ptr<Expression> speed, std::unique_ptr<Expression> encoderA,
-                                 std::unique_ptr<Expression> encoderB)
-    : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(encoderA)),
-      encoderB(std::move(encoderB)) {
+                                 std::unique_ptr<Expression> speed, std::unique_ptr<Expression> _encoderA,
+                                 std::unique_ptr<Expression> _encoderB)
+    : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(_encoderA)),
+      encoderB(std::move(_encoderB)) {
+    initEncoder();
 }

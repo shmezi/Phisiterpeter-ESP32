@@ -7,7 +7,7 @@
 #include "expressions/Expression.h"
 
 
-class MotorExpression : public Expression, public std::enable_shared_from_this<Scope> {
+class MotorExpression : public Expression, public std::enable_shared_from_this<MotorExpression> {
 
 
 public:
@@ -24,6 +24,8 @@ public:
     std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+
+    void initEncoder() const;
 
     MotorExpression(
         std::unique_ptr<Expression> a,

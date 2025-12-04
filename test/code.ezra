@@ -1,0 +1,4 @@
+when (read 10){
+status 250 250 250
+
+}
