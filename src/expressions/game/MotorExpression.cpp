@@ -87,7 +87,7 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 gpio_num_t pin;
 // ISR function for the button
 extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
-   rotations+=1;
+   rotations+= (gpio_get_level(pin) == 0) ? 1 : -1;
 }
 
 void MotorExpression::initEncoder() const {
@@ -95,7 +95,7 @@ void MotorExpression::initEncoder() const {
     auto encoderBPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderB.get())->contents);
 
     // debug::print(std::to_string(encoderAPin));
-    pin = encoderAPin;
+    pin = encoderBPin;
     gpio_config_t io_conf = {
         .pin_bit_mask = (1ULL << encoderAPin),
         .mode = GPIO_MODE_INPUT,
@@ -109,7 +109,7 @@ void MotorExpression::initEncoder() const {
     // Add the ISR handler for the button pin
     gpio_isr_handler_add(encoderAPin, gpio_isr_handler, (void *) encoderAPin);
     gpio_set_direction(encoderBPin, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(encoderBPin, GPIO_PULLDOWN_ONLY);
+    gpio_set_pull_mode(encoderBPin, GPIO_PULLUP_ONLY);
 }
 
 
