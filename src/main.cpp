@@ -104,6 +104,7 @@ extern "C" void app_main(void) {
     if (f == nullptr) {
         std::cout << "Failed to open file for reading\n";
     } else {
+        gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
