@@ -43,6 +43,7 @@
 #include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
 #include "../../include/factories/action/control/RangeOperatorExpressionFactory.h"
+#include "factories/game/GyroScopeExpressionFactory.h"
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
@@ -89,6 +90,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<MoveExpressionFactory>());
     headScope->registerKeyWord(make_unique<MotorExpressionFactory>());
     headScope->registerKeyWord(make_unique<WriteExpressionFactory>());
+    headScope->registerKeyWord(make_unique<GyroScopeExpressionFactory>());
+
 
 }
 
