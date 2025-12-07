@@ -10,14 +10,16 @@
 #include "base/TokenType.h"
 #include <fstream>
 
+#include "../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/regex"
 #include "base/Scope.h"
+std::regex pattern("^\\d+(\\.\\d+)?$");
 
 void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
     if (currentToken.empty())
         return;
 
     enum TokenType type = UNKNOWN;
-    if (is_number(currentToken))
+    if (std::regex_match(currentToken, pattern))
         type = NUMBER;
     if (headScope->isKeyWord(currentToken))
         type = KEYWORD;
@@ -67,7 +69,12 @@ void Tokenizer::tokenize() {
                 streamingChar = currentlyParsedChar;
                 break;
             case '+':
+            case '-':
+            case '*':
+            case '/':
             case '=':
+            case '>':
+            case '<':
             case '(':
             case ')':
             case '{':
@@ -76,9 +83,9 @@ void Tokenizer::tokenize() {
                 currentToken += currentlyParsedChar;
                 pushNewTokenToList();
                 break;
-            case '<':
+            case '#':
                 pushNewTokenToList();
-                streamingChar = '>';
+                streamingChar = '#';
                 break;
             case ' ':
             case ',':

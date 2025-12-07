@@ -11,7 +11,7 @@
 #include "expressions/value/IntRangeExpression.h"
 
 
-NumberExpression::NumberExpression(const int contents)
+NumberExpression::NumberExpression(const float contents)
     : contents(contents) {
 }
 

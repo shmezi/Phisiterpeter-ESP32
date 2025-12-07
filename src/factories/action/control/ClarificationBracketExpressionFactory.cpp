@@ -26,9 +26,6 @@ int ClarificationBracketExpressionFactory::paramSize() {
 }
 
 
-
-
-
 std::unique_ptr<Expression> ClarificationBracketExpressionFactory::generate(
     std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
     return std::make_unique<ClarificationBracketExpression>(std::move(arguments));
