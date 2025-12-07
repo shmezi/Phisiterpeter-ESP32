@@ -11,7 +11,7 @@
 #include "expressions/value/NumberExpression.h"
 
 
-std::unique_ptr<Expression> AdditionExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression>AdditionExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->addition(left->interpret(scope),scope));
 }
 

@@ -10,7 +10,7 @@ std::string InExpression::expressionName() {
     return "in";
 }
 
-std::unique_ptr<Expression> InExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> InExpression::interpret(std::shared_ptr<Scope> scope) {
 return std::make_unique<VoidExpression>();
 }
 

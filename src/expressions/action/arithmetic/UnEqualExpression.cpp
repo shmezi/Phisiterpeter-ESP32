@@ -4,7 +4,7 @@
 
 #include "../../../../include/expressions/action/arithmetic/UnEqualExpression.h"
 
-std::unique_ptr<Expression> UnEqualExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> UnEqualExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->unequal(left->interpret(scope), scope));
 }
 

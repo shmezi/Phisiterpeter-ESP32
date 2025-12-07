@@ -10,7 +10,7 @@
 #include "Utils.h"
 #include "expressions/value/NumberExpression.h"
 
-std::unique_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText))
     {
         debug::error(

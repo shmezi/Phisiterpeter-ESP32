@@ -24,8 +24,7 @@ std::string CodeblockExpression::interpertAsString(std::shared_ptr<Scope> scope)
 }
 
 
-
-std::unique_ptr<Expression> CodeblockExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> CodeblockExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto funcScope = scope->scopeId == "headScope" ? std::make_shared<Scope>("generic", scope) : scope;
 
     for (const auto &expression: this->expressions) {

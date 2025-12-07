@@ -79,7 +79,7 @@ float GyroScopeSensorExpression::pushResult(float newResult) {
     return total / results.size();
 }
 
-std::unique_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
     float temperature;
     mpu6050_gyro_data_axes_t gyro_data;
     mpu6050_accel_data_axes_t accel_data;
@@ -92,9 +92,9 @@ std::unique_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr
     float pitch = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
     float roll = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
-    return std::make_unique<TextExpression>(std::to_string(pitch * 57.2958));
+  return  shared_from_this();
 }
 
 std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return this->interpret(scope)->interpertAsString(scope);
+    return "GyroScope Object";
 }

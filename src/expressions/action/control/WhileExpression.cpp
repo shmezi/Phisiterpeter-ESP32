@@ -18,7 +18,7 @@ std::string WhileExpression::expressionName() {
     return "while";
 }
 
-std::unique_ptr<Expression> WhileExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> WhileExpression::interpret(std::shared_ptr<Scope> scope) {
     if (this->check->interpret(scope)->expressionName() != "booleanExpression") {
         debug::error(
             "While expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() +

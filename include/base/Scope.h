@@ -15,7 +15,7 @@ class Expression; // Forward declaration
 class Factory; // Forward declaration
 
 class Scope : public std::enable_shared_from_this<Scope> {
-    std::map<std::string, std::unique_ptr<Expression> > variables;
+    std::map<std::string, std::shared_ptr<Expression> > variables;
     std::shared_ptr<Scope> parent;
 
     std::map<std::string, std::shared_ptr<Factory> > keyWords;
@@ -32,12 +32,12 @@ public:
 
     bool isVariable(const std::string &id) const;
 
-    void setVariable(const std::string &id, std::unique_ptr<Expression> expression) {
+    void setVariable(const std::string &id, std::shared_ptr<Expression> expression) {
         variables[id] = std::move(expression);
     }
 
 
-    std::unique_ptr<Expression> interpretVariable(const std::string &id);
+    std::shared_ptr<Expression> interpretVariable(const std::string &id);
 
 
     std::shared_ptr<const Scope> getScopeById(const std::string &id) const;

@@ -18,7 +18,7 @@
 #define I2C0_MASTER_SCL_IO             GPIO_NUM_2 // yellow
 
 
-class GyroScopeSensorExpression : public Expression {
+class GyroScopeSensorExpression : public Expression, public std::enable_shared_from_this<GyroScopeSensorExpression> {
     mpu6050_config_t dev_cfg;
 
     mpu6050_handle_t dev_hdl;
@@ -27,14 +27,13 @@ class GyroScopeSensorExpression : public Expression {
 public:
     static i2c_master_bus_config_t i2c0_bus_cfg;
     static i2c_master_bus_handle_t i2c0_bus_hdl;
+
     std::string expressionName() override;
-
-
 
 
     float pushResult(float newResult);
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 

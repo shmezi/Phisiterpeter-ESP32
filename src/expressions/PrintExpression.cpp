@@ -10,7 +10,7 @@
 #include "../../include/base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
 
-std::unique_ptr<Expression> PrintExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> PrintExpression::interpret(std::shared_ptr<Scope> scope) {
     std::cout << this->expression->interpertAsString(scope) << std::endl;
     return std::make_unique<VoidExpression>();
 }

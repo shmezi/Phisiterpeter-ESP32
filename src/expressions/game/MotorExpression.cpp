@@ -63,13 +63,8 @@ std::string MotorExpression::expressionName() {
 }
 
 
-std::unique_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> scope) {
-    return std::make_unique<MotorExpression>(
-        (a->interpret(scope)),
-        (b->interpret(scope)),
-        (speed->interpret(scope)),
-        (encoderA->interpret(scope)),
-        (encoderB->interpret(scope)));
+std::shared_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> scope) {
+    return shared_from_this();
 }
 
 volatile int rotations = 0;
@@ -82,12 +77,10 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 }
 
 
-
-
 gpio_num_t pin;
 // ISR function for the button
 extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
-   rotations+= (gpio_get_level(pin) == 0) ? 1 : -1;
+    rotations += (gpio_get_level(pin) == 0) ? 1 : -1;
 }
 
 void MotorExpression::initEncoder() const {
@@ -114,9 +107,9 @@ void MotorExpression::initEncoder() const {
 
 
 MotorExpression::MotorExpression(std::unique_ptr<Expression> a, std::unique_ptr<Expression> b,
-                                 std::unique_ptr<Expression> speed, std::unique_ptr<Expression> _encoderA,
-                                 std::unique_ptr<Expression> _encoderB)
-    : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(_encoderA)),
-      encoderB(std::move(_encoderB)) {
+                                 std::unique_ptr<Expression> speed, std::unique_ptr<Expression> encoderA,
+                                 std::unique_ptr<Expression> encoderB)
+    : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(encoderA)),
+      encoderB(std::move(encoderB)) {
     initEncoder();
 }
