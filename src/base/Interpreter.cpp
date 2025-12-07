@@ -47,6 +47,7 @@
 #include "factories/game/GyroScopeExpressionFactory.h"
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
+#include "factories/game/RotationsExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
 
 using namespace std;
@@ -93,6 +94,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<WriteExpressionFactory>());
     headScope->registerKeyWord(make_unique<GyroScopeExpressionFactory>());
     headScope->registerKeyWord(make_unique<AngleExpressionFactory>());
+    headScope->registerKeyWord(make_unique<RotationsExpressionFactory>());
 
 
 }

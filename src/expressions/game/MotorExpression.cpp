@@ -37,13 +37,9 @@ void MotorExpression::move(const int speedValue) const {
     if (!GPIO_IS_VALID_GPIO(pinA) || !GPIO_IS_VALID_GPIO(pinB)) {
         debug::error("Pin is invalid");
     }
+
     gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
     gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
-    gpio_set_level(pinA, speedValue > 0);
-    gpio_set_level(pinB, speedValue < 0);
-
-    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
-
     // Init MCPWM with 1 kHz frequency, 50% duty
     mcpwm_config_t pwm_config;
     pwm_config.frequency = 1000; // 1 kHz
@@ -52,7 +48,15 @@ void MotorExpression::move(const int speedValue) const {
     pwm_config.counter_mode = MCPWM_UP_COUNTER;
     pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
 
+
     mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, speedValue);
+
+
+    gpio_set_level(pinA, speedValue > 0);
+    gpio_set_level(pinB, speedValue < 0);
+
+    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
 }
 
 void MotorExpression::stop() {
@@ -67,7 +71,6 @@ std::shared_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> sc
     return shared_from_this();
 }
 
-volatile int rotations = 0;
 
 std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return std::to_string(rotations);
@@ -76,19 +79,26 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     //        + encoderA->interpertAsString(scope) + " EncoderB: " + encoderB->interpertAsString(scope);
 }
 
-
-gpio_num_t pin;
-// ISR function for the button
-extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
-    rotations += (gpio_get_level(pin) == 0) ? 1 : -1;
+void MotorExpression::rotate() {
+    rotations += (gpio_get_level(bActualPin) == 0) ? 1 : -1;
 }
 
-void MotorExpression::initEncoder() const {
+// ISR function for the button
+extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
+    MotorExpression *expression = static_cast<MotorExpression *>(arg);
+    expression->rotate();
+    // auto u = (int *) (arg);
+    // debug::print("s");
+    // auto c = u++;
+    // debug::print("C: " + std::to_string(*u));
+}
+
+void MotorExpression::initEncoder()  {
     auto encoderAPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderA.get())->contents);
     auto encoderBPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderB.get())->contents);
 
     // debug::print(std::to_string(encoderAPin));
-    pin = encoderBPin;
+    bActualPin = encoderBPin;
     gpio_config_t io_conf = {
         .pin_bit_mask = (1ULL << encoderAPin),
         .mode = GPIO_MODE_INPUT,
@@ -99,8 +109,7 @@ void MotorExpression::initEncoder() const {
     gpio_config(&io_conf);
 
 
-    // Add the ISR handler for the button pin
-    gpio_isr_handler_add(encoderAPin, gpio_isr_handler, (void *) encoderAPin);
+    gpio_isr_handler_add(encoderAPin, gpio_isr_handler, (void *) this);
     gpio_set_direction(encoderBPin, GPIO_MODE_INPUT);
     gpio_set_pull_mode(encoderBPin, GPIO_PULLUP_ONLY);
 }
@@ -111,5 +120,7 @@ MotorExpression::MotorExpression(std::unique_ptr<Expression> a, std::unique_ptr<
                                  std::unique_ptr<Expression> encoderB)
     : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(encoderA)),
       encoderB(std::move(encoderB)) {
+    rotations = 0;
+
     initEncoder();
 }

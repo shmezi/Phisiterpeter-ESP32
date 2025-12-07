@@ -17,7 +17,7 @@
 #include "base/Tokenizer.h"
 #include "esp_task_wdt.h" // Make sure you include this header
 
-#define PIN_NUM_POWER 8
+#define PIN_NUM_POWER 10
 #define PIN_NUM_MISO 4
 #define PIN_NUM_MOSI 5
 #define PIN_NUM_CLK  6
@@ -34,9 +34,9 @@ void runClock(void *pvParameters) {
 
 extern "C" void app_main(void) {
     gpio_set_direction(static_cast<gpio_num_t>(PIN_NUM_POWER), GPIO_MODE_OUTPUT);
-    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 0); // Power OFF
+    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 1); // Power OFF
     vTaskDelay(pdMS_TO_TICKS(50)); // Wait for power discharge
-    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 1); // Power ON
+    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 0); // Power ON
     vTaskDelay(pdMS_TO_TICKS(200)); // Wait for SD card internal boot
     vTaskDelay(pdMS_TO_TICKS(2000)); // Wait for peripherals
 
