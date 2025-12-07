@@ -42,6 +42,10 @@ extern "C" void app_main(void) {
 
     esp_err_t ret;
 
+
+
+
+
     std::cout << "Initializing SPI bus...\n";
 
     // --- SPI bus configuration ---

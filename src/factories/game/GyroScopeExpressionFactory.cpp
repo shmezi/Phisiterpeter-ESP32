@@ -4,7 +4,10 @@
 
 #include "../../../include/factories/game/GyroScopeExpressionFactory.h"
 
+#include <algorithm>
+
 #include "expressions/game/GyroScopeSensorExpression.h"
+#include "expressions/value/BooleanExpression.h"
 
 std::string GyroScopeExpressionFactory::startToken() {
     return "gyro";
@@ -15,10 +18,13 @@ int GyroScopeExpressionFactory::indexStart() {
 }
 
 int GyroScopeExpressionFactory::paramSize() {
-    return 0;
+    return 1;
 }
 
 std::unique_ptr<Expression> GyroScopeExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
                                                                  std::shared_ptr<Scope> &scope) {
-    return std::make_unique<GyroScopeSensorExpression>();
+    auto a = arguments[0]->interpret(scope);
+    const auto toggle = dynamic_cast<BooleanExpression *>(std::move(a).get());
+
+    return std::make_unique<GyroScopeSensorExpression>(toggle->contents);
 }
