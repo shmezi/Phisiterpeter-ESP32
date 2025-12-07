@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "expressions/action/control/ValueHoldExpression.h"
 #include "expressions/game/GyroScopeSensorExpression.h"
 #include "expressions/value/BooleanExpression.h"
 
@@ -26,5 +27,5 @@ std::unique_ptr<Expression> GyroScopeExpressionFactory::generate(std::deque<std:
     auto a = arguments[0]->interpret(scope);
     const auto toggle = dynamic_cast<BooleanExpression *>(std::move(a).get());
 
-    return std::make_unique<GyroScopeSensorExpression>(toggle->contents);
+    return std::make_unique<ValueHoldExpression>(std::make_shared<GyroScopeSensorExpression>(toggle->contents) );
 }

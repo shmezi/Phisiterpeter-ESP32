@@ -15,6 +15,7 @@ NumberExpression::NumberExpression(const int contents)
     : contents(contents) {
 }
 
+
 std::shared_ptr<Expression> NumberExpression::interpret(std::shared_ptr<Scope> scope) {
     return shared_from_this();
 }

@@ -17,6 +17,7 @@
 #include "expressions/value/TextExpression.h"
 i2c_master_bus_handle_t GyroScopeSensorExpression::i2c0_bus_hdl = nullptr;
 i2c_master_bus_config_t GyroScopeSensorExpression::i2c0_bus_cfg = {};
+
 std::string GyroScopeSensorExpression::expressionName() {
     return "gyro";
 }
@@ -41,7 +42,7 @@ static void initI2C() {
     /* instantiate i2c master bus 0 */
     ESP_ERROR_CHECK(
         i2c_new_master_bus(&GyroScopeSensorExpression::i2c0_bus_cfg, &GyroScopeSensorExpression::i2c0_bus_hdl));
-    if (GyroScopeSensorExpression::i2c0_bus_hdl) {
+    if (GyroScopeSensorExpression::i2c0_bus_hdl == nullptr) {
         debug::error("i2c master bus handle init failed");
         assert(&GyroScopeSensorExpression::i2c0_bus_hdl);
     }
@@ -92,9 +93,20 @@ std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr
     float pitch = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
     float roll = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
-  return  shared_from_this();
+    return shared_from_this();
 }
 
 std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return "GyroScope Object";
+    mpu6050_gyro_data_axes_t gyro_data;
+    mpu6050_accel_data_axes_t accel_data;
+    float temperature;
+
+    esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
+    if (result != ESP_OK) {
+        ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
+    }
+    float pitch = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
+    float roll = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
+
+    return std::to_string(pitch * 57.2958);
 }
