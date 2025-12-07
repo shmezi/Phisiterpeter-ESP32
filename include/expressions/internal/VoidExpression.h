@@ -18,7 +18,7 @@ public:
     }
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override {
-        return "";
+        return "You just printed… nothing. Congratulations, you've invented silence.";
     }
 };
 
