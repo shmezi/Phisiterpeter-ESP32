@@ -28,5 +28,13 @@ std::string ListExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return value;
 }
 
-ListExpression::ListExpression(std::deque<std::unique_ptr<Expression> > items) : items(std::move(items)) {
+void ListExpression::clear() {
+    items.clear();
+}
+
+void ListExpression::append(std::shared_ptr<Expression> item) {
+    items.emplace_back(std::move(item));
+}
+
+ListExpression::ListExpression(std::deque<std::shared_ptr<Expression> > items) : items(std::move(items)) {
 }

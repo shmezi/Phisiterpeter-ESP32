@@ -43,18 +43,24 @@
 #include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
 #include "../../include/factories/action/control/RangeOperatorExpressionFactory.h"
+#include "expressions/game/CurrentTimeExpression.h"
+#include "factories/action/list/AddToListExpressionFactory.h"
+#include "factories/action/list/ClearListExpressionFactory.h"
 #include "factories/game/AngleExpressionFactory.h"
+#include "factories/game/CurrentTimeExpressionFactory.h"
 #include "factories/game/GyroScopeExpressionFactory.h"
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
 #include "factories/game/RotationsExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
+#include "factories/value/ListExpressionFactory.h"
 
 using namespace std;
 
 void Interpreter::registerFactories() const {
     //Utility factories
     headScope->registerKeyWord(make_unique<PrintExpressionFactory>());
+    headScope->registerKeyWord(make_unique<CurrentTimeExpressionFactory>());
 
     //Codeblock factories
     headScope->registerKeyWord(make_unique<SetExpressionFactory>());
@@ -95,8 +101,10 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<GyroScopeExpressionFactory>());
     headScope->registerKeyWord(make_unique<AngleExpressionFactory>());
     headScope->registerKeyWord(make_unique<RotationsExpressionFactory>());
-
-
+    //Lists
+    headScope->registerKeyWord(make_unique<ListExpressionFactory>());
+    headScope->registerKeyWord(make_unique<ClearListExpressionFactory>());
+    headScope->registerKeyWord(make_unique<AddToListExpressionFactory>());
 }
 
 void Interpreter::printStartupMessage() {

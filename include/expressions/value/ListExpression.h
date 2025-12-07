@@ -10,7 +10,7 @@
 
 
 class ListExpression : public Expression, public std::enable_shared_from_this<ListExpression> {
-    std::deque<std::unique_ptr<Expression> > items;
+    std::deque<std::shared_ptr<Expression> > items = std::deque<std::shared_ptr<Expression> >();
 
 public:
     std::string expressionName() override;
@@ -19,7 +19,11 @@ public:
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    ListExpression(std::deque<std::unique_ptr<Expression> > items);
+    void clear();
+
+    void append(std::shared_ptr<Expression> item);
+
+    ListExpression(std::deque<std::shared_ptr<Expression> > items);
 };
 
 
