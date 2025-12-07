@@ -35,6 +35,10 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
+    float pitch() const;
+
+    float role() const;
+
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     GyroScopeSensorExpression(bool toggle);

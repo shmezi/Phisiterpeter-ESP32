@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 05/12/2025.
 //
 
-#include "GyroScopeSensorExpression.h"
+#include "../../../include/expressions/game/GyroScopeSensorExpression.h"
 
 #include <algorithm>
 #include <esp_log.h>
@@ -96,7 +96,7 @@ std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr
     return shared_from_this();
 }
 
-std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+float GyroScopeSensorExpression::pitch() const {
     mpu6050_gyro_data_axes_t gyro_data;
     mpu6050_accel_data_axes_t accel_data;
     float temperature;
@@ -105,8 +105,25 @@ std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> 
     if (result != ESP_OK) {
         ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
     }
-    float pitch = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
-    float roll = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
+    float pitchValue = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
-    return std::to_string(pitch * 57.2958);
+    return pitchValue * 57.2958;
+}
+
+float GyroScopeSensorExpression::role() const {
+    mpu6050_gyro_data_axes_t gyro_data;
+    mpu6050_accel_data_axes_t accel_data;
+    float temperature;
+
+    esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
+    if (result != ESP_OK) {
+        ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
+    }
+    float rollValue = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
+
+    return rollValue * 57.2958;
+}
+
+std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+    return "gyroValue";
 }

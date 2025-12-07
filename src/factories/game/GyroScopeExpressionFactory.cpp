@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "expressions/action/control/ValueHoldExpression.h"
-#include "expressions/game/GyroScopeSensorExpression.h"
+#include "../../../include/expressions/game/GyroScopeSensorExpression.h"
 #include "expressions/value/BooleanExpression.h"
 
 std::string GyroScopeExpressionFactory::startToken() {
