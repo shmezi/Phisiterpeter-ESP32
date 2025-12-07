@@ -12,8 +12,8 @@ std::string ReturnExpression::expressionName() {
     return "returnStatement";
 }
 
-std::unique_ptr<Expression> ReturnExpression::interpret(std::shared_ptr<Scope> scope) {
-    return std::move(std::make_unique<ReturnValue>(expression->interpret(scope)));
+std::shared_ptr<Expression> ReturnExpression::interpret(std::shared_ptr<Scope> scope) {
+    return (std::make_shared<ReturnValue>(expression->interpret(scope)));
 }
 
 

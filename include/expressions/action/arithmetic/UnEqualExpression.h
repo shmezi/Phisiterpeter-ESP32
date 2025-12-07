@@ -12,7 +12,7 @@ class UnEqualExpression : public Expression {
     std::unique_ptr<Expression> right;
 
 public:
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override { return "Greater"; };
 

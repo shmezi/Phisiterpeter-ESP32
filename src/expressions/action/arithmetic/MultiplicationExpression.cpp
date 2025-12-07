@@ -3,7 +3,7 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/MultiplicationExpression.h"
-std::unique_ptr<Expression> MultiplicationExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> MultiplicationExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->multiply(left->interpret(scope),scope));
 }
 

@@ -13,7 +13,8 @@ class BooleanExpression : public Expression {
 public:
     std::string expressionName() override;
     bool contents;
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
@@ -24,13 +25,13 @@ public:
 
     std::string instanceId() override;
 
-    std::unique_ptr<Expression> notOperator(std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression> notOperator(std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression> andOperator(std::unique_ptr<Expression> &&expression,
-        std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression> andOperator(std::shared_ptr<Expression> &&expression,
+                                            std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression> orOperator(std::unique_ptr<Expression> &&expression,
-        std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression> orOperator(std::shared_ptr<Expression> &&expression,
+                                           std::shared_ptr<Scope> &parentScope) override;
 };
 
 

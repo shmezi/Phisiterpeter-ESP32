@@ -13,12 +13,12 @@ public:
         return "void";
     }
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
         return std::make_unique<VoidExpression>(*this);
     }
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override {
-        return "";
+        return "You just printed… nothing. Congratulations, you've invented silence.";
     }
 };
 

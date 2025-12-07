@@ -12,7 +12,7 @@ class PrintExpression : public Expression {
 public:
     std::unique_ptr<Expression> expression;
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     explicit PrintExpression(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {
     }

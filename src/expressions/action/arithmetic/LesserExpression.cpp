@@ -3,7 +3,7 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/LesserExpression.h"
-std::unique_ptr<Expression> LesserExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression>LesserExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->lesser(left->interpret(scope),scope));
 }
 

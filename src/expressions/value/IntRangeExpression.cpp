@@ -9,7 +9,7 @@ std::string IntRangeExpression::expressionName() {
     return "IntRange";
 }
 
-std::unique_ptr<Expression> IntRangeExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> IntRangeExpression::interpret(std::shared_ptr<Scope> scope) {
     return std::make_unique<IntRangeExpression>(startRange, endRange);
 }
 

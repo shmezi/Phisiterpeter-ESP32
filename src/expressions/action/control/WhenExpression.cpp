@@ -18,10 +18,10 @@ std::string WhenExpression::expressionName() {
 }
 
 
-static auto a = StatusLEDExpression(make_unique<NumberExpression>(0), make_unique<NumberExpression>(250),
-                                    make_unique<NumberExpression>(0));
+// static auto a = StatusLEDExpression(make_unique<NumberExpression>(0), make_unique<NumberExpression>(250),
+//                                     make_unique<NumberExpression>(0));
 
-std::unique_ptr<Expression> WhenExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> WhenExpression::interpret(std::shared_ptr<Scope> scope) {
     ScheduleLoop::getInstance()->addConditionalTask(
         [condition_sp = condition, scope] {
             return dynamic_cast<BooleanExpression *>(condition_sp->interpret(scope).get())->contents;

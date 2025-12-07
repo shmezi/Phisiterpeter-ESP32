@@ -13,7 +13,7 @@ class SetExpression : public Expression {
     std::shared_ptr<Expression> content;
 
 public:
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
     std::string expressionName() override {return "variable set";};
     SetExpression(std::unique_ptr<Expression> name, std::unique_ptr<Expression>);
 

@@ -11,7 +11,7 @@
 #include "../../../../include/base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
 
-std::unique_ptr<Expression> SetExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> SetExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto id = std::any_cast<std::string>(this->name->instanceId());
     auto value = this->content->interpret(scope);
     scope->setVariable(id, std::move(value));

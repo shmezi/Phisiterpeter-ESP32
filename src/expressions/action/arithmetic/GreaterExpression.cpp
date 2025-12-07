@@ -6,7 +6,7 @@
 
 #include <expressions/action/arithmetic/AdditionExpression.h>
 
-std::unique_ptr<Expression> GreaterExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> GreaterExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->greater(left->interpret(scope),scope));
 }
 

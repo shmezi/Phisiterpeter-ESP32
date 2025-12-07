@@ -9,7 +9,7 @@ std::string RangeOperatorExpression::expressionName() {
     return "range";
 }
 
-std::unique_ptr<Expression> RangeOperatorExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> RangeOperatorExpression::interpret(std::shared_ptr<Scope> scope) {
     return first->interpret(scope)->toOperator(second->interpret(scope), scope);
 }
 

@@ -4,7 +4,7 @@
 
 #include "../../../../include/expressions/action/arithmetic/SubtractionExpression.h"
 
-std::unique_ptr<Expression> SubtractionExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> SubtractionExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->subtract(left->interpret(scope), scope));
 }
 

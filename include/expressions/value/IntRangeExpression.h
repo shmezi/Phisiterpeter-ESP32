@@ -14,7 +14,7 @@ class IntRangeExpression : public Expression {
 public:
     std::string expressionName() override;
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 

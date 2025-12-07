@@ -8,7 +8,7 @@
 
 #include "../Expression.h"
 
-class NumberExpression : public Expression {
+class NumberExpression : public Expression, public std::enable_shared_from_this<NumberExpression> {
 public:
     explicit NumberExpression(int contents);
 
@@ -18,35 +18,35 @@ public:
 
     std::string expressionName() override { return "number"; }
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    std::unique_ptr<Expression>
-    addition(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    addition(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    equal(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    equal(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    unequal(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    unequal(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    greater(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    greater(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    lesser(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    lesser(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    division(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    division(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    multiply(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    multiply(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression>
-    subtract(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    subtract(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 
-    std::unique_ptr<Expression> toOperator(std::unique_ptr<Expression> &&expression,
+    std::shared_ptr<Expression> toOperator(std::shared_ptr<Expression> &&expression,
                                            std::shared_ptr<Scope> &parentScope) override;
 };
 

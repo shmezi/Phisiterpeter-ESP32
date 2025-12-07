@@ -3,7 +3,7 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/EqualsExpression.h"
-std::unique_ptr<Expression> EqualsExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> EqualsExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->equal(left->interpret(scope),scope));
 }
 

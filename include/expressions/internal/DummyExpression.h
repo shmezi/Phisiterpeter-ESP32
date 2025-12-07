@@ -24,7 +24,7 @@ public:
         return "ide"; //Internal dummy expression
     }
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
         debug::error("An internal DummyExpression was interpreted even though it is for internal use only!");
         return nullptr;
     }

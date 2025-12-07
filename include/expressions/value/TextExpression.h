@@ -13,7 +13,7 @@ class TextExpression : public Expression {
     std::string contents;
 
 public:
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     explicit TextExpression(std::string contents) : contents(std::move(contents)){};
 
@@ -21,8 +21,8 @@ public:
     std::string expressionName() override {return "text";};
     ~TextExpression() override = default;
 
-    std::unique_ptr<Expression>
-    addition(std::unique_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<Expression>
+    addition(std::shared_ptr<Expression> &&expression, std::shared_ptr<Scope> &parentScope) override;
 };
 
 

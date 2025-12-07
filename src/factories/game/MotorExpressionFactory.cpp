@@ -4,6 +4,7 @@
 
 #include "../../../include/factories/game/MotorExpressionFactory.h"
 
+#include "expressions/action/control/ValueHoldExpression.h"
 #include "expressions/game/MotorExpression.h"
 
 std::string MotorExpressionFactory::startToken() {
@@ -20,13 +21,10 @@ int MotorExpressionFactory::paramSize() {
 
 std::unique_ptr<Expression> MotorExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
                                                              std::shared_ptr<Scope> &scope) {
-
-
-    return std::make_unique<MotorExpression>(
-        std::move(arguments[0]),
-        std::move(arguments[1]),
-        std::move(arguments[2]),
-        std::move(arguments[3]),
-        std::move(arguments[4])
+    return std::make_unique<ValueHoldExpression>(std::make_shared<MotorExpression>(std::move(arguments[0]),
+            std::move(arguments[1]),
+            std::move(arguments[2]),
+            std::move(arguments[3]),
+            std::move(arguments[4]))
     );
 }

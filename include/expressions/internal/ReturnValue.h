@@ -9,15 +9,15 @@
 
 class ReturnValue : public Expression {
 public:
-    std::unique_ptr<Expression> contents;
+    std::shared_ptr<Expression> contents;
 
     std::string expressionName() override;
 
-    std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    explicit ReturnValue(std::unique_ptr<Expression> contents) : contents(std::move(contents)) {
+    explicit ReturnValue(std::shared_ptr<Expression> contents) : contents(std::move(contents)) {
     }
 };
 

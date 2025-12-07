@@ -21,7 +21,7 @@ std::string MoveExpression::expressionName() {
     return "motor";
 }
 
-std::unique_ptr<Expression> MoveExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<Expression> MoveExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto motorExpression = motor->interpret(scope);
     auto castMotor = dynamic_cast<MotorExpression *>(motorExpression.get());
 

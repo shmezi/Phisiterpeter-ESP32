@@ -38,74 +38,74 @@ public:
     };
 
 
-    virtual std::unique_ptr<Expression> equal(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> equal(std::shared_ptr<Expression> &&expression,
                                               std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> unequal(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> unequal(std::shared_ptr<Expression> &&expression,
                                                 std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> greater(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> greater(std::shared_ptr<Expression> &&expression,
                                                 std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> lesser(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> lesser(std::shared_ptr<Expression> &&expression,
                                                std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
 
-    virtual std::unique_ptr<Expression>
-    addition(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression>
+    addition(std::shared_ptr<Expression> &&expression,
              std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> division(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> division(std::shared_ptr<Expression> &&expression,
                                                  std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> multiply(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> multiply(std::shared_ptr<Expression> &&expression,
                                                  std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> subtract(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> subtract(std::shared_ptr<Expression> &&expression,
                                                  std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> notOperator(std::shared_ptr<Scope> &parentScope) {
+    virtual std::shared_ptr<Expression> notOperator(std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> andOperator(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> andOperator(std::shared_ptr<Expression> &&expression,
                                                     std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> orOperator(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> orOperator(std::shared_ptr<Expression> &&expression,
                                                    std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
-    virtual std::unique_ptr<Expression> toOperator(std::unique_ptr<Expression> &&expression,
+    virtual std::shared_ptr<Expression> toOperator(std::shared_ptr<Expression> &&expression,
                                                    std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
 
-    virtual std::unique_ptr<Expression> indexOperator(std::any &index, std::shared_ptr<Scope> &parentScope) {
+    virtual std::shared_ptr<Expression> indexOperator(std::any &index, std::shared_ptr<Scope> &parentScope) {
         return nullptr;
     }
 
 
-    virtual std::unique_ptr<Expression> interpret(std::shared_ptr<Scope> scope) = 0;
+    virtual std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) = 0;
 
 
     virtual std::string interpertAsString(std::shared_ptr<Scope> scope) = 0;
