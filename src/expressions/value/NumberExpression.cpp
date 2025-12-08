@@ -17,7 +17,7 @@ NumberExpression::NumberExpression(const float contents)
 
 
 std::shared_ptr<Expression> NumberExpression::interpret(std::shared_ptr<Scope> scope) {
-    return shared_from_this();
+    return std::make_shared<NumberExpression>(contents);
 }
 
 std::string NumberExpression::interpertAsString(std::shared_ptr<Scope> scope) {

@@ -6,6 +6,8 @@
 
 #include <algorithm>
 
+#include "Utils.h"
+#include "expressions/action/control/ValueHoldExpression.h"
 #include "expressions/value/ListExpression.h"
 
 std::string ListExpressionFactory::startToken() {
@@ -26,5 +28,11 @@ int ListExpressionFactory::paramSize() {
 
 std::unique_ptr<Expression> ListExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
                                                             std::shared_ptr<Scope> &scope) {
-    return std::make_unique<ListExpression>(std::move(arguments));
+    auto expressions = std::deque<std::shared_ptr<Expression> >();
+    for (auto &arg: arguments) {
+        expressions.push_back(arg->interpret(scope));
+    }
+    debug::print("Success,created the list with the arguments!");
+
+    return std::make_unique<ValueHoldExpression>(std::make_shared<ListExpression>(expressions));
 }

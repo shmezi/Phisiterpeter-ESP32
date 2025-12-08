@@ -222,9 +222,11 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
 
         switch (token.type) {
             case NUMBER: {
-                auto c = std::make_unique<NumberExpression>(std::stof(token.tokenId));
+                float f =  std::stof(token.tokenId);
+                auto c = std::make_unique<NumberExpression>(f);
                 c->lineNumber = token.lineNumber;
                 abstractSyntaxTree.push_back(std::move(c));
+
                 break;
             }
             case KEYWORD:

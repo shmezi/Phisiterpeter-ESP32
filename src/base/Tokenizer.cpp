@@ -19,8 +19,10 @@ void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
         return;
 
     enum TokenType type = UNKNOWN;
-    if (std::regex_match(currentToken, pattern))
+    if (std::regex_match(currentToken, pattern)) {
         type = NUMBER;
+        debug::print("IS NUMBER!" + currentToken);
+    }
     if (headScope->isKeyWord(currentToken))
         type = KEYWORD;
     if (currentToken == "yes" || currentToken == "no" || currentToken == "true" || currentToken == "false")

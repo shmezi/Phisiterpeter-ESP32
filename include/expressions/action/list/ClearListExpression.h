@@ -16,7 +16,8 @@ public:
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
-    ClearListExpression(std::unique_ptr<Expression> list);
+
+    explicit ClearListExpression(std::unique_ptr<Expression> list);
 };
 
 

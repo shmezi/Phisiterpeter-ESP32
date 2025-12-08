@@ -23,7 +23,7 @@ public:
 
     void append(std::shared_ptr<Expression> item);
 
-    ListExpression(std::deque<std::shared_ptr<Expression> > items);
+    explicit ListExpression(std::deque<std::shared_ptr<Expression> > items);
 };
 
 
