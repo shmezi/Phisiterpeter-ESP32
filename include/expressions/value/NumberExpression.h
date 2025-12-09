@@ -10,9 +10,9 @@
 
 class NumberExpression : public Expression, public std::enable_shared_from_this<NumberExpression> {
 public:
-    explicit NumberExpression(int contents);
+    explicit NumberExpression(float contents);
 
-    int contents;
+    float contents;
 
     ~NumberExpression() override = default;
 

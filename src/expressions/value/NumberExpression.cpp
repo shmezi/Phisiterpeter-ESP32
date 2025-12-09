@@ -11,13 +11,13 @@
 #include "expressions/value/IntRangeExpression.h"
 
 
-NumberExpression::NumberExpression(const int contents)
+NumberExpression::NumberExpression(const float contents)
     : contents(contents) {
 }
 
 
 std::shared_ptr<Expression> NumberExpression::interpret(std::shared_ptr<Scope> scope) {
-    return shared_from_this();
+    return std::make_shared<NumberExpression>(contents);
 }
 
 std::string NumberExpression::interpertAsString(std::shared_ptr<Scope> scope) {
