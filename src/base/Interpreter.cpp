@@ -52,6 +52,7 @@
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
 #include "factories/game/RotationsExpressionFactory.h"
+#include "factories/game/SendResultExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
 #include "factories/value/ListExpressionFactory.h"
 
@@ -101,6 +102,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<GyroScopeExpressionFactory>());
     headScope->registerKeyWord(make_unique<AngleExpressionFactory>());
     headScope->registerKeyWord(make_unique<RotationsExpressionFactory>());
+    headScope->registerKeyWord(make_unique<SendResultExpressionFactory>());
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClearListExpressionFactory>());
@@ -222,7 +224,7 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
 
         switch (token.type) {
             case NUMBER: {
-                float f =  std::stof(token.tokenId);
+                float f = std::stof(token.tokenId);
                 auto c = std::make_unique<NumberExpression>(f);
                 c->lineNumber = token.lineNumber;
                 abstractSyntaxTree.push_back(std::move(c));

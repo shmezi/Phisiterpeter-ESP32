@@ -5,7 +5,6 @@
 #ifndef PHISILANDINTERPRETER_TOKENIZER_H
 #define PHISILANDINTERPRETER_TOKENIZER_H
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "Scope.h"

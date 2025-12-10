@@ -10,12 +10,11 @@
 #include "Utils.h"
 
 
-
 void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun) {
     const auto currentTime = debug::getCurrentMs();
 
     if ((currentTime - lastRun).count() >= cooldown) {
-        for (auto function: scheduled[cooldown]) {
+        for (const auto &function: scheduled[cooldown]) {
             function();
         }
         lastScheduleRun[cooldown] = currentTime;
@@ -24,12 +23,12 @@ void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::mill
 
 
 void ScheduleLoop::loop() {
-    for (auto [condition, task]: conditionalTasks) {
+    for (const auto &[condition, task]: conditionalTasks) {
         if (condition()) {
             task();
         }
     }
-    for (auto task: always) {
+    for (const auto &task: always) {
         task();
     }
     for (auto &[cooldown, lastRun]: lastScheduleRun) {
@@ -37,7 +36,15 @@ void ScheduleLoop::loop() {
     }
     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
-static ScheduleLoop* instance;
+
+void ScheduleLoop::startEvent(int speed) {
+    for (const auto &task: startFunc) {
+        task(speed);
+    }
+}
+
+static ScheduleLoop *instance;
+
 ScheduleLoop *ScheduleLoop::getInstance() {
     if (instance == nullptr) {
         instance = new ScheduleLoop();
@@ -56,19 +63,22 @@ void ScheduleLoop::stop() {
 
 void ScheduleLoop::start() {
     active = true;
-
 }
 
-void ScheduleLoop::addTask(std::function<void()> task) {
+void ScheduleLoop::onStartListener(const std::function<void(int)> &task) {
+    startFunc.emplace_back(task);
+}
+
+void ScheduleLoop::addTask(const std::function<void()> &task) {
     always.push_back(task);
 }
 
-void ScheduleLoop::addConditionalTask(std::function<bool()> condition, std::function<void()> task) {
-    conditionalTasks.push_back(std::make_pair(condition, task));
+void ScheduleLoop::addConditionalTask(const std::function<bool()> &condition, std::function<void()> task) {
+    conditionalTasks.emplace_back(condition, task);
 }
 
 
-void ScheduleLoop::addCooldownTask(int cooldown, std::function<void()> task) {
+void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {
     if (!scheduled.contains(cooldown))
         scheduled[cooldown] = std::vector<std::function<void()> >();
     scheduled[cooldown].push_back(task);

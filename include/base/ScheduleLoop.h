@@ -13,6 +13,7 @@
 class ScheduleLoop {
     std::atomic<bool> active = false;
     // static ScheduleLoop *instance;
+    std::vector<std::function<void(int)> > startFunc = std::vector<std::function<void(int)> >();
 
     std::vector<std::function<void()> > always = std::vector<std::function<void()> >();
     std::vector<std::pair<std::function<bool()>, std::function<void()> > > conditionalTasks =
@@ -31,17 +32,21 @@ class ScheduleLoop {
 public:
     static ScheduleLoop *getInstance();
     void loop();
+
+    void startEvent(int speed);
     ScheduleLoop();
 
     void stop();
 
     void start();
 
-    void addTask(std::function<void()> task);
+    void onStartListener(const std::function<void(int)> &task);
 
-    void addConditionalTask(std::function<bool()> condition, std::function<void()> task);
+    void addTask(const std::function<void()> &task);
 
-    void addCooldownTask(int cooldown, std::function<void()> task);
+    void addConditionalTask(const std::function<bool()> &condition, std::function<void()> task);
+
+    void addCooldownTask(int cooldown, const std::function<void()> &task);
 };
 
 
