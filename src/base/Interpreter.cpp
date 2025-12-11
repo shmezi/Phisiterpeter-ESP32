@@ -115,27 +115,10 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<AddToListExpressionFactory>());
 }
 
-void Interpreter::printStartupMessage() {
-    const auto c = R"(  _   _               _                  _____  _                                             _
- | \ | |             | |                |  __ \| |                                           | |
- |  \| | _____      _| |_ ___  _ __  ___| |__) | | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| |
- | . ` |/ _ \ \ /\ / / __/ _ \| '_ \/ __|  ___/| |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` |
- | |\  |  __/\ V  V /| || (_) | | | \__ \ |    | | (_| | |_| | (_| | | | (_) | |_| | | | | (_| |
- |_| \_|\___| \_/\_/  \__\___/|_| |_|___/_|    |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_|
-                                                         __/ | __/ |
-                                                        |___/ |___/
-)";
-    cout << debug::colorize(c, debug::Color::CYAN);
-
-    cout << debug::colorize("© Developed and designed by Ezra Golombek 2025", debug::Color::BLUE) << endl;
-
-
-    cout << "\033[0m\t\t" << endl;
-}
 
 Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token> &tokens) : headScope(headScope),
     tokens(tokens) {
-    printStartupMessage();
+
     registerFactories();
 
 
@@ -228,7 +211,6 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
         tokens.erase(tokens.begin());
         auto a = token.tokenId.c_str();
 auto c= ";rocecess ;";
-        cout << "Procecess ;" <<  a << ";" << endl;
         switch (token.type) {
             case NUMBER: {
                 float f = std::stof(token.tokenId);

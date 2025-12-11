@@ -70,7 +70,7 @@ void uart(void *pvParameters) {
                 continue;
             debug::print("incoming message!");
             auto prettyData = string(actualData);
-            prettyData.erase(0,1);
+            prettyData.erase(0, 1);
             // cout << stoi(prettyData) << endl;
             ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
         }
@@ -87,20 +87,33 @@ void runClock(void *pvParameters) {
     }
 }
 
+void printStartupMessage() {
+    const auto c = R"(  _   _               _                  _____  _                                             _
+ | \ | |             | |                |  __ \| |                                           | |
+ |  \| | _____      _| |_ ___  _ __  ___| |__) | | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| |
+ | . ` |/ _ \ \ /\ / / __/ _ \| '_ \/ __|  ___/| |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` |
+ | |\  |  __/\ V  V /| || (_) | | | \__ \ |    | | (_| | |_| | (_| | | | (_) | |_| | | | | (_| |
+ |_| \_|\___| \_/\_/  \__\___/|_| |_|___/_|    |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_|
+                                                         __/ | __/ |
+                                                        |___/ |___/
+)";
+    cout << debug::colorize(c, debug::Color::CYAN);
+
+    cout << debug::colorize("© Developed and designed by Ezra Golombek 2025", debug::Color::BLUE) << endl;
+
+
+    cout << "\033[0m\t\t" << endl;
+}
 
 extern "C" void app_main(void) {
-    gpio_set_direction(static_cast<gpio_num_t>(PIN_NUM_POWER), GPIO_MODE_OUTPUT);
-    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 1); // Power OFF
-    vTaskDelay(pdMS_TO_TICKS(50)); // Wait for power discharge
-    gpio_set_level(static_cast<gpio_num_t>(PIN_NUM_POWER), 0); // Power ON
-    vTaskDelay(pdMS_TO_TICKS(200)); // Wait for SD card internal boot
-    vTaskDelay(pdMS_TO_TICKS(2000)); // Wait for peripherals
+    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
+
     uart_init();
 
     esp_err_t ret;
 
 
-    std::cout << "Initializing SPI bus...\n";
+    debug::log("Initializing SPI bus...");
 
     // --- SPI bus configuration ---
     spi_bus_config_t bus_cfg = {
@@ -114,7 +127,7 @@ extern "C" void app_main(void) {
 
     ret = spi_bus_initialize(SPI2_HOST, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
-        std::cout << "Failed to initialize SPI bus: " << esp_err_to_name(ret) << "\n";
+        debug::error("Failed to initialize SPI bus!");
         return;
     }
 
@@ -141,38 +154,32 @@ extern "C" void app_main(void) {
 
     sdmmc_card_t *card;
 
-    std::cout << "Mounting filesystem...\n";
+    debug::log("Mounting filesystem...");
     ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
     if (ret != ESP_OK) {
-        std::cout << "Failed to mount SD card: " << esp_err_to_name(ret) << "\n";
+        debug::error("Failed to mount SD card!");
         spi_bus_free(SPI2_HOST);
         return;
     }
 
-    std::cout << "SD card mounted successfully!\n";
+    debug::log("SD card mounted successfully!");
 
-    // --- Write a file ---
+
     const char *file_path = "/sdcard/code.txt";
-    FILE *f = fopen(file_path, "r");
-    // if (f == nullptr) {
-    //     std::cout << "Failed to open file for writing\n";
-    // } else {
-    //     fprintf(f, "Hello SD card!\n");
-    //     fclose(f);
-    //     std::cout << "File written successfully!\n";
-    // }
 
-    // --- Read back the file ---
-    f = fopen(file_path, "r");
+
+    FILE *f = fopen(file_path, "r");
     if (f == nullptr) {
-        std::cout << "Failed to open file for reading\n";
+        debug::error("File could not be opened!");
     } else {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
+        debug::log("Starting tokenization process");
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
-
+        debug::log("Starting interpretation process");
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
+        printStartupMessage();
         interpreter.run();
         fclose(f);
         xTaskCreate(
@@ -191,12 +198,11 @@ extern "C" void app_main(void) {
             10, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
-        std::cout << "\nFile read complete.\n";
     }
 
     // --- Cleanup ---
     esp_vfs_fat_sdcard_unmount("/sdcard", card);
     spi_bus_free(SPI2_HOST);
 
-    std::cout << "SD card unmounted, SPI bus freed.\n";
+    debug::log("Interpertation has finished! Background tasks are still running fear not!");
 }

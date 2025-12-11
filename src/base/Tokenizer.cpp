@@ -22,7 +22,6 @@ void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
     enum TokenType type = UNKNOWN;
     if (std::regex_match(currentToken, pattern)) {
         type = NUMBER;
-        debug::print("IS NUMBER!" + currentToken);
     }
     if (headScope->isKeyWord(currentToken))
         type = KEYWORD;
@@ -54,7 +53,7 @@ bool isBad(char32_t cp) {
 void Tokenizer::tokenize() {
     char streamingChar = ' ';
     int c;
-
+    bool hasBadChar = false;
     while (((c = fgetc(&stream)) != EOF)) {
         currentlyParsedChar = static_cast<char>(c);
 
@@ -72,6 +71,7 @@ void Tokenizer::tokenize() {
             continue;
         }
         if (isBad(c)) {
+            hasBadChar = true;
             continue;
         }
 
@@ -114,6 +114,9 @@ void Tokenizer::tokenize() {
         }
     }
     pushNewTokenToList(); //Push final token to tokens.
+    if (hasBadChar) {
+        debug::warn("You have included a bad character in your file! Please make sure to use a proper text editor!");
+    }
 }
 
 Tokenizer::Tokenizer(FILE &stream, std::shared_ptr<Scope> headScope) : stream(stream),

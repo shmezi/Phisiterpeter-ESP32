@@ -28,6 +28,13 @@ namespace debug {
     inline void error(const std::string &value) {
         std::cout << colorize("[ERROR] " + value, Color::RED) << std::endl;
     }
+    inline void log(const std::string &value) {
+        std::cout << colorize("[LOG] " + value, Color::CYAN) << std::endl;
+    }
+
+    inline void warn(const std::string &value) {
+        std::cout << colorize("[WARN] " + value, Color::YELLOW) << std::endl;
+    }
 
     inline int colorIndex = 0;
 

@@ -27,7 +27,7 @@ public:
 
     void registerFactories() const;
 
-    static void printStartupMessage();
+
 
     explicit Interpreter(const shared_ptr<Scope> &headScope, const vector<Token> &tokens);
 
