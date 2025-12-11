@@ -64,7 +64,6 @@ GyroScopeSensorExpression::GyroScopeSensorExpression(bool toggle) {
     mpu6050_init(i2c0_bus_hdl, &dev_cfg, &dev_hdl);
     if (dev_hdl == nullptr) {
         debug::error("mpu6050 handle init failed");
-        assert(dev_hdl);
     }
 }
 
@@ -73,11 +72,11 @@ float GyroScopeSensorExpression::pushResult(float newResult) {
         results.pop_front();
     }
     results.push_back(newResult);
-    int total = 0;
+    float total = 0;
     for (const float result: results) {
         total += result;
     }
-    return total / results.size();
+    return total / static_cast<float>(results.size());
 }
 
 std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
@@ -107,7 +106,7 @@ float GyroScopeSensorExpression::pitch() const {
     }
     float pitchValue = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
-    return pitchValue * 57.2958;
+    return pitchValue * 57.2958f;
 }
 
 float GyroScopeSensorExpression::role() const {
@@ -121,7 +120,7 @@ float GyroScopeSensorExpression::role() const {
     }
     float rollValue = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
-    return rollValue * 57.2958;
+    return rollValue * 57.2958f;
 }
 
 std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {

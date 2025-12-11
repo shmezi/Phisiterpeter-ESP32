@@ -87,10 +87,6 @@ void MotorExpression::rotate() {
 extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
     MotorExpression *expression = static_cast<MotorExpression *>(arg);
     expression->rotate();
-    // auto u = (int *) (arg);
-    // debug::print("s");
-    // auto c = u++;
-    // debug::print("C: " + std::to_string(*u));
 }
 
 void MotorExpression::initEncoder()  {

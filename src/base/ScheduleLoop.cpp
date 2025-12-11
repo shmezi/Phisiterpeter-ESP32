@@ -37,9 +37,13 @@ void ScheduleLoop::loop() {
     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
-void ScheduleLoop::startEvent(int speed) {
-    for (const auto &task: startFunc) {
-        task(speed);
+void ScheduleLoop::startEvent(int param) {
+    std::string event = "start";
+    if (param == -1)
+        event = "stop";
+
+    for (const auto &task: startFunc[event]) {
+        task(param);
     }
 }
 
@@ -65,8 +69,10 @@ void ScheduleLoop::start() {
     active = true;
 }
 
-void ScheduleLoop::onStartListener(const std::function<void(int)> &task) {
-    startFunc.emplace_back(task);
+void ScheduleLoop::onEventListener(const std::string &id, std::function<void(int)> task) {
+    if (!startFunc.contains(id))
+        startFunc[id] = std::vector<std::function<void(int)> >();
+    startFunc[id].emplace_back(task);
 }
 
 void ScheduleLoop::addTask(const std::function<void()> &task) {

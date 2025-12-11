@@ -43,14 +43,17 @@
 #include "factories/game/DigitalReadExpressionFactory.h"
 #include "factories/game/StatusLEDExpressionFactory.h"
 #include "../../include/factories/action/control/RangeOperatorExpressionFactory.h"
+#include "expressions/game/ClearCountExpression.h"
 #include "expressions/game/CurrentTimeExpression.h"
 #include "factories/action/list/AddToListExpressionFactory.h"
 #include "factories/action/list/ClearListExpressionFactory.h"
 #include "factories/game/AngleExpressionFactory.h"
+#include "factories/game/ClearCountExpressionFactory.h"
 #include "factories/game/CurrentTimeExpressionFactory.h"
 #include "factories/game/GyroScopeExpressionFactory.h"
 #include "factories/game/MotorExpressionFactory.h"
 #include "factories/game/MoveExpressionFactory.h"
+#include "factories/game/OnEventExpressionFactory.h"
 #include "factories/game/RotationsExpressionFactory.h"
 #include "factories/game/SendResultExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
@@ -103,6 +106,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<AngleExpressionFactory>());
     headScope->registerKeyWord(make_unique<RotationsExpressionFactory>());
     headScope->registerKeyWord(make_unique<SendResultExpressionFactory>());
+    headScope->registerKeyWord(make_unique<ClearCountExpressionFactory>());
+    headScope->registerKeyWord(make_unique<OnEventExpressionFactory>());
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClearListExpressionFactory>());
