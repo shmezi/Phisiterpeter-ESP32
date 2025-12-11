@@ -4,6 +4,9 @@
 
 #include "expressions/game/OnEventExpression.h"
 
+#include <algorithm>
+
+#include "Utils.h"
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "expressions/action/control/ValueHoldExpression.h"
@@ -17,12 +20,15 @@ std::string OnEventExpression::expressionName() {
 std::shared_ptr<Expression> OnEventExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto evaluatedEventId = eventId->interpertAsString(scope);
 
-    ScheduleLoop::getInstance()->onEventListener(evaluatedEventId, [scope,evaluatedEventId,this](int value) {
+
+
+    ScheduleLoop::getInstance()->onEventListener(evaluatedEventId, [scope,evaluatedEventId, cb = codeBlock](int value) {
+
         auto newScope = std::make_shared<Scope>("on" + evaluatedEventId, scope);
 
         newScope->setVariable("value", std::make_shared<NumberExpression>(value));
 
-        codeBlock->interpret(newScope);
+        cb->interpret(scope);
     });
     return std::make_shared<VoidExpression>();
 }
@@ -32,5 +38,5 @@ std::string OnEventExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 }
 
 OnEventExpression::OnEventExpression(std::unique_ptr<Expression> eventId, std::unique_ptr<Expression> codeBlock)
-    : eventId(std::move(eventId)), codeBlock(std::move(codeBlock)) {
+    : eventId(std::shared_ptr(std::move(eventId))), codeBlock(std::shared_ptr(std::move(codeBlock))) {
 }

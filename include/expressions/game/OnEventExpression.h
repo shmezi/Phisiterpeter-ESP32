@@ -8,8 +8,8 @@
 
 
 class OnEventExpression : public Expression {
-    std::unique_ptr<Expression> eventId;
-    std::unique_ptr<Expression> codeBlock;
+    std::shared_ptr<Expression> eventId;
+    std::shared_ptr<Expression> codeBlock;
 
 public:
     std::string expressionName() override;

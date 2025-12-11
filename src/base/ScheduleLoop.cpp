@@ -39,9 +39,12 @@ void ScheduleLoop::loop() {
 
 void ScheduleLoop::startEvent(int param) {
     std::string event = "start";
-    if (param == -1)
+\    if (param == -1)
         event = "stop";
-
+    if (!startFunc.contains(event)) {
+        debug::error("No event of id '" + event + "' found!");
+        return;
+    }
     for (const auto &task: startFunc[event]) {
         task(param);
     }
@@ -70,8 +73,10 @@ void ScheduleLoop::start() {
 }
 
 void ScheduleLoop::onEventListener(const std::string &id, std::function<void(int)> task) {
-    if (!startFunc.contains(id))
+    if (!startFunc.contains(id)) {
         startFunc[id] = std::vector<std::function<void(int)> >();
+        debug::print("Adding event for " + id);
+    }
     startFunc[id].emplace_back(task);
 }
 
