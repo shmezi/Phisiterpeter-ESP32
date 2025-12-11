@@ -13,6 +13,11 @@
 std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText))
     {
+        for (unsigned char c : actualFloatyText) {
+            printf("%02X ", c);
+        }
+        printf("\n");
+        std::cout <<   "Value " << actualFloatyText << " END" <<std::endl;
         debug::error(
             "No declaration found token: `" + actualFloatyText + "`" + " at line " + std::to_string(lineNumber));
     }
@@ -23,6 +28,8 @@ std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) 
 
 std::string FloatyText::interpertAsString(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText)) {
+
+
         debug::error(
             "No declaration found token: `" + actualFloatyText + "`" + " at line " + std::to_string(lineNumber));
         return "";

@@ -21,10 +21,10 @@
 
 
 #define PIN_NUM_POWER 10
-#define PIN_NUM_MISO 4
-#define PIN_NUM_MOSI 5
-#define PIN_NUM_CLK  6
-#define PIN_NUM_CS   7
+#define PIN_NUM_MISO 7
+#define PIN_NUM_MOSI 6
+#define PIN_NUM_CLK  5
+#define PIN_NUM_CS   4
 
 
 #define TAG "UART_RECEIVER"
@@ -68,6 +68,7 @@ void uart(void *pvParameters) {
             auto actualData = reinterpret_cast<char *>(data);
             if (actualData[0] != '~')
                 continue;
+            debug::print("incoming message!");
             auto prettyData = string(actualData);
             prettyData.erase(0,1);
             // cout << stoi(prettyData) << endl;
@@ -78,8 +79,10 @@ void uart(void *pvParameters) {
 
 void runClock(void *pvParameters) {
     for (;;) {
-        vTaskDelay(pdMS_TO_TICKS(100)); // Delay for 1000ms
         ScheduleLoop::getInstance()->loop();
+
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Delay for 1000ms
+
         // debug::print("loop test");
     }
 }
@@ -149,7 +152,7 @@ extern "C" void app_main(void) {
     std::cout << "SD card mounted successfully!\n";
 
     // --- Write a file ---
-    const char *file_path = "/sdcard/test.txt";
+    const char *file_path = "/sdcard/code.txt";
     FILE *f = fopen(file_path, "r");
     // if (f == nullptr) {
     //     std::cout << "Failed to open file for writing\n";
@@ -177,7 +180,7 @@ extern "C" void app_main(void) {
             "MyForeverTask", // Text name for the task.
             32768, // Stack size in bytes, adjust as needed.
             nullptr, // Parameter passed into the task.
-            1, // Priority, with 0 being the lowest.
+            0, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
         xTaskCreate(
@@ -185,7 +188,7 @@ extern "C" void app_main(void) {
             "UART", // Text name for the task.
             32768, // Stack size in bytes, adjust as needed.
             nullptr, // Parameter passed into the task.
-            1, // Priority, with 0 being the lowest.
+            10, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
         std::cout << "\nFile read complete.\n";

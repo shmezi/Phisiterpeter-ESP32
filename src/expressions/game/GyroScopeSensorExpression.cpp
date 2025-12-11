@@ -11,6 +11,7 @@
 #include <freertos/task.h>
 
 #include "Utils.h"
+#include "../../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/complex"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/NumberExpression.h"
@@ -93,7 +94,10 @@ float GyroScopeSensorExpression::pitch() const {
 
     esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
     if (result != ESP_OK) {
-        ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
+        return 0.0f;
+    }
+    if (sqrtf(powf(accel_data.y_axis, 2.0f)) == 0.0f) {
+        debug::error("Cant divide by zero!");
         return 0.0f;
     }
     float pitchValue = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
@@ -108,7 +112,6 @@ float GyroScopeSensorExpression::role() const {
 
     esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
     if (result != ESP_OK) {
-        ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
         return 0.0f;
     }
     float rollValue = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));

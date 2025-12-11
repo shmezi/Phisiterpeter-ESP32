@@ -4,6 +4,7 @@
 
 #include "../../include/base/Interpreter.h"
 
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -132,7 +133,6 @@ void Interpreter::printStartupMessage() {
     cout << "\033[0m\t\t" << endl;
 }
 
-
 Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token> &tokens) : headScope(headScope),
     tokens(tokens) {
     printStartupMessage();
@@ -226,7 +226,9 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
             break;
         }
         tokens.erase(tokens.begin());
-
+        auto a = token.tokenId.c_str();
+auto c= ";rocecess ;";
+        cout << "Procecess ;" <<  a << ";" << endl;
         switch (token.type) {
             case NUMBER: {
                 float f = std::stof(token.tokenId);

@@ -15,6 +15,7 @@
 std::regex pattern("^\\d+(\\.\\d+)?$");
 
 void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
+
     if (currentToken.empty())
         return;
 
@@ -44,13 +45,19 @@ void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
 
     currentToken.clear();
 };
-
+bool isBad(char32_t cp) {
+    return cp == 0x0D ||        // CR
+           cp == 0x202A || cp == 0x202B || cp == 0x202D ||
+           cp == 0x202E || cp == 0x202C ||
+           cp == 0x200E || cp == 0x200F; // bidi marks
+}
 void Tokenizer::tokenize() {
     char streamingChar = ' ';
     int c;
 
     while (((c = fgetc(&stream)) != EOF)) {
         currentlyParsedChar = static_cast<char>(c);
+
         if (streamingChar != ' ') {
             if (currentlyParsedChar == '\n') {
                 lineCount++;
@@ -64,6 +71,10 @@ void Tokenizer::tokenize() {
             currentToken += currentlyParsedChar;
             continue;
         }
+        if (isBad(c)) {
+            continue;
+        }
+
 
         switch (currentlyParsedChar) {
             case '"':
