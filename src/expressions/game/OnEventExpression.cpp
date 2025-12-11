@@ -28,7 +28,7 @@ std::shared_ptr<Expression> OnEventExpression::interpret(std::shared_ptr<Scope> 
 
         newScope->setVariable("value", std::make_shared<NumberExpression>(value));
 
-        cb->interpret(scope);
+        cb->interpret(newScope);
     });
     return std::make_shared<VoidExpression>();
 }

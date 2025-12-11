@@ -14,8 +14,8 @@
 #define TSK_MINIMAL_STACK_SIZE         (1024)
 
 #define I2C0_MASTER_PORT               I2C_NUM_0
-#define I2C0_MASTER_SDA_IO             GPIO_NUM_1 // blue
-#define I2C0_MASTER_SCL_IO             GPIO_NUM_2 // yellow
+#define I2C0_MASTER_SDA_IO             GPIO_NUM_8 // blue
+#define I2C0_MASTER_SCL_IO             GPIO_NUM_9 // yellow
 
 
 class GyroScopeSensorExpression : public Expression, public std::enable_shared_from_this<GyroScopeSensorExpression> {

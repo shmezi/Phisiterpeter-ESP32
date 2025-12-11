@@ -28,13 +28,14 @@ static void initI2C() {
         return;
     }
     GyroScopeSensorExpression::i2c0_bus_cfg = {
-
         .i2c_port = I2C0_MASTER_PORT,
         .sda_io_num = I2C0_MASTER_SDA_IO,
         .scl_io_num = I2C0_MASTER_SCL_IO,
         .clk_source = I2C_CLK_SRC_DEFAULT,
         .glitch_ignore_cnt = 7,
+
         .flags = {
+
             .enable_internal_pullup = true
         }
     };
@@ -64,6 +65,8 @@ GyroScopeSensorExpression::GyroScopeSensorExpression(bool toggle) {
     mpu6050_init(i2c0_bus_hdl, &dev_cfg, &dev_hdl);
     if (dev_hdl == nullptr) {
         debug::error("mpu6050 handle init failed");
+    } else {
+        debug::print("mpu6050 init was a success!");
     }
 }
 
@@ -80,18 +83,6 @@ float GyroScopeSensorExpression::pushResult(float newResult) {
 }
 
 std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
-    float temperature;
-    mpu6050_gyro_data_axes_t gyro_data;
-    mpu6050_accel_data_axes_t accel_data;
-
-    esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
-    if (result != ESP_OK) {
-        ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
-        return std::make_unique<VoidExpression>();
-    }
-    float pitch = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
-    float roll = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
-
     return shared_from_this();
 }
 
@@ -103,6 +94,7 @@ float GyroScopeSensorExpression::pitch() const {
     esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
     if (result != ESP_OK) {
         ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
+        return 0.0f;
     }
     float pitchValue = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 
@@ -117,6 +109,7 @@ float GyroScopeSensorExpression::role() const {
     esp_err_t result = mpu6050_get_motion(dev_hdl, &gyro_data, &accel_data, &temperature);
     if (result != ESP_OK) {
         ESP_LOGE("APP_TAG", "mpu6050 device read failed (%s)", esp_err_to_name(result));
+        return 0.0f;
     }
     float rollValue = atanf(accel_data.y_axis / sqrtf(powf(accel_data.x_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));
 

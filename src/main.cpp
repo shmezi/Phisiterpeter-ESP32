@@ -78,7 +78,7 @@ void uart(void *pvParameters) {
 
 void runClock(void *pvParameters) {
     for (;;) {
-        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
+        vTaskDelay(pdMS_TO_TICKS(100)); // Delay for 1000ms
         ScheduleLoop::getInstance()->loop();
         // debug::print("loop test");
     }
