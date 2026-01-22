@@ -1,0 +1,41 @@
+print "-----------------------------------------"
+print "| BlackMamba - Designed By Ezra Golombek |"
+print "-----------------------------------------"
+
+m = motor 10 11 12 15 16
+
+startTime = 0
+screen "blackmamba"
+
+
+on "start" {
+startTime = now
+print ("Starting attraction at a speed of: " + value + "!")
+move m ( 0 - value )
+}
+
+fn end () {
+
+    print ("Sopping attraction!")
+    sendResult "a" (now - startTime)
+    move m 100
+
+}
+
+
+on "stop" {
+    end
+}
+
+
+when read 39 {
+    print "reached top"
+    move m 0
+
+}
+
+
+when read 40 {
+    print "reached bottom"
+    move m 0
+}
