@@ -32,6 +32,8 @@ public:
 
     bool isVariable(const std::string &id) const;
 
+    std::shared_ptr<Scope> getNearestScopeWithVariable(const std::string &id);
+
     void setVariable(const std::string &id, std::shared_ptr<Expression> expression) {
         variables[id] = std::move(expression);
     }

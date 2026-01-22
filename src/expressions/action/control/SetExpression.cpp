@@ -14,7 +14,12 @@
 std::shared_ptr<Expression> SetExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto id = std::any_cast<std::string>(this->name->instanceId());
     auto value = this->content->interpret(scope);
-    scope->setVariable(id, std::move(value));
+    const auto nearScope = scope->getNearestScopeWithVariable(id);
+    if (nearScope == nullptr)
+        scope->setVariable(id, std::move(value));
+    else
+        nearScope->setVariable(id, std::move(value));
+
 
     return std::make_unique<VoidExpression>();
 }

@@ -33,6 +33,15 @@ bool Scope::isVariable(const std::string &id) const {
     return variables.contains(id);
 }
 
+std::shared_ptr<Scope> Scope::getNearestScopeWithVariable(const std::string &id) {
+    if (variables.contains(id))
+        return shared_from_this();
+    if (parent != nullptr) {
+        return parent->getNearestScopeWithVariable(id);
+    }
+    return nullptr;
+}
+
 //
 // Created by Ezra Golombek on 30/11/2025.
 //
