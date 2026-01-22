@@ -142,8 +142,6 @@ extern "C" void app_main(void) {
     slot_config.host_id = SPI2_HOST;
 
 
-    const char *aMessage = "2\n";
-    uart_write_bytes(UART_NUM_2, aMessage, strlen(aMessage));
 
 
     // --- FATFS mount configuration ---

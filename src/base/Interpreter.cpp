@@ -57,6 +57,7 @@
 #include "factories/game/OnEventExpressionFactory.h"
 #include "factories/game/RotationsExpressionFactory.h"
 #include "factories/game/SendResultExpressionFactory.h"
+#include "factories/game/SetScreenExpressionFactory.h"
 #include "factories/game/WriteExpressionFactory.h"
 #include "factories/value/ListExpressionFactory.h"
 
@@ -109,6 +110,9 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<SendResultExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClearCountExpressionFactory>());
     headScope->registerKeyWord(make_unique<OnEventExpressionFactory>());
+    headScope->registerKeyWord(make_unique<SetScreenExpressionFactory>());
+
+
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClearListExpressionFactory>());
@@ -118,7 +122,6 @@ void Interpreter::registerFactories() const {
 
 Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token> &tokens) : headScope(headScope),
     tokens(tokens) {
-
     registerFactories();
 
 
@@ -210,7 +213,7 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
         }
         tokens.erase(tokens.begin());
         auto a = token.tokenId.c_str();
-auto c= ";rocecess ;";
+        auto c = ";rocecess ;";
         switch (token.type) {
             case NUMBER: {
                 float f = std::stof(token.tokenId);
