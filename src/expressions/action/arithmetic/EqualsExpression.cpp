@@ -3,8 +3,9 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/EqualsExpression.h"
+
 std::shared_ptr<Expression> EqualsExpression::interpret(std::shared_ptr<Scope> scope) {
-    return (right->interpret(scope)->equal(left->interpret(scope),scope));
+    return (right->interpret(scope)->equal(left->interpret(scope), scope));
 }
 
 EqualsExpression::EqualsExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {
