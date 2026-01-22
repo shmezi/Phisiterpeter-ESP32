@@ -67,7 +67,7 @@ GyroScopeSensorExpression::GyroScopeSensorExpression(bool toggle) {
     if (dev_hdl == nullptr) {
         debug::error("mpu6050 handle init failed");
     } else {
-        debug::print("mpu6050 init was a success!");
+        debug::log("mpu6050 init was a success!");
     }
 }
 

@@ -18,7 +18,7 @@
 #
 
 std::string MoveExpression::expressionName() {
-    return "motor";
+    return "move";
 }
 
 std::shared_ptr<Expression> MoveExpression::interpret(std::shared_ptr<Scope> scope) {

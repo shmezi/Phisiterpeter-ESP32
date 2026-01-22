@@ -72,6 +72,7 @@ void uart(void *pvParameters) {
             auto prettyData = string(actualData);
             prettyData.erase(0, 1);
             // cout << stoi(prettyData) << endl;
+
             ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
         }
     }

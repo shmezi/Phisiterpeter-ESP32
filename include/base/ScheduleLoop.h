@@ -13,7 +13,7 @@
 class ScheduleLoop {
     std::atomic<bool> active = false;
     // static ScheduleLoop *instance;
-    std::map<std::string, std::vector<std::function<void(int)> > >    startFunc = std::map<std::string, std::vector<
+    std::map<std::string, std::vector<std::function<void(int)> > > startFunc = std::map<std::string, std::vector<
         std::function<void(int)> > >();
 
     std::vector<std::function<void()> > always = std::vector<std::function<void()> >();
