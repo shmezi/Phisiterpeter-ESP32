@@ -14,10 +14,11 @@ std::string DigitalReadExpression::expressionName() {
     return "digitalRead";
 }
 
-bool hasRun = false;
 
 std::shared_ptr<Expression> DigitalReadExpression::interpret(std::shared_ptr<Scope> scope) {
-    auto expression = dynamic_cast<NumberExpression *>(pin->interpret(scope).get());
+    const auto interpretedPin = pin->interpret(scope);
+    auto expression = dynamic_cast<NumberExpression *>(interpretedPin.get());
+
     const  auto pinNumber = static_cast<int>(expression->contents);
 
     const auto gpio = static_cast<gpio_num_t>(pinNumber);

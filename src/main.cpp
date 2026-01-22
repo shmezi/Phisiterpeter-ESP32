@@ -66,12 +66,11 @@ void uart(void *pvParameters) {
             data[rxBytes] = 0;
 
             auto actualData = reinterpret_cast<char *>(data);
+            cout << actualData << endl;
             if (actualData[0] != '~')
                 continue;
-            debug::print("incoming message!");
             auto prettyData = string(actualData);
             prettyData.erase(0, 1);
-            // cout << stoi(prettyData) << endl;
 
             ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
         }

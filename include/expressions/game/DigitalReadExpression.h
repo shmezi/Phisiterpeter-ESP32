@@ -13,7 +13,9 @@
 class DigitalReadExpression : public Expression {
     std::unique_ptr<Expression> pin;
 
+
 public:
+    bool hasRun = false;
     std::string expressionName() override;
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;

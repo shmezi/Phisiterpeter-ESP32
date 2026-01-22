@@ -30,7 +30,6 @@
 
 
 void MotorExpression::move(const int speedValue) const {
-    debug::print("Moving " + std::to_string(speedValue));
     auto pinA = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(a.get())->contents);
     auto pinB = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(b.get())->contents);
     auto pinSpeed = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(speed.get())->contents);
