@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 11/12/2025.
 //
 
-#include "../../../include/factories/game/operators/ClearCountExpressionFactory.h"
+#include "../../../../include/factories/game/operators/ClearCountExpressionFactory.h"
 
 #include <algorithm>
 
-#include "../../../include/expressions/game/operators/ClearCountExpression.h"
+#include "../../../../include/expressions/game/operators/ClearCountExpression.h"
 
 std::string ClearCountExpressionFactory::startToken() {
     return "reset";

@@ -2,9 +2,9 @@
 // Created by Ezra Golombek on 02/12/2025.
 //
 
-#include "../../../include/factories/game/functions/DigitalReadExpressionFactory.h"
+#include "../../../../include/factories/game/functions/DigitalReadExpressionFactory.h"
 
-#include "../../../include/expressions/game/functions/DigitalReadExpression.h"
+#include "../../../../include/expressions/game/functions/DigitalReadExpression.h"
 
 std::string DigitalReadExpressionFactory::startToken() {
     return "read";

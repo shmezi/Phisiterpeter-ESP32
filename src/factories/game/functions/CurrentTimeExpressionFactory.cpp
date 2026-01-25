@@ -2,9 +2,9 @@
 // Created by Ezra Golombek on 07/12/2025.
 //
 
-#include "../../../include/factories/game/functions/CurrentTimeExpressionFactory.h"
+#include "../../../../include/factories/game/functions/CurrentTimeExpressionFactory.h"
 
-#include "../../../include/expressions/game/functions/CurrentTimeExpression.h"
+#include "../../../../include/expressions/game/functions/CurrentTimeExpression.h"
 
 std::string CurrentTimeExpressionFactory::startToken() {
     return "now";

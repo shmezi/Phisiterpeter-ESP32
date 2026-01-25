@@ -2,9 +2,9 @@
 // Created by Ezra Golombek on 04/12/2025.
 //
 
-#include "../../../include/factories/game/functions/WriteExpressionFactory.h"
+#include "../../../../include/factories/game/functions/WriteExpressionFactory.h"
 
-#include "../../../include/expressions/game/functions/WriteExpression.h"
+#include "../../../../include/expressions/game/functions/WriteExpression.h"
 
 std::string WriteExpressionFactory::startToken() {
     return "write";

@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 10/12/2025.
 //
 
-#include "../../../include/factories/game/functions/SendResultExpressionFactory.h"
+#include "../../../../include/factories/game/functions/SendResultExpressionFactory.h"
 
 #include <algorithm>
 
-#include "../../../include/expressions/game/functions/SendResultExpression.h"
+#include "../../../../include/expressions/game/functions/SendResultExpression.h"
 
 std::string SendResultExpressionFactory::startToken() {
     return "sendResult";

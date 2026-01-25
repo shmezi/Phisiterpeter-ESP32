@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 07/12/2025.
 //
 
-#include "../../../include/factories/game/operators/AngleExpressionFactory.h"
+#include "../../../../include/factories/game/operators/AngleExpressionFactory.h"
 
 #include <algorithm>
 
-#include "../../../include/expressions/game/operators/AngleExpression.h"
+#include "../../../../include/expressions/game/operators/AngleExpression.h"
 
 std::string AngleExpressionFactory::startToken() {
     return "angle";
