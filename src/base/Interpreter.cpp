@@ -59,6 +59,7 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
+#include "expressions/action/PrintExpression.h"
 #include "factories/value/ListExpressionFactory.h"
 
 using namespace std;
@@ -75,6 +76,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<ReturnExpressionFactory>());
     headScope->registerKeyWord(make_unique<FunctionExpressionFactory>());
 
+    //EARLY ALPHA TESTING OF NEW SYSTEM
+    headScope->registerKeyWord<PrintExpression,PrintExpression>();
     //Control statement factories
     headScope->registerKeyWord(make_unique<IfExpressionFactory>());
     headScope->registerKeyWord(make_unique<AndExpressionFactory>());
@@ -130,7 +133,7 @@ Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token>
 
 void Interpreter::run() const {
     for (const auto &expression: abstractSyntaxTree) {
-        expression -> interpret(headScope);
+        expression->interpret(headScope);
         // try {
         //     expression->interpret(headScope);
         // } catch (std::bad_any_cast &e) {

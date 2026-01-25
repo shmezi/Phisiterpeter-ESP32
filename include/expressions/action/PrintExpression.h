@@ -6,10 +6,13 @@
 #define PHISILANDINTERPRETER_PRINTEXPRESSION_H
 #include "../Expression.h"
 #include "../value/TextExpression.h"
+#include "expressions/InfoExpression.h"
 
 
-class PrintExpression : public Expression {
+class PrintExpression : public InfoExpression<PrintExpression> {
 public:
+
+
     std::unique_ptr<Expression> expression;
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
@@ -21,7 +24,18 @@ public:
 
     ~PrintExpression() override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;;
+    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+
+    static std::string startToken();
+
+    static std::string endToken();
+
+    static int indexStart();
+
+    static int paramSize();
+
+    static std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression>> &arguments,
+                                                std::shared_ptr<Scope> &scope);;
 };
 
 

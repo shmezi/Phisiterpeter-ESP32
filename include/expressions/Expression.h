@@ -14,10 +14,12 @@ class Scope;
  */
 class Expression {
 public:
+
+
     virtual ~Expression() = default;
 
     /**
-     * Line inside the scripting language
+     * Line inside the scripting language. DO NOT MODIFY!
      */
     int lineNumber = 0;
 

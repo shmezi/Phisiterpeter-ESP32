@@ -1,0 +1,10 @@
+//
+// Created by Ezra Golombek on 25/01/2026.
+//
+
+#ifndef PHISITERPETER_ESP32_EXPRESSIONINFO_H
+#define PHISITERPETER_ESP32_EXPRESSIONINFO_H
+
+struct ExpressionInfo {
+};
+#endif //PHISITERPETER_ESP32_EXPRESSIONINFO_H

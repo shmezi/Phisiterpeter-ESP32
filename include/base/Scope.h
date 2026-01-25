@@ -9,6 +9,7 @@
 #include  <memory>
 
 #include "../expressions/Expression.h"
+#include "expressions/InfoExpression.h"
 #include "factories/Factory.h"
 class Expression; // Forward declaration
 
@@ -27,6 +28,13 @@ public:
     bool isKeyWord(const std::string &id) const;
 
     void registerKeyWord(std::shared_ptr<Factory> &&factory);
+
+    template<typename T, std::derived_from<InfoExpression<T> > ExpressionType>
+    static void registerKeyWord() {
+
+        ExpressionType::paramSize();
+    }
+
 
     std::shared_ptr<Factory> getFactoryById(const std::string &id);
 

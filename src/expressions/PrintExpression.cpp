@@ -20,3 +20,25 @@ PrintExpression::~PrintExpression() = default;
 std::string PrintExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return expression->interpertAsString(scope);
 }
+
+
+std::string PrintExpression::startToken() {
+    return "print";
+}
+
+
+int PrintExpression::indexStart() {
+
+    return 0;
+}
+
+int PrintExpression::paramSize() {
+    std::cout << "Called as a static part yay!";
+    return 1;
+}
+
+
+std::unique_ptr<Expression> PrintExpression::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+                                                      std::shared_ptr<Scope> &scope) {
+    return std::make_unique<PrintExpression>(std::move(arguments[0]));
+}
