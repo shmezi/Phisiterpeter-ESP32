@@ -66,7 +66,7 @@ void uart(void *pvParameters) {
             data[rxBytes] = 0;
 
             auto actualData = reinterpret_cast<char *>(data);
-            cout << actualData << endl;
+            // cout << actualData << endl;
             if (actualData[0] != '~')
                 continue;
             auto prettyData = string(actualData);
@@ -81,7 +81,7 @@ void runClock(void *pvParameters) {
     for (;;) {
         ScheduleLoop::getInstance()->loop();
 
-        vTaskDelay(pdMS_TO_TICKS(1000)); // Delay for 1000ms
+        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
 
         // debug::print("loop test");
     }

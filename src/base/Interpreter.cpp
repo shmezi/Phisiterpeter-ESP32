@@ -130,7 +130,7 @@ Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token>
 
 void Interpreter::run() const {
     for (const auto &expression: abstractSyntaxTree) {
-        expression->interpret(headScope);
+        expression -> interpret(headScope);
         // try {
         //     expression->interpret(headScope);
         // } catch (std::bad_any_cast &e) {
@@ -216,7 +216,7 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
         switch (token.type) {
             case NUMBER: {
                 float f = std::stof(token.tokenId + ".0");
-                cout << "VALUE: '" << token.tokenId << "' "  << endl;
+                cout << "VALUE: '" << token.tokenId << "' " << endl;
                 auto c = std::make_unique<NumberExpression>(f);
                 c->lineNumber = token.lineNumber;
                 abstractSyntaxTree.push_back(std::move(c));

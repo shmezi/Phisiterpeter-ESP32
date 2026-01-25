@@ -8,6 +8,7 @@
 
 #include "../../../include/base/Scope.h"
 #include "Utils.h"
+#include "expressions/internal/VoidExpression.h"
 #include "expressions/value/NumberExpression.h"
 
 std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
@@ -20,6 +21,7 @@ std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) 
         std::cout <<   "Value " << actualFloatyText << " END" <<std::endl;
         debug::error(
             "No declaration found token: `" + actualFloatyText + "`" + " at line " + std::to_string(lineNumber));
+        return nullptr;
     }
 
 
