@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 04/12/2025.
 //
 
-#include "../../../include/expressions/game/WriteExpression.h"
+#include "../../../../include/expressions/game/functions/WriteExpression.h"
 
 #include <algorithm>
 #include <driver/gpio.h>

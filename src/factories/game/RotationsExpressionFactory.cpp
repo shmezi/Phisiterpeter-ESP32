@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 07/12/2025.
 //
 
-#include "factories/game/RotationsExpressionFactory.h"
+#include "../../../include/factories/game/operators/RotationsExpressionFactory.h"
 
 #include <algorithm>
 
-#include "expressions/game/RotationsExpression.h"
+#include "../../../include/expressions/game/operators/RotationsExpression.h"
 
 std::string RotationsExpressionFactory::startToken() {
     return "rotations";

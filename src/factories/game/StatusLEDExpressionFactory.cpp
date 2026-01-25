@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 01/12/2025.
 //
 
-#include "../../../include/factories/game/StatusLEDExpressionFactory.h"
+#include "../../../include/factories/game/functions/StatusLEDExpressionFactory.h"
 
 #include <algorithm>
 
-#include "expressions/game/StatusLEDExpression.h"
+#include "../../../include/expressions/game/functions/StatusLEDExpression.h"
 
 std::string StatusLEDExpressionFactory::startToken() {
     return "status";

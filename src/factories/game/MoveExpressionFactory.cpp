@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 03/12/2025.
 //
 
-#include "../../../include/factories/game/MoveExpressionFactory.h"
+#include "../../../include/factories/game/operators/MoveExpressionFactory.h"
 
 #include <algorithm>
 
-#include "expressions/action/control/MoveExpression.h"
+#include "../../../include/expressions/game/operators/MoveExpression.h"
 
 std::string MoveExpressionFactory::startToken() {
     return "move";

@@ -8,7 +8,7 @@
 #include "base/Interpreter.h"
 #include "base/ScheduleLoop.h"
 #include "expressions/action/PrintExpression.h"
-#include "expressions/game/StatusLEDExpression.h"
+#include "../../../../include/expressions/game/functions/StatusLEDExpression.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/NumberExpression.h"

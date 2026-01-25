@@ -2,10 +2,10 @@
 // Created by Ezra Golombek on 03/12/2025.
 //
 
-#include "../../../include/expressions/action/control/MoveExpression.h"
+#include "../../../../include/expressions/game/operators/MoveExpression.h"
 
 #include "Utils.h"
-#include "expressions/game/MotorExpression.h"
+#include "../../../../include/expressions/game/objects/MotorExpression.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/BooleanExpression.h"
 

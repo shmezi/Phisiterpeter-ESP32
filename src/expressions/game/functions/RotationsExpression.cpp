@@ -2,11 +2,11 @@
 // Created by Ezra Golombek on 07/12/2025.
 //
 
-#include "expressions/game/RotationsExpression.h"
+#include "../../../../include/expressions/game/operators/RotationsExpression.h"
 
 #include <algorithm>
 
-#include "expressions/game/MotorExpression.h"
+#include "../../../../include/expressions/game/objects/MotorExpression.h"
 #include "expressions/value/NumberExpression.h"
 
 std::string RotationsExpression::expressionName() {

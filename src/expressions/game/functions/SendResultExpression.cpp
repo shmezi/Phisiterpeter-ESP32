@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 10/12/2025.
 //
 
-#include "expressions/game/SendResultExpression.h"
+#include "../../../../include/expressions/game/functions/SendResultExpression.h"
 
 #include <algorithm>
 #include <cstring>

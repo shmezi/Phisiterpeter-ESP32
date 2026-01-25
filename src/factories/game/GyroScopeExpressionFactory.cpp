@@ -2,12 +2,12 @@
 // Created by Ezra Golombek on 06/12/2025.
 //
 
-#include "../../../include/factories/game/GyroScopeExpressionFactory.h"
+#include "../../../include/factories/game/objects/GyroScopeExpressionFactory.h"
 
 #include <algorithm>
 
 #include "expressions/action/control/ValueHoldExpression.h"
-#include "../../../include/expressions/game/GyroScopeSensorExpression.h"
+#include "../../../include/expressions/game/objects/GyroScopeSensorExpression.h"
 #include "expressions/value/BooleanExpression.h"
 
 std::string GyroScopeExpressionFactory::startToken() {

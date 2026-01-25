@@ -10,7 +10,7 @@
 #include <random>
 
 #include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/chrono"
-#include "expressions/game/StatusLEDExpression.h"
+#include "expressions/game/functions/StatusLEDExpression.h"
 
 namespace debug {
     enum class Color {

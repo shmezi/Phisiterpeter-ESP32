@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 05/12/2025.
 //
 
-#include "../../../include/expressions/game/GyroScopeSensorExpression.h"
+#include "../../../../include/expressions/game/objects/GyroScopeSensorExpression.h"
 
 #include <algorithm>
 #include <esp_log.h>

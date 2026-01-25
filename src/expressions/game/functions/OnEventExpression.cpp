@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 11/12/2025.
 //
 
-#include "expressions/game/OnEventExpression.h"
+#include "../../../../include/expressions/game/functions/OnEventExpression.h"
 
 #include <algorithm>
 

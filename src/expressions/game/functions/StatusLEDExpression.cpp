@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 01/12/2025.
 //
 
-#include "expressions/game/StatusLEDExpression.h"
+#include "../../../../include/expressions/game/functions/StatusLEDExpression.h"
 
 #include <esp_err.h>
 #include <soc/clk_tree_defs.h>

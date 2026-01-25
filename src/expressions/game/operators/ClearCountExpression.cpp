@@ -2,9 +2,9 @@
 // Created by Ezra Golombek on 11/12/2025.
 //
 
-#include "../../../include/expressions/game/ClearCountExpression.h"
+#include "../../../../include/expressions/game/operators/ClearCountExpression.h"
 
-#include "expressions/game/MotorExpression.h"
+#include "../../../../include/expressions/game/objects/MotorExpression.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string ClearCountExpression::expressionName() {

@@ -3,11 +3,11 @@
 //
 
 
-#include "expressions/game/AngleExpression.h"
+#include "../../../../include/expressions/game/operators/AngleExpression.h"
 
 #include <algorithm>
 
-#include "../../../include/expressions/game/GyroScopeSensorExpression.h"
+#include "../../../../include/expressions/game/objects/GyroScopeSensorExpression.h"
 #include "expressions/value/NumberExpression.h"
 
 std::string AngleExpression::expressionName() {

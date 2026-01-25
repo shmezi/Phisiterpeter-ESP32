@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 03/12/2025.
 //
 
-#include "../../../include/expressions/game/MotorExpression.h"
+#include "../../../../include/expressions/game/objects/MotorExpression.h"
 #include <esp_intr_alloc.h>
 #include <driver/gpio.h>
 #include "esp_intr_alloc.h"

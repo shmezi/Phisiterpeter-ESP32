@@ -2,7 +2,7 @@
 // Created by Ezra Golombek on 02/12/2025.
 //
 
-#include "../../../include/expressions/game/DigitalReadExpression.h"
+#include "../../../../include/expressions/game/functions/DigitalReadExpression.h"
 
 #include <driver/gpio.h>
 #include <hal/gpio_types.h>

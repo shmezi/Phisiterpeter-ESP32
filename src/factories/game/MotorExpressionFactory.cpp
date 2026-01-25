@@ -2,10 +2,10 @@
 // Created by Ezra Golombek on 03/12/2025.
 //
 
-#include "../../../include/factories/game/MotorExpressionFactory.h"
+#include "../../../include/factories/game/objects/MotorExpressionFactory.h"
 
 #include "expressions/action/control/ValueHoldExpression.h"
-#include "expressions/game/MotorExpression.h"
+#include "../../../include/expressions/game/objects/MotorExpression.h"
 
 std::string MotorExpressionFactory::startToken() {
     return "motor";
