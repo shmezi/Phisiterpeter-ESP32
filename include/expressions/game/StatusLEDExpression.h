@@ -4,6 +4,7 @@
 
 #ifndef PHISITERPETER_ESP32_STATUSLEDEXPRESSION_H
 #define PHISITERPETER_ESP32_STATUSLEDEXPRESSION_H
+#include "SmartLeds.h"
 #include "expressions/Expression.h"
 
 
@@ -13,6 +14,7 @@ class StatusLEDExpression : public Expression {
     std::unique_ptr<Expression> b;
 
 public:
+    static SmartLed leds;
     std::string expressionName() override;
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;

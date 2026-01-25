@@ -10,6 +10,7 @@
 #include <random>
 
 #include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/chrono"
+#include "expressions/game/StatusLEDExpression.h"
 
 namespace debug {
     enum class Color {
@@ -21,19 +22,73 @@ namespace debug {
         YELLOW = 33,
     };
 
+
+    /*
+     * Indicates the current status of the interperter that can be used for status indicators.
+     */
+    struct RGB {
+        unsigned char red;
+        unsigned char green;
+        unsigned char blue;
+    };
+
+    static constexpr RGB INTERPRETATION = {
+        .red = 102,
+        .green = 0,
+        .blue = 204
+
+    };
+    static constexpr RGB TOKENIZATION = {
+        .red = 0,
+        .green = 0,
+        .blue = 255
+    };
+    static constexpr RGB RUNNING = {
+        .red = 0,
+        .green = 255,
+        .blue = 0
+    };
+    static constexpr RGB RUNTIME_CRASH = {
+        .red = 255,
+        .green = 128,
+        .blue = 0
+
+    };
+
+    static constexpr RGB COMPILE_CRASH = {
+        .red = 255,
+        .green = 0,
+        .blue = 0
+    };
+    static constexpr RGB WARN = {
+        .red = 255,
+        .green = 255,
+        .blue = 0
+    };
+
+
+    static void showColor(RGB color) {
+        StatusLEDExpression::leds[0] = Rgb{color.red, color.green, color.blue};
+        StatusLEDExpression::leds.show();
+    }
+
+
     inline std::string colorize(const std::string &text, Color color) {
         return "\033[" + std::to_string(static_cast<int>(color)) + "m" + text + "\033[0m";
     }
 
     inline void error(const std::string &value) {
         std::cout << colorize("[ERROR] " + value, Color::RED) << std::endl;
+        showColor(RUNTIME_CRASH);
     }
+
     inline void log(const std::string &value) {
         std::cout << colorize("[LOG] " + value, Color::CYAN) << std::endl;
     }
 
     inline void warn(const std::string &value) {
         std::cout << colorize("[WARN] " + value, Color::YELLOW) << std::endl;
+        showColor(WARN);
     }
 
     inline int colorIndex = 0;
@@ -78,7 +133,6 @@ namespace debug {
 
     inline void print(const std::string &value) {
         pq<std::string>(value);
-
     }
 
     inline std::chrono::milliseconds getCurrentMs() {

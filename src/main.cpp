@@ -173,11 +173,14 @@ extern "C" void app_main(void) {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         debug::log("Starting tokenization process");
+        // debug::showColor(debug::TOKENIZATION);
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
         debug::log("Starting interpretation process");
+        // debug::showColor(debug::INTERPRETATION);
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
+        // debug::showColor(debug::RUNNING);
         interpreter.run();
         fclose(f);
         xTaskCreate(
