@@ -18,7 +18,7 @@ int ClearListExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> ClearListExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> ClearListExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                                  std::shared_ptr<Scope> &scope) {
     return std::make_unique<ClearListExpression>(std::move(arguments[0]));
 }

@@ -3,11 +3,11 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/LesserExpression.h"
-std::shared_ptr<Expression>LesserExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression>LesserExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->lesser(left->interpret(scope),scope));
 }
 
-LesserExpression::LesserExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {
+LesserExpression::LesserExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left) {
     this->left = std::move(left);
     this->right = std::move(right);
     //Most likely need to shift to something that allows for the pointers stay.. given that it could be a reference to a variable.

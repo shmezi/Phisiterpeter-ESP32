@@ -10,7 +10,18 @@
 #include "../../include/base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
 
-std::shared_ptr<Expression> PrintExpression::interpret(std::shared_ptr<Scope> scope) {
+ExpressionInfo PrintExpression::getInfo() {
+    return {
+        0,
+        "print",
+        {
+            {"value", "any"}
+        }
+    };
+}
+
+
+std::shared_ptr<BaseExpression> PrintExpression::interpret(std::shared_ptr<Scope> scope) {
     std::cout << this->expression->interpertAsString(scope) << std::endl;
     return std::make_unique<VoidExpression>();
 }
@@ -22,23 +33,10 @@ std::string PrintExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 }
 
 
-std::string PrintExpression::startToken() {
-    return "print";
-}
-
-
-int PrintExpression::indexStart() {
-
-    return 0;
-}
-
-int PrintExpression::paramSize() {
-    std::cout << "Called as a static part yay!";
-    return 1;
-}
-
-
-std::unique_ptr<Expression> PrintExpression::generate(std::deque<std::unique_ptr<Expression> > &arguments,
-                                                      std::shared_ptr<Scope> &scope) {
+std::unique_ptr<BaseExpression>
+PrintExpression::generate(
+    std::deque<std::unique_ptr<BaseExpression> > &arguments,
+    std::shared_ptr<Scope> &scope
+) {
     return std::make_unique<PrintExpression>(std::move(arguments[0]));
 }

@@ -8,25 +8,25 @@
 #include <string>
 #include <vector>
 
-#include "../../Expression.h"
+#include "../../BaseExpression.h"
 
 
-class ClarificationBracketExpression : public Expression {
+class ClarificationBracketExpression : public BaseExpression {
 
 public:
-    std::deque<std::unique_ptr<Expression> > expressions;
+    std::deque<std::unique_ptr<BaseExpression> > expressions;
 
     ~ClarificationBracketExpression() override = default;
 
     std::string expressionName() override { return "ClarificationBracket"; };
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     int expressionCount() const;
 
-    explicit ClarificationBracketExpression(std::deque<std::unique_ptr<Expression> > expressions) {
+    explicit ClarificationBracketExpression(std::deque<std::unique_ptr<BaseExpression> > expressions) {
 
         this->expressions = std::move(expressions);
     }

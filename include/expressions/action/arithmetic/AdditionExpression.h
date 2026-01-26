@@ -6,18 +6,18 @@
 #define PHISILANDINTERPRETER_ADDITIONEXPRESSION_H
 #include <string>
 
-#include "../../Expression.h"
+#include "../../BaseExpression.h"
 
 
-class AdditionExpression : public Expression {
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+class AdditionExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> left;
+    std::unique_ptr<BaseExpression> right;
 
 public:
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override {return "Addition";};
-    AdditionExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    AdditionExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 
     ~AdditionExpression() override = default;
 

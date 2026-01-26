@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "ScheduleLoop.h"
-#include "../expressions/Expression.h"
+#include "../expressions/BaseExpression.h"
 #include "Scope.h"
 class Token;
 class Factory;
@@ -23,7 +23,7 @@ class Interpreter {
     void interpretKeyWordExpression(const Token &token);
 
 public:
-    vector<unique_ptr<Expression> > abstractSyntaxTree = vector<unique_ptr<Expression> >();
+    vector<unique_ptr<BaseExpression> > abstractSyntaxTree = vector<unique_ptr<BaseExpression> >();
 
     void registerFactories() const;
 

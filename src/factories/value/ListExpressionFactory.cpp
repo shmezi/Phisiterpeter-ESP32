@@ -26,9 +26,9 @@ int ListExpressionFactory::paramSize() {
     return 0;
 }
 
-std::unique_ptr<Expression> ListExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> ListExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                             std::shared_ptr<Scope> &scope) {
-    auto expressions = std::deque<std::shared_ptr<Expression> >();
+    auto expressions = std::deque<std::shared_ptr<BaseExpression> >();
     for (auto &arg: arguments) {
         expressions.push_back(arg->interpret(scope));
     }

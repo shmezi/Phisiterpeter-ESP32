@@ -1,8 +1,10 @@
 #include "base/Scope.h"
 
 #include "Utils.h"
-#include "expressions/InfoExpression.h"
-
+#include "expressions/Expression.h"
+#include "factories/internal/BaseFactory.h"
+#include "factories/internal/DynamicExpressionFactory.h"
+#include <chrono>
 bool Scope::isKeyWord(const std::string &id) const { return keyWords.contains(id); }
 
 void Scope::registerKeyWord(std::shared_ptr<Factory> &&factory) {
@@ -19,7 +21,7 @@ std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
     return nullptr;
 }
 
-std::shared_ptr<Expression> Scope::interpretVariable(const std::string &id) {
+std::shared_ptr<BaseExpression> Scope::interpretVariable(const std::string &id) {
     if (variables.contains(id))
         return variables[id]->interpret(shared_from_this());
     if (parent != nullptr) {

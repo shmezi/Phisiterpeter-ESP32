@@ -9,7 +9,7 @@
 #include <string>
 #include <memory>
 class Scope;
-class Expression;
+class BaseExpression;
 
 /**
  * user = (expressions_here) => {
@@ -47,7 +47,7 @@ public:
 
 
     // Not gonna lie, i'm not sure why it's ok that we are passing a variable that gets deleted... maybe its because we generate it and then we dont actually need the stuff after that idk.. Im just getting started with memory management stuff.
-    virtual std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) = 0;
+    virtual std::unique_ptr<BaseExpression> generate(std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) = 0;
 
 };
 

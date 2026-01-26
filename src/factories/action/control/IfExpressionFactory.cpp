@@ -19,7 +19,7 @@ std::string IfExpressionFactory::startToken() {
     return "if";
 }
 
-std::unique_ptr<Expression> IfExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> IfExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                           std::shared_ptr<Scope> &scope) {
     return std::make_unique<IfExpression>(std::move(arguments[0]), std::move(arguments[1]));
 }

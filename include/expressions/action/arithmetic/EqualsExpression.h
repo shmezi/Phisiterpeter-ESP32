@@ -4,19 +4,19 @@
 
 #ifndef PHISILANDINTERPRETER_EQUALSEXPRESSION_H
 #define PHISILANDINTERPRETER_EQUALSEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class EqualsExpression : public Expression {
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+class EqualsExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> left;
+    std::unique_ptr<BaseExpression> right;
 
 public:
-   std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+   std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override { return "Equals"; };
 
-    EqualsExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    EqualsExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 
     ~EqualsExpression() override = default;
 

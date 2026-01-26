@@ -4,11 +4,11 @@
 
 #include "../../../../include/expressions/action/arithmetic/SubtractionExpression.h"
 
-std::shared_ptr<Expression> SubtractionExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> SubtractionExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->subtract(left->interpret(scope), scope));
 }
 
-SubtractionExpression::SubtractionExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {
+SubtractionExpression::SubtractionExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left) {
     this->left = std::move(left);
     this->right = std::move(right);
     //Most likely need to shift to something that allows for the pointers stay.. given that it could be a reference to a variable.

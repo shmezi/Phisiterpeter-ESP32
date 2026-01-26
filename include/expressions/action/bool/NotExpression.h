@@ -4,20 +4,20 @@
 
 #ifndef PHISILANDINTERPRETER_NOTEXPRESSION_H
 #define PHISILANDINTERPRETER_NOTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class NotExpression : public Expression {
-    std::unique_ptr<Expression> contents;
+class NotExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> contents;
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    explicit NotExpression(std::unique_ptr<Expression> expression) : contents(std::move(expression)) {
+    explicit NotExpression(std::unique_ptr<BaseExpression> expression) : contents(std::move(expression)) {
     }
 };
 

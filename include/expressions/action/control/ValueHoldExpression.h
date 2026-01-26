@@ -4,18 +4,18 @@
 
 #ifndef PHISITERPETER_ESP32_VALUEHOLDEXPRESSION_H
 #define PHISITERPETER_ESP32_VALUEHOLDEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class ValueHoldExpression : public Expression{
-    std::shared_ptr<Expression> expression;
+class ValueHoldExpression : public BaseExpression{
+    std::shared_ptr<BaseExpression> expression;
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
-    ValueHoldExpression(const std::shared_ptr<Expression> &expression);
+    ValueHoldExpression(const std::shared_ptr<BaseExpression> &expression);
 };
 
 

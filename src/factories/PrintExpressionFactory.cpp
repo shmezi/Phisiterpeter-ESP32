@@ -9,7 +9,7 @@
 
 #include "../../include/expressions/action/PrintExpression.h"
 
-std::unique_ptr<Expression> PrintExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
+std::unique_ptr<BaseExpression> PrintExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) {
     return std::make_unique<PrintExpression>(std::move(arguments[0]));
 
 }

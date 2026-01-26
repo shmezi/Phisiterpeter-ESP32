@@ -10,7 +10,7 @@
 
 #include "../../../../include/expressions/action/arithmetic/AdditionExpression.h"
 
-std::unique_ptr<Expression> AdditionExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
+std::unique_ptr<BaseExpression> AdditionExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) {
 
     return std::make_unique<AdditionExpression>(std::move(arguments[0]), std::move(arguments[1]));
 }

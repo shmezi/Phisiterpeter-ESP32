@@ -6,14 +6,14 @@
 #define PHISILANDINTERPRETER_STARTEXPRESSION_H
 #include <string>
 
-#include "../Expression.h"
+#include "../BaseExpression.h"
 #include "Utils.h"
 
 /**
  * StartExpression is a VERY special expression that can not be created without other expressions.
  * It serves as a temporary indicator for the interpreter to find the start of an expression for very specific types.
  */
-class StartExpression : public Expression {
+class StartExpression : public BaseExpression {
 public:
     ~StartExpression() override = default;
 
@@ -21,7 +21,7 @@ public:
         return "ise"; //Internal start expression
     }
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override {
         debug::error("An internal StartExpression was interpreted even though it is for internal use only!");
         return nullptr;
     }

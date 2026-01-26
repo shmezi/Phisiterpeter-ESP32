@@ -13,7 +13,7 @@ std::string AddToListExpression::expressionName() {
     return "addToList";
 }
 
-std::shared_ptr<Expression> AddToListExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> AddToListExpression::interpret(std::shared_ptr<Scope> scope) {
     auto actualList = dynamic_cast<ListExpression *>(list->interpret(scope).get());
     actualList->append(newItem->interpret(scope));
     return std::make_shared<VoidExpression>();
@@ -23,6 +23,6 @@ std::string AddToListExpression::interpertAsString(std::shared_ptr<Scope> scope)
     return "Adding " + newItem->interpertAsString(scope) + " to a list";
 }
 
-AddToListExpression::AddToListExpression(std::unique_ptr<Expression> list, std::unique_ptr<Expression> newItem)
+AddToListExpression::AddToListExpression(std::unique_ptr<BaseExpression> list, std::unique_ptr<BaseExpression> newItem)
     : list(std::move(list)), newItem(std::move(newItem)) {
 }

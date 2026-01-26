@@ -27,7 +27,7 @@ std::string StatusLEDExpression::expressionName() {
 
 SmartLed StatusLEDExpression::leds(LED_WS2812B, 1, 48, 0, DoubleBuffer);
 
-std::shared_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> StatusLEDExpression::interpret(std::shared_ptr<Scope> scope) {
     unsigned char rLED = static_cast<char>(dynamic_cast<NumberExpression *>(r.get())->contents);
     unsigned char gLED = static_cast<char>(dynamic_cast<NumberExpression *>(g.get())->contents);
     unsigned char bLED = static_cast<char>(dynamic_cast<NumberExpression *>(b.get())->contents);
@@ -44,7 +44,7 @@ std::string StatusLEDExpression::interpertAsString(std::shared_ptr<Scope> scope)
     return "";
 }
 
-StatusLEDExpression::StatusLEDExpression(std::unique_ptr<Expression> r, std::unique_ptr<Expression> g,
-                                         std::unique_ptr<Expression> b) : r(std::move(r)), g(std::move(g)),
+StatusLEDExpression::StatusLEDExpression(std::unique_ptr<BaseExpression> r, std::unique_ptr<BaseExpression> g,
+                                         std::unique_ptr<BaseExpression> b) : r(std::move(r)), g(std::move(g)),
                                                                           b(std::move(b)) {
 }

@@ -4,20 +4,20 @@
 
 #ifndef PHISILANDINTERPRETER_PRINTEXPRESSION_H
 #define PHISILANDINTERPRETER_PRINTEXPRESSION_H
-#include "../Expression.h"
+#include "../BaseExpression.h"
 #include "../value/TextExpression.h"
-#include "expressions/InfoExpression.h"
+#include "expressions/Expression.h"
 
 
-class PrintExpression : public InfoExpression<PrintExpression> {
+class PrintExpression : public Expression<PrintExpression> {
 public:
 
 
-    std::unique_ptr<Expression> expression;
+    std::unique_ptr<BaseExpression> expression;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
-    explicit PrintExpression(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {
+    explicit PrintExpression(std::unique_ptr<BaseExpression> expression) : expression(std::move(expression)) {
     }
 
     std::string expressionName() override { return "print"; };
@@ -26,16 +26,11 @@ public:
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    static std::string startToken();
+    static ExpressionInfo getInfo();
 
-    static std::string endToken();
 
-    static int indexStart();
-
-    static int paramSize();
-
-    static std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression>> &arguments,
-                                                std::shared_ptr<Scope> &scope);;
+    static std::unique_ptr<BaseExpression> generate(std::deque<std::unique_ptr<BaseExpression>> &arguments,
+                                                std::shared_ptr<Scope> &scope);
 };
 
 

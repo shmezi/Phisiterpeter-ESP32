@@ -4,17 +4,17 @@
 
 #ifndef PHISILANDINTERPRETER_BOOLEANEXPRESSION_H
 #define PHISILANDINTERPRETER_BOOLEANEXPRESSION_H
-#include "../Expression.h"
+#include "../BaseExpression.h"
 
 
-class BooleanExpression : public Expression {
+class BooleanExpression : public BaseExpression {
 
 
 public:
     std::string expressionName() override;
     bool contents;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
@@ -25,12 +25,12 @@ public:
 
     std::string instanceId() override;
 
-    std::shared_ptr<Expression> notOperator(std::shared_ptr<Scope> &parentScope) override;
+    std::shared_ptr<BaseExpression> notOperator(std::shared_ptr<Scope> &parentScope) override;
 
-    std::shared_ptr<Expression> andOperator(std::shared_ptr<Expression> &&expression,
+    std::shared_ptr<BaseExpression> andOperator(std::shared_ptr<BaseExpression> &&expression,
                                             std::shared_ptr<Scope> &parentScope) override;
 
-    std::shared_ptr<Expression> orOperator(std::shared_ptr<Expression> &&expression,
+    std::shared_ptr<BaseExpression> orOperator(std::shared_ptr<BaseExpression> &&expression,
                                            std::shared_ptr<Scope> &parentScope) override;
 };
 

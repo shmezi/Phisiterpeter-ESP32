@@ -22,7 +22,7 @@ int GyroScopeExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> GyroScopeExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> GyroScopeExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                                  std::shared_ptr<Scope> &scope) {
     auto a = arguments[0]->interpret(scope);
     const auto toggle = dynamic_cast<BooleanExpression *>(std::move(a).get());

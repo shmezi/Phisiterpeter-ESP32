@@ -4,15 +4,15 @@
 
 #ifndef PHISITERPETER_ESP32_ITERATORTOEXPRESSION_H
 #define PHISITERPETER_ESP32_ITERATORTOEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class InExpression : Expression {
+class InExpression : BaseExpression {
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 };

@@ -4,19 +4,19 @@
 
 #ifndef PHISILANDINTERPRETER_GREATEREXPRESSION_H
 #define PHISILANDINTERPRETER_GREATEREXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class GreaterExpression : public Expression {
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+class GreaterExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> left;
+    std::unique_ptr<BaseExpression> right;
 
 public:
-  std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+  std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override { return "Greater"; };
 
-    GreaterExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    GreaterExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 
     ~GreaterExpression() override = default;
 

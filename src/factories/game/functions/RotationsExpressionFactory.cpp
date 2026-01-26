@@ -20,7 +20,7 @@ int RotationsExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> RotationsExpressionFactory::generate(std::deque<std::unique_ptr<Expression>> &arguments,
+std::unique_ptr<BaseExpression> RotationsExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression>> &arguments,
     std::shared_ptr<Scope> &scope) {
     return std::make_unique<RotationsExpression>(std::move(arguments[0]));
 }

@@ -17,7 +17,7 @@ std::string OnEventExpression::expressionName() {
     return "onEvent";
 }
 
-std::shared_ptr<Expression> OnEventExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> OnEventExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto evaluatedEventId = eventId->interpertAsString(scope);
 
 
@@ -37,6 +37,6 @@ std::string OnEventExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return interpret(scope)->interpertAsString(scope);
 }
 
-OnEventExpression::OnEventExpression(std::unique_ptr<Expression> eventId, std::unique_ptr<Expression> codeBlock)
+OnEventExpression::OnEventExpression(std::unique_ptr<BaseExpression> eventId, std::unique_ptr<BaseExpression> codeBlock)
     : eventId(std::shared_ptr(std::move(eventId))), codeBlock(std::shared_ptr(std::move(codeBlock))) {
 }

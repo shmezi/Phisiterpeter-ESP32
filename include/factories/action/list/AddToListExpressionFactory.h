@@ -4,7 +4,7 @@
 
 #ifndef PHISITERPETER_ESP32_ADDTOLISTEXPRESSIONFACTORY_H
 #define PHISITERPETER_ESP32_ADDTOLISTEXPRESSIONFACTORY_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 #include "factories/Factory.h"
 
 
@@ -16,7 +16,7 @@ public:
 
     int paramSize() override;
 
-    std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression>> &arguments,
+    std::unique_ptr<BaseExpression> generate(std::deque<std::unique_ptr<BaseExpression>> &arguments,
         std::shared_ptr<Scope> &scope) override;
 };
 

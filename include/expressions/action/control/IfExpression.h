@@ -4,20 +4,20 @@
 
 #ifndef PHISILANDINTERPRETER_IFEXPRESSION_H
 #define PHISILANDINTERPRETER_IFEXPRESSION_H
-#include "../../Expression.h"
+#include "../../BaseExpression.h"
 
 
-class IfExpression : public Expression {
-    std::unique_ptr<Expression> check;
-    std::unique_ptr<Expression> codeBlock;
+class IfExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> check;
+    std::unique_ptr<BaseExpression> codeBlock;
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    IfExpression(std::unique_ptr<Expression> check, std::unique_ptr<Expression> codeBlock);
+    IfExpression(std::unique_ptr<BaseExpression> check, std::unique_ptr<BaseExpression> codeBlock);
 };
 
 

@@ -10,7 +10,7 @@
 #include "expressions/action/bool/AndExpression.h"
 
 class Scope;
-class Expression;
+class BaseExpression;
 
 std::string AndExpressionFactory::startToken() {
     return "and";
@@ -24,7 +24,7 @@ int AndExpressionFactory::paramSize() {
     return 2;
 }
 
-std::unique_ptr<Expression> AndExpressionFactory::generate(std::deque<std::unique_ptr<Expression>> &arguments,
+std::unique_ptr<BaseExpression> AndExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression>> &arguments,
     std::shared_ptr<Scope> &scope) {
     return std::make_unique<AndExpression>(std::move(arguments[0]), std::move(arguments[1]));
 }

@@ -4,21 +4,21 @@
 
 #ifndef PHISILANDINTERPRETER_OREXPRESSION_H
 #define PHISILANDINTERPRETER_OREXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class OrExpression : public Expression {
-    std::unique_ptr<Expression> right;
-    std::unique_ptr<Expression> left;
+class OrExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> right;
+    std::unique_ptr<BaseExpression> left;
 
 public:
     std::string expressionName() override;
 
-     std::shared_ptr<Expression>interpret(std::shared_ptr<Scope> scope) override;
+     std::shared_ptr<BaseExpression>interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    OrExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    OrExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 };
 
 

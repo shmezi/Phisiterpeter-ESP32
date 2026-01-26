@@ -4,20 +4,20 @@
 
 #ifndef PHISITERPETER_ESP32_CLEARLISTEXPRESSION_H
 #define PHISITERPETER_ESP32_CLEARLISTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class ClearListExpression : public Expression {
-    std::unique_ptr<Expression> list;
+class ClearListExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> list;
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    explicit ClearListExpression(std::unique_ptr<Expression> list);
+    explicit ClearListExpression(std::unique_ptr<BaseExpression> list);
 };
 
 

@@ -4,19 +4,19 @@
 
 #ifndef PHISILANDINTERPRETER_UNEQUALEXPRESSION_H
 #define PHISILANDINTERPRETER_UNEQUALEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class UnEqualExpression : public Expression {
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+class UnEqualExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> left;
+    std::unique_ptr<BaseExpression> right;
 
 public:
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override { return "Greater"; };
 
-    UnEqualExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    UnEqualExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 
     ~UnEqualExpression() override = default;
 

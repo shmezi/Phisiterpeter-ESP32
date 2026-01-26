@@ -15,7 +15,7 @@ std::string DigitalReadExpression::expressionName() {
 }
 
 
-std::shared_ptr<Expression> DigitalReadExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> DigitalReadExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto interpretedPin = pin->interpret(scope);
     auto expression = dynamic_cast<NumberExpression *>(interpretedPin.get());
 

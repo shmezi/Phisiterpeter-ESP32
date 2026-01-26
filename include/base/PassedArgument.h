@@ -9,9 +9,9 @@
 
 class PassedArgument {
 public:
-    std::unique_ptr<Expression> argument;
+    std::unique_ptr<BaseExpression> argument;
     std::string name;
-    PassedArgument(std::unique_ptr<Expression> argument, std::string name) : argument(std::move(argument)), name(std::move(name)) {}
+    PassedArgument(std::unique_ptr<BaseExpression> argument, std::string name) : argument(std::move(argument)), name(std::move(name)) {}
 };
 
 

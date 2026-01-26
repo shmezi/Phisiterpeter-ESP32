@@ -6,7 +6,7 @@
 #define PHISILANDINTERPRETER_DummyExpression_H
 #include <string>
 
-#include "../Expression.h"
+#include "../BaseExpression.h"
 #include "Utils.h"
 
 /**
@@ -14,7 +14,7 @@
  * It serves as a temporary indicator for the interpreter to find the start of an expression for very specific types.
  */
 
-class DummyExpression : public Expression {
+class DummyExpression : public BaseExpression {
 
 public:
 
@@ -24,7 +24,7 @@ public:
         return "ide"; //Internal dummy expression
     }
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override {
         debug::error("An internal DummyExpression was interpreted even though it is for internal use only!");
         return nullptr;
     }

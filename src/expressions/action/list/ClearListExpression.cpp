@@ -12,7 +12,7 @@ std::string ClearListExpression::expressionName() {
     return "clearList";
 }
 
-std::shared_ptr<Expression> ClearListExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> ClearListExpression::interpret(std::shared_ptr<Scope> scope) {
     dynamic_cast<ListExpression *>(list->interpret(scope).get())->clear();
     return std::make_shared<VoidExpression>();
 }
@@ -21,5 +21,5 @@ std::string ClearListExpression::interpertAsString(std::shared_ptr<Scope> scope)
     return "clearing list";
 }
 
-ClearListExpression::ClearListExpression(std::unique_ptr<Expression> list) : list(std::move(list)) {
+ClearListExpression::ClearListExpression(std::unique_ptr<BaseExpression> list) : list(std::move(list)) {
 }

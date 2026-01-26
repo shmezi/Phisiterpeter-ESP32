@@ -11,7 +11,7 @@
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/NumberExpression.h"
 
-std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText))
     {
         for (unsigned char c : actualFloatyText) {

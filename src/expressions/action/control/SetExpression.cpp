@@ -11,7 +11,7 @@
 #include "../../../../include/base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
 
-std::shared_ptr<Expression> SetExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> SetExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto id = std::any_cast<std::string>(this->name->instanceId());
     auto value = this->content->interpret(scope);
     const auto nearScope = scope->getNearestScopeWithVariable(id);
@@ -25,7 +25,7 @@ std::shared_ptr<Expression> SetExpression::interpret(std::shared_ptr<Scope> scop
 }
 
 
-SetExpression::SetExpression(std::unique_ptr<Expression> name, std::unique_ptr<Expression> content) {
+SetExpression::SetExpression(std::unique_ptr<BaseExpression> name, std::unique_ptr<BaseExpression> content) {
     this->name = std::move(name);
     this->content = std::move(content);
 }

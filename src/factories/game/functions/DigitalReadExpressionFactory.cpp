@@ -18,7 +18,7 @@ int DigitalReadExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> DigitalReadExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> DigitalReadExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                                    std::shared_ptr<Scope> &scope) {
     return std::make_unique<DigitalReadExpression>(std::move(arguments[0]));
 }

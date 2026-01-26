@@ -4,23 +4,23 @@
 
 #ifndef PHISILANDINTERPRETER_RETURNEXPRESSION_H
 #define PHISILANDINTERPRETER_RETURNEXPRESSION_H
-#include "../../Expression.h"
+#include "../../BaseExpression.h"
 
 
-class ReturnExpression : public Expression {
+class ReturnExpression : public BaseExpression {
 public:
-    std::unique_ptr<Expression> expression;
+    std::unique_ptr<BaseExpression> expression;
 
     std::string expressionName() override;
 
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     std::string instanceId() override;
 
-    explicit ReturnExpression(std::unique_ptr<Expression> expression) {
+    explicit ReturnExpression(std::unique_ptr<BaseExpression> expression) {
         this->expression = std::move(expression);
     }
 };

@@ -15,7 +15,7 @@ std::string SetScreenExpression::expressionName() {
     return "screen";
 }
 
-std::shared_ptr<Expression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto screenName = screen->interpertAsString(scope);
     int value = 1;
     if (screenName == "swing" || screenName == "ferriswheel")
@@ -34,6 +34,6 @@ std::string SetScreenExpression::interpertAsString(std::shared_ptr<Scope> scope)
     return "Set screen!";
 }
 
-SetScreenExpression::SetScreenExpression(std::unique_ptr<Expression> screen) {
+SetScreenExpression::SetScreenExpression(std::unique_ptr<BaseExpression> screen) {
     this->screen = std::move(screen);
 }

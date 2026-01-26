@@ -4,21 +4,21 @@
 
 #ifndef PHISITERPETER_ESP32_ONRESULTEXPRESSION_H
 #define PHISITERPETER_ESP32_ONRESULTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class OnEventExpression : public Expression {
-    std::shared_ptr<Expression> eventId;
-    std::shared_ptr<Expression> codeBlock;
+class OnEventExpression : public BaseExpression {
+    std::shared_ptr<BaseExpression> eventId;
+    std::shared_ptr<BaseExpression> codeBlock;
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    OnEventExpression(std::unique_ptr<Expression> eventId, std::unique_ptr<Expression> codeBlock);
+    OnEventExpression(std::unique_ptr<BaseExpression> eventId, std::unique_ptr<BaseExpression> codeBlock);
 };
 
 

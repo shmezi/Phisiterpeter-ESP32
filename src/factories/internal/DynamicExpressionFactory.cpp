@@ -11,6 +11,7 @@ std::string DynamicExpressionFactory::startToken() {
     return this->internal_tokenIdentifier;
 }
 
+
 int DynamicExpressionFactory::indexStart() {
     return 0;
 }
@@ -19,9 +20,13 @@ int DynamicExpressionFactory::paramSize() {
     return static_cast<int>(this->internal_argument_names.size());
 }
 
+std::string DynamicExpressionFactory::endToken() {
+    return Factory::endToken();
+}
 
-std::unique_ptr<Expression> DynamicExpressionFactory::generate(
-    std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
+
+std::unique_ptr<BaseExpression> DynamicExpressionFactory::generate(
+    std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) {
     std::deque<PassedArgument> toBePassedArguments;
 
     for (int i = 0; i < arguments.size() ; ++i) {

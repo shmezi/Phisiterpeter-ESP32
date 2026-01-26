@@ -10,7 +10,7 @@
 
 #include "expressions/action/bool/NotExpression.h"
 
-class Expression;
+class BaseExpression;
 
 std::string NotExpressionFactory::startToken() {
     return "not";
@@ -25,7 +25,7 @@ int NotExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> NotExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> NotExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                            std::shared_ptr<Scope> &scope) {
     return std::make_unique<NotExpression>(std::move(arguments[0]));
 }

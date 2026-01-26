@@ -24,7 +24,7 @@ int CodeblockExpressionFactory::paramSize() {
 
 
 
-std::unique_ptr<Expression> CodeblockExpressionFactory::generate(
-    std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
+std::unique_ptr<BaseExpression> CodeblockExpressionFactory::generate(
+    std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) {
     return std::make_unique<CodeblockExpression>(std::move(arguments));
 }

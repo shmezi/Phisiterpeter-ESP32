@@ -8,7 +8,7 @@
 
 #include "mpu6050.h"
 #include "Utils.h"
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 #include "freertos/FreeRTOS.h"
 
 #define TSK_MINIMAL_STACK_SIZE         (1024)
@@ -18,7 +18,7 @@
 #define I2C0_MASTER_SCL_IO             GPIO_NUM_9 // yellow
 
 
-class GyroScopeSensorExpression : public Expression, public std::enable_shared_from_this<GyroScopeSensorExpression> {
+class GyroScopeSensorExpression : public BaseExpression, public std::enable_shared_from_this<GyroScopeSensorExpression> {
     mpu6050_config_t dev_cfg;
 
     mpu6050_handle_t dev_hdl;
@@ -33,7 +33,7 @@ public:
 
     float pushResult(float newResult);
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     float pitch() const;
 

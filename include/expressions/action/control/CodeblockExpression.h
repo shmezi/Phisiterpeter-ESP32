@@ -7,22 +7,22 @@
 #include <deque>
 #include <string>
 
-#include "../../Expression.h"
+#include "../../BaseExpression.h"
 
 
-class CodeblockExpression : public Expression {
+class CodeblockExpression : public BaseExpression {
 public:
-    std::deque<std::unique_ptr<Expression> > expressions;
+    std::deque<std::unique_ptr<BaseExpression> > expressions;
 
     ~CodeblockExpression() override = default;
 
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    explicit CodeblockExpression(std::deque<std::unique_ptr<Expression> > expressions) {
+    explicit CodeblockExpression(std::deque<std::unique_ptr<BaseExpression> > expressions) {
         this->expressions = std::move(expressions);
     }
 };

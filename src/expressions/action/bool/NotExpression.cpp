@@ -13,7 +13,7 @@ std::string NotExpression::expressionName() {
     return "notExpression";
 }
 
-std::shared_ptr<Expression> NotExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> NotExpression::interpret(std::shared_ptr<Scope> scope) {
     return (contents->interpret(scope)->notOperator(scope));
 }
 

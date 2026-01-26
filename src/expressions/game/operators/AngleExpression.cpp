@@ -14,7 +14,7 @@ std::string AngleExpression::expressionName() {
     return "angle";
 }
 
-std::shared_ptr<Expression> AngleExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> AngleExpression::interpret(std::shared_ptr<Scope> scope) {
     auto sensor = dynamic_cast<GyroScopeSensorExpression *>(encoder->interpret(scope).get());
     return std::make_shared<NumberExpression>(sensor->pitch());
 }
@@ -23,5 +23,5 @@ std::string AngleExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return interpret(scope)->interpertAsString(scope);
 }
 
-AngleExpression::AngleExpression(std::unique_ptr<Expression> encoder) : encoder(std::move(encoder)) {
+AngleExpression::AngleExpression(std::unique_ptr<BaseExpression> encoder) : encoder(std::move(encoder)) {
 }

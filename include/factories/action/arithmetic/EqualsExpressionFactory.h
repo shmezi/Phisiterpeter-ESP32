@@ -19,7 +19,7 @@ public:
 
     EqualsExpressionFactory() = default;
 
-    std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) override;
+    std::unique_ptr<BaseExpression> generate(std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) override;
 
     int indexStart() override;
 

@@ -20,7 +20,7 @@ int SendResultExpressionFactory::paramSize() {
     return 2;
 }
 
-std::unique_ptr<Expression> SendResultExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> SendResultExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                                   std::shared_ptr<Scope> &scope) {
     return std::make_unique<SendResultExpression>(std::move(arguments[0]), std::move(arguments[1]));
 }

@@ -10,7 +10,7 @@ std::string ReturnValue::expressionName() {
     return "returnValue";
 }
 
-std::shared_ptr<Expression> ReturnValue::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> ReturnValue::interpret(std::shared_ptr<Scope> scope) {
     return std::make_shared<ReturnValue>(std::move(contents));
 }
 

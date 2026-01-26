@@ -4,16 +4,16 @@
 
 #ifndef PHISILANDINTERPRETER_VOIDEXPRESSION_H
 #define PHISILANDINTERPRETER_VOIDEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class VoidExpression : public Expression {
+class VoidExpression : public BaseExpression {
 public:
     std::string expressionName() override {
         return "void";
     }
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override {
         return std::make_unique<VoidExpression>(*this);
     }
 

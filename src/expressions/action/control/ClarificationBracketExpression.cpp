@@ -5,7 +5,7 @@
 
 #include "Utils.h"
 
-std::shared_ptr<Expression> ClarificationBracketExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> ClarificationBracketExpression::interpret(std::shared_ptr<Scope> scope) {
     bool first = true;
     for (auto &expression: this->expressions) {
         if (first) {

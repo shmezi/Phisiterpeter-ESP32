@@ -4,10 +4,10 @@
 
 #ifndef PHISITERPETER_ESP32_ENCODERSENSOREXPRESSION_H
 #define PHISITERPETER_ESP32_ENCODERSENSOREXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class EncoderSensorExpression : Expression {
+class EncoderSensorExpression : BaseExpression {
 };
 
 

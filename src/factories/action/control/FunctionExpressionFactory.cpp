@@ -21,8 +21,8 @@ int FunctionExpressionFactory::paramSize() {
     return 3;
 }
 
-std::unique_ptr<Expression> FunctionExpressionFactory::generate(
-    std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) {
+std::unique_ptr<BaseExpression> FunctionExpressionFactory::generate(
+    std::deque<std::unique_ptr<BaseExpression> > &arguments, std::shared_ptr<Scope> &scope) {
     const auto id = std::any_cast<std::string>(arguments[0]->instanceId());
     auto params = dynamic_cast<ClarificationBracketExpression *>(arguments[1].get());
     auto codeBlock = dynamic_cast<CodeblockExpression *>(arguments[2].release());

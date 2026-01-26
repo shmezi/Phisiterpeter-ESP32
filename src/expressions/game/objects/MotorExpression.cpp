@@ -67,7 +67,7 @@ std::string MotorExpression::expressionName() {
 }
 
 
-std::shared_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> MotorExpression::interpret(std::shared_ptr<Scope> scope) {
     return shared_from_this();
 }
 
@@ -111,9 +111,9 @@ void MotorExpression::initEncoder()  {
 }
 
 
-MotorExpression::MotorExpression(std::unique_ptr<Expression> a, std::unique_ptr<Expression> b,
-                                 std::unique_ptr<Expression> speed, std::unique_ptr<Expression> encoderA,
-                                 std::unique_ptr<Expression> encoderB)
+MotorExpression::MotorExpression(std::unique_ptr<BaseExpression> a, std::unique_ptr<BaseExpression> b,
+                                 std::unique_ptr<BaseExpression> speed, std::unique_ptr<BaseExpression> encoderA,
+                                 std::unique_ptr<BaseExpression> encoderB)
     : a(std::move(a)), b(std::move(b)), speed(std::move(speed)), encoderA(std::move(encoderA)),
       encoderB(std::move(encoderB)) {
     rotations = 0;

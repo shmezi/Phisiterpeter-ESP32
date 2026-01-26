@@ -6,11 +6,11 @@
 
 #include <expressions/action/arithmetic/AdditionExpression.h>
 
-std::shared_ptr<Expression> GreaterExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> GreaterExpression::interpret(std::shared_ptr<Scope> scope) {
     return (right->interpret(scope)->greater(left->interpret(scope),scope));
 }
 
-GreaterExpression::GreaterExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {
+GreaterExpression::GreaterExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left) {
     this->left = std::move(left);
     this->right = std::move(right);
     //Most likely need to shift to something that allows for the pointers stay.. given that it could be a reference to a variable.

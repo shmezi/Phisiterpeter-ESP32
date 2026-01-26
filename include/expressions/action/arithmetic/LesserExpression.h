@@ -4,19 +4,19 @@
 
 #ifndef PHISILANDINTERPRETER_LESSEREXPRESSION_H
 #define PHISILANDINTERPRETER_LESSEREXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class LesserExpression : public Expression {
-    std::unique_ptr<Expression> left;
-    std::unique_ptr<Expression> right;
+class LesserExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> left;
+    std::unique_ptr<BaseExpression> right;
 
 public:
-     std::shared_ptr<Expression>interpret(std::shared_ptr<Scope> scope) override;
+     std::shared_ptr<BaseExpression>interpret(std::shared_ptr<Scope> scope) override;
 
     std::string expressionName() override { return "Greater"; };
 
-    LesserExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left);
+    LesserExpression(std::unique_ptr<BaseExpression> right, std::unique_ptr<BaseExpression> left);
 
     ~LesserExpression() override = default;
 

@@ -4,23 +4,23 @@
 
 #ifndef PHISITERPETER_ESP32_ADDTOLISTEXPRESSION_H
 #define PHISITERPETER_ESP32_ADDTOLISTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class AddToListExpression : public Expression {
-    std::unique_ptr<Expression> list;
-    std::unique_ptr<Expression> newItem;
+class AddToListExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> list;
+    std::unique_ptr<BaseExpression> newItem;
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     AddToListExpression(
-        std::unique_ptr<Expression> list,
-        std::unique_ptr<Expression> newItem);
+        std::unique_ptr<BaseExpression> list,
+        std::unique_ptr<BaseExpression> newItem);
 };
 
 

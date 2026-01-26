@@ -6,7 +6,7 @@
 #define PHISILANDINTERPRETER_DYNAMICEXPRESSION_H
 #include <iostream>
 
-#include "../Expression.h"
+#include "../BaseExpression.h"
 
 #include <utility>
 
@@ -14,14 +14,14 @@
 #include "../action/control/CodeblockExpression.h"
 
 
-class DynamicExpression : public Expression {
+class DynamicExpression : public BaseExpression {
     std::deque<PassedArgument> arguments;
     std::unique_ptr<CodeblockExpression>& codeblock; //Passed a reference from the factory.
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 

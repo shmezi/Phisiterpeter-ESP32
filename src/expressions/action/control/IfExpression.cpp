@@ -15,7 +15,7 @@ std::string IfExpression::expressionName() {
     return "if";
 }
 
-std::shared_ptr<Expression> IfExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> IfExpression::interpret(std::shared_ptr<Scope> scope) {
     if (this->check->interpret(scope)->expressionName() != "booleanExpression") {
         debug::error("If expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() + "! on line: " + std::to_string(this->lineNumber));
         return std::make_unique<VoidExpression>();
@@ -32,7 +32,7 @@ std::string IfExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return "For some reason we are printing an If stat?!";
 }
 
-IfExpression::IfExpression(std::unique_ptr<Expression> check, std::unique_ptr<Expression> codeBlock) {
+IfExpression::IfExpression(std::unique_ptr<BaseExpression> check, std::unique_ptr<BaseExpression> codeBlock) {
     this->check = std::move(check);
     this->codeBlock = std::move(codeBlock);
 }

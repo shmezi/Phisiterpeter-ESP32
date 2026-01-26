@@ -5,12 +5,17 @@
 #ifndef PHISILANDINTERPRETER_UTILS_H
 // debug_print.hpp
 #pragma once
+#include <functional>
 #include <iostream>
 #include <string>
 #include <random>
-
-#include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/chrono"
+#include <deque>
+#include <chrono>
 #include "expressions/game/functions/StatusLEDExpression.h"
+
+typedef std::function<std::unique_ptr<BaseExpression>(
+    std::deque<std::unique_ptr<BaseExpression> >,
+    std::shared_ptr<Scope>)> ExpressionGenFunc;
 
 namespace debug {
     enum class Color {
@@ -21,6 +26,7 @@ namespace debug {
         CYAN = 36,
         YELLOW = 33,
     };
+
 
 
     /*

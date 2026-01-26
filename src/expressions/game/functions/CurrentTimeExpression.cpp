@@ -12,7 +12,7 @@ std::string CurrentTimeExpression::expressionName() {
     return "now";
 }
 
-std::shared_ptr<Expression> CurrentTimeExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> CurrentTimeExpression::interpret(std::shared_ptr<Scope> scope) {
     timeval tv_now;
     gettimeofday(&tv_now, nullptr);
 

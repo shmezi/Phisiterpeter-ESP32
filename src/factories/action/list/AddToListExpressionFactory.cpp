@@ -18,7 +18,7 @@ int AddToListExpressionFactory::paramSize() {
     return 2;
 }
 
-std::unique_ptr<Expression> AddToListExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> AddToListExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                                  std::shared_ptr<Scope> &scope) {
     return std::make_unique<AddToListExpression>(std::move(arguments[0]),std::move(arguments[1]));
 }

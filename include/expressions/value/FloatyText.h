@@ -7,11 +7,11 @@
 #include <string>
 #include <utility>
 
-#include "../Expression.h"
+#include "../BaseExpression.h"
 #include "base/Scope.h"
 
 
-class FloatyText : public Expression {
+class FloatyText : public BaseExpression {
 public:
     std::string actualFloatyText;
     std::string expressionName() override { return "variable"; };
@@ -21,7 +21,7 @@ public:
     explicit FloatyText(std::string contents) : actualFloatyText(std::move(contents)){
     };
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 

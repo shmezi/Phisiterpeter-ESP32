@@ -83,7 +83,7 @@ float GyroScopeSensorExpression::pushResult(float newResult) {
     return total / static_cast<float>(results.size());
 }
 
-std::shared_ptr<Expression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> GyroScopeSensorExpression::interpret(std::shared_ptr<Scope> scope) {
     return shared_from_this();
 }
 

@@ -18,7 +18,7 @@ std::string WhileExpressionFactory::startToken() {
     return "while";
 }
 
-std::unique_ptr<Expression> WhileExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> WhileExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                           std::shared_ptr<Scope> &scope) {
     return std::make_unique<WhileExpression>(std::move(arguments[0]), std::move(arguments[1]));
 }

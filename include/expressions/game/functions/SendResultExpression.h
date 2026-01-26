@@ -4,20 +4,20 @@
 
 #ifndef PHISITERPETER_ESP32_SENDRESULTEXPRESSION_H
 #define PHISITERPETER_ESP32_SENDRESULTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class SendResultExpression : public Expression {
-    std::unique_ptr<Expression> name;
-    std::unique_ptr<Expression> value;
+class SendResultExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> name;
+    std::unique_ptr<BaseExpression> value;
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
-    SendResultExpression(std::unique_ptr<Expression> name,
-    std::unique_ptr<Expression> value);
+    SendResultExpression(std::unique_ptr<BaseExpression> name,
+    std::unique_ptr<BaseExpression> value);
 };
 
 

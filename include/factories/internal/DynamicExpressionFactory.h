@@ -28,9 +28,9 @@ public:
 
     int paramSize() override;
 
+    std::string endToken() override;
 
-
-    std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression> > &arguments,
+    std::unique_ptr<BaseExpression> generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                          std::shared_ptr<Scope> &scope) override;
 
     DynamicExpressionFactory(

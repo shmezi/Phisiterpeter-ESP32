@@ -77,7 +77,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<FunctionExpressionFactory>());
 
     //EARLY ALPHA TESTING OF NEW SYSTEM
-    headScope->registerKeyWord<PrintExpression,PrintExpression>();
+    headScope->registerKeyWord<PrintExpression>();
     //Control statement factories
     headScope->registerKeyWord(make_unique<IfExpressionFactory>());
     headScope->registerKeyWord(make_unique<AndExpressionFactory>());
@@ -152,7 +152,7 @@ void Interpreter::interpretKeyWordExpression(const Token &token) {
     const auto originalExpressionCount = abstractSyntaxTree.size();
     const auto tokenFactory = headScope->getFactoryById(token.tokenId).get();
     const bool doesLookAhead = abs(tokenFactory->indexStart()) < tokenFactory->paramSize();
-    auto expressionsForFactory = vector<unique_ptr<Expression> >();
+    auto expressionsForFactory = vector<unique_ptr<BaseExpression> >();
 
 
     if (doesLookAhead || tokenFactory->endToken() != " ") {
@@ -178,7 +178,7 @@ void Interpreter::interpretKeyWordExpression(const Token &token) {
         return;
     }
 
-    auto factoryExpressions = deque<unique_ptr<Expression> >();
+    auto factoryExpressions = deque<unique_ptr<BaseExpression> >();
 
 
     for (int i = 0; i < tokenFactory->paramSize(); ++i) {

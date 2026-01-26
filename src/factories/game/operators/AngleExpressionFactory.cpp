@@ -20,7 +20,7 @@ int AngleExpressionFactory::paramSize() {
     return 1;
 }
 
-std::unique_ptr<Expression> AngleExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,
+std::unique_ptr<BaseExpression> AngleExpressionFactory::generate(std::deque<std::unique_ptr<BaseExpression> > &arguments,
                                                              std::shared_ptr<Scope> &scope) {
     return std::make_unique<AngleExpression>(std::move(arguments[0]));
 }

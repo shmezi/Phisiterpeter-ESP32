@@ -11,15 +11,15 @@
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/NumberExpression.h"
 
-WriteExpression::WriteExpression(std::unique_ptr<Expression> pin,
-                                 std::unique_ptr<Expression> value) : pin(std::move(pin)), value(std::move(value)) {
+WriteExpression::WriteExpression(std::unique_ptr<BaseExpression> pin,
+                                 std::unique_ptr<BaseExpression> value) : pin(std::move(pin)), value(std::move(value)) {
 }
 
 std::string WriteExpression::expressionName() {
     return "write";
 }
 
-std::shared_ptr<Expression> WriteExpression::interpret(std::shared_ptr<Scope> scope) {
+std::shared_ptr<BaseExpression> WriteExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto pinNumber = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->
         contents);
     const auto writeableValue = dynamic_cast<BooleanExpression *>(pin->interpret(scope).get())->contents;

@@ -4,18 +4,18 @@
 
 #ifndef PHISITERPETER_ESP32_CLEARCOUNTEXPRESSION_H
 #define PHISITERPETER_ESP32_CLEARCOUNTEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class ClearCountExpression : public Expression{
-    std::unique_ptr<Expression> motor;
+class ClearCountExpression : public BaseExpression{
+    std::unique_ptr<BaseExpression> motor;
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
-    explicit ClearCountExpression (std::unique_ptr<Expression> motor);
+    explicit ClearCountExpression (std::unique_ptr<BaseExpression> motor);
 };
 
 

@@ -4,21 +4,21 @@
 
 #ifndef PHISITERPETER_ESP32_RANGEEXPRESSION_H
 #define PHISITERPETER_ESP32_RANGEEXPRESSION_H
-#include "expressions/Expression.h"
+#include "expressions/BaseExpression.h"
 
 
-class RangeOperatorExpression : public Expression {
-    std::unique_ptr<Expression> first;
-    std::unique_ptr<Expression> second;
+class RangeOperatorExpression : public BaseExpression {
+    std::unique_ptr<BaseExpression> first;
+    std::unique_ptr<BaseExpression> second;
 
 public:
     std::string expressionName() override;
 
-    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+    std::shared_ptr<BaseExpression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
-    RangeOperatorExpression(std::unique_ptr<Expression> first, std::unique_ptr<Expression> second);
+    RangeOperatorExpression(std::unique_ptr<BaseExpression> first, std::unique_ptr<BaseExpression> second);
 
 };
 
