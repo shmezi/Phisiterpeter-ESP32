@@ -1,0 +1,5 @@
+count = 0
+
+when (((analog 18) > 2000) or (analog 18) < 1900) {
+    print "test"
+}

@@ -3,8 +3,9 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/LesserExpression.h"
-std::shared_ptr<Expression>LesserExpression::interpret(std::shared_ptr<Scope> scope) {
-    return (right->interpret(scope)->lesser(left->interpret(scope),scope));
+
+std::shared_ptr<Expression> LesserExpression::interpret(std::shared_ptr<Scope> scope) {
+    return (right->interpret(scope)->lesser(left->interpret(scope), scope));
 }
 
 LesserExpression::LesserExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {

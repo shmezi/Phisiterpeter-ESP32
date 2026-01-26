@@ -10,6 +10,7 @@
 #include <freertos/task.h>
 #include <esp_adc/adc_oneshot.h>
 
+#include "Utils.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/NumberExpression.h"
@@ -24,9 +25,8 @@ std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scop
     int adc_value;
     adc_unit_t unit = ADC_UNIT_1;
     auto pinValue = dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->contents;
-
     if (pinValue >= 10) {
-        pinValue -= 10;
+        pinValue -= 11;
         unit = ADC_UNIT_2;
     }
 
@@ -52,6 +52,7 @@ std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scop
 
 
     ESP_ERROR_CHECK(adc_oneshot_read(adc_handle, actualPinNumber, &adc_value));
+
     return std::make_shared<NumberExpression>(adc_value);
 }
 
