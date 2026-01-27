@@ -60,6 +60,7 @@
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
+#include "factories/game/functions/EncoderSensorExpressionFactory.h"
 #include "factories/value/ListExpressionFactory.h"
 
 using namespace std;
@@ -113,6 +114,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<OnEventExpressionFactory>());
     headScope->registerKeyWord(make_unique<SetScreenExpressionFactory>());
     headScope->registerKeyWord(make_unique<AnalogReadExpressionFactory>());
+    headScope->registerKeyWord(make_unique<EncoderSensorExpressionFactory>());
 
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
