@@ -163,7 +163,7 @@ extern "C" void app_main(void) {
     debug::log("SD card mounted successfully!");
 
 
-    const char *file_path = "/sdcard/code.txt";
+    const char *file_path = "/sdcard/code.ezra";
 
 
     FILE *f = fopen(file_path, "r");

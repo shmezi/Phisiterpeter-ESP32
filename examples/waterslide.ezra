@@ -1,0 +1,39 @@
+count = 0
+
+
+fn hasPassed (number){
+    sendResult "a" number
+if number > 2000{
+    return true
+}
+if 1900 > number{
+    return true
+}
+
+return false
+}
+
+
+startTime = 0
+fn reset () {
+startTime = now
+sendResult "a" 0
+sendResult "b" 0
+sendResult "c" 0
+}
+
+when hasPassed(analog 13) {
+    reset
+}
+
+when hasPassed(analog 14) {
+    sendResult "a" (now - startTime )
+}
+
+when hasPassed(analog 17) {
+    sendResult "b" (now - startTime )
+}
+when hasPassed(analog 18) {
+    sendResult "c" (now - startTime )
+    endActivity
+}

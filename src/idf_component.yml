@@ -1,3 +1,5 @@
 dependencies:
   espressif/bdc_motor: ">=0.2.1"
-  espp/as5600: "1.0.3"
+  espp/i2c: "1.0.33"
+  espp/timer: "1.0.33"
+  espp/as5600: "1.0.33"

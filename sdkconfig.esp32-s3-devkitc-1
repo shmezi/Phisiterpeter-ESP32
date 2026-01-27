@@ -2222,6 +2222,21 @@ CONFIG_WIFI_PROV_STA_ALL_CHANNEL_SCAN=y
 # end of Wi-Fi Provisioning Manager
 
 #
+# AS5600 Configuration
+#
+CONFIG_AS5600_MIN_DIFF=2
+CONFIG_AS5600_USE_TIMER=y
+# end of AS5600 Configuration
+
+#
+# ESPP I2C Component Configuration
+#
+CONFIG_ESPP_I2C_USE_LEGACY_API=y
+# CONFIG_ESPP_I2C_USE_NEW_API is not set
+# CONFIG_ESPP_I2C_LEGACY_API_DISABLE_DEPRECATION_WARNINGS is not set
+# end of ESPP I2C Component Configuration
+
+#
 # ESPP Logger
 #
 CONFIG_ESPP_LOGGER_LOG_LEVEL=4
