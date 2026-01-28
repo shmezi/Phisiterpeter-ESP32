@@ -7,6 +7,7 @@
 #include <deque>
 #include <string>
 
+#include "Utils.h"
 #include "../../Expression.h"
 
 
@@ -23,6 +24,8 @@ public:
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     explicit CodeblockExpression(std::deque<std::unique_ptr<Expression> > expressions) {
+        debug::print("Codeblock built with " + std::to_string(expressions.size()));
+
         this->expressions = std::move(expressions);
     }
 };

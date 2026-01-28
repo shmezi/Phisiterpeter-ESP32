@@ -61,6 +61,11 @@ std::shared_ptr<Expression> NumberExpression::lesser(std::shared_ptr<Expression>
 std::shared_ptr<Expression> NumberExpression::division(std::shared_ptr<Expression> &&expression,
                                                        std::shared_ptr<Scope> &parentScope) {
     auto number = dynamic_cast<NumberExpression *>(expression.get());
+    if (contents == 0) {
+        debug::error("Cannot divide by zero!");
+        return std::make_unique<NumberExpression>(0);
+    }
+
     return std::make_unique<NumberExpression>(contents / number->contents);
 }
 

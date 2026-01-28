@@ -13,6 +13,7 @@
 #include "expressions/internal/DummyExpression.h"
 #include "expressions/internal/ReturnValue.h"
 #include "expressions/internal/VoidExpression.h"
+#include "expressions/value/NumberExpression.h"
 #include "expressions/value/TextExpression.h"
 
 std::string CodeblockExpression::expressionName() {
@@ -24,8 +25,8 @@ std::string CodeblockExpression::interpertAsString(std::shared_ptr<Scope> scope)
 }
 
 
-
 std::shared_ptr<Expression> CodeblockExpression::interpret(std::shared_ptr<Scope> scope) {
+
     const auto funcScope = scope->scopeId == "headScope" ? std::make_shared<Scope>("generic", scope) : scope;
 
     for (const auto &expression: this->expressions) {
@@ -35,7 +36,6 @@ std::shared_ptr<Expression> CodeblockExpression::interpret(std::shared_ptr<Scope
             continue;
         }
         if (scope->scopeId == "headScope") {
-
             const auto returnedValue = dynamic_cast<ReturnValue *>(evaluatedResult.get());
             if (!returnedValue) {
                 debug::error("Expected ReturnValue but got something else!");

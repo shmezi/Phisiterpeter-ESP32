@@ -4,12 +4,12 @@
 
 #ifndef PHISITERPETER_ESP32_ENCODERSENSOREXPRESSION_H
 #define PHISITERPETER_ESP32_ENCODERSENSOREXPRESSION_H
-#include "as5600.hpp"
+
 #include "expressions/Expression.h"
 
 
 class EncoderSensorExpression : public Expression {
-
+    bool first = true;
 public:
     std::string expressionName() override;
 

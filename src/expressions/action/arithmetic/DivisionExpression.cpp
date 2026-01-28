@@ -3,8 +3,12 @@
 //
 
 #include "../../../../include/expressions/action/arithmetic/DivisionExpression.h"
+
+#include "Utils.h"
+#include "base/Scope.h"
+#include "expressions/value/NumberExpression.h"
 std::shared_ptr<Expression> DivisionExpression::interpret(std::shared_ptr<Scope> scope) {
-    return (right->interpret(scope)->division(left->interpret(scope),scope));
+    return (std::move(right->interpret(scope))->division(left->interpret(scope), scope));
 }
 
 DivisionExpression::DivisionExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {

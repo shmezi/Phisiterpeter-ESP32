@@ -34,5 +34,5 @@ std::shared_ptr<Expression> WhenExpression::interpret(std::shared_ptr<Scope> sco
 }
 
 std::string WhenExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return "";
+    return "when expression was printed ?";
 }

@@ -33,6 +33,7 @@
 #define UART_PORT_NUM UART_NUM_2 // Using UART2
 #define RX_PIN 17 // Example pin, connect to the other device's TX
 #define TX_PIN 18 // Example pin, connect to the other device's RX
+#include <dirent.h> // Required for directory operations
 
 
 uint8_t data_buffer[128]; // Buffer to store received data
@@ -86,6 +87,28 @@ void runClock(void *pvParameters) {
         // debug::print("loop test");
     }
 }
+
+void list_files(const char *dirpath) {
+    DIR *dir = opendir(dirpath);
+    if (!dir) {
+        ESP_LOGE("SD_CARD", "Failed to open directory %s", dirpath);
+        return;
+    }
+
+    struct dirent *entry;
+    ESP_LOGI("SD_CARD", "--- Reading directory %s ---", dirpath);
+
+    while ((entry = readdir(dir)) != NULL) {
+        // You can check entry->d_type if you need to differentiate files from subdirectories
+        ESP_LOGI("SD_CARD", "Found file/directory: %s", entry->d_name);
+    }
+
+    closedir(dir);
+    ESP_LOGI("SD_CARD", "--- Done reading directory %s ---", dirpath);
+}
+
+// Call this function in your app_main after mounting:
+// list_files(MOUNT_POINT);
 
 void printStartupMessage() {
     const auto c = R"(  _   _               _                  _____  _                                             _
@@ -141,8 +164,6 @@ extern "C" void app_main(void) {
     slot_config.host_id = SPI2_HOST;
 
 
-
-
     // --- FATFS mount configuration ---
     esp_vfs_fat_mount_config_t mount_config = {
         .format_if_mount_failed = true,
@@ -162,7 +183,7 @@ extern "C" void app_main(void) {
 
     debug::log("SD card mounted successfully!");
 
-
+    list_files("/sdcard");
     const char *file_path = "/sdcard/code.ezra";
 
 
@@ -180,7 +201,7 @@ extern "C" void app_main(void) {
         // debug::showColor(debug::INTERPRETATION);
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
-        // debug::showColor(debug::RUNNING);
+        debug::showColor(debug::RUNNING);
         interpreter.run();
         fclose(f);
         xTaskCreate(

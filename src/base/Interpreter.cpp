@@ -127,7 +127,6 @@ Interpreter::Interpreter(const shared_ptr<Scope> &headScope, const vector<Token>
     tokens(tokens) {
     registerFactories();
 
-
     interpret(-1);
 }
 
