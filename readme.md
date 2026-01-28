@@ -17,10 +17,10 @@ Copy - Used for basic data types like integers where we just copy the object.
 > AST and variables:
 > The abstract syntax tree is built up of raw "expressions", meaning nothing is interpreted until it's interpreted.
 
-![img.png](img.png)
+![img.png](docs/img.png)
 
-![img_1.png](img_1.png)
+![img_1.png](docs/img_1.png)
 
-![img_2.png](img_2.png)
+![img_2.png](docs/img_2.png)
 
-![img_3.png](img_3.png)
+![img_3.png](docs/img_3.png)
