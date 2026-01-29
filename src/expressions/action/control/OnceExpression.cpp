@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "Utils.h"
 #include "base/ScheduleLoop.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/BooleanExpression.h"
@@ -16,15 +17,15 @@ std::shared_ptr<Expression> OnceExpression::interpret(std::shared_ptr<Scope> sco
     if (hasBeenInterpreted) return std::make_shared<VoidExpression>();
     hasBeenInterpreted = true;
     ScheduleLoop::getInstance()->addTask(
-        [condition_sp = condition,hasRun_sp = &hasRun, scope, cb = codeblock] {
+        [condition_sp = condition,hasRun_sp = hasRun, scope, cb = codeblock] {
             const auto condition = dynamic_cast<BooleanExpression *>(condition_sp->interpret(scope).get())->contents;
-            if (!condition && hasRun_sp) {
-                *hasRun_sp = false;
+            if (!condition) {
+                hasRun_sp->hasRun = false;
                 return;
             }
-            if (hasRun_sp) return;
+            if (hasRun_sp->hasRun) return;
             cb->interpret(scope);
-            *hasRun_sp = true;
+            hasRun_sp->hasRun = true;
         }
 
     );

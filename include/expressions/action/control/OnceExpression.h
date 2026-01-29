@@ -6,12 +6,15 @@
 #define PHISITERPETER_ESP32_ONCEEXPRESSION_H
 #include "expressions/Expression.h"
 
+struct SharedBool {
+    bool hasRun;
+};
 
 class OnceExpression : public Expression {
     std::shared_ptr<Expression> condition;
     std::shared_ptr<Expression> codeblock;
     bool hasBeenInterpreted = false;
-    bool hasRun = false;
+    std::shared_ptr<SharedBool> hasRun = std::make_shared<SharedBool>(false);
 
 public:
     std::string expressionName() override;
@@ -22,7 +25,8 @@ public:
 
     OnceExpression(std::unique_ptr<Expression> condition,
                    std::unique_ptr<Expression> codeblock) : condition(std::shared_ptr(std::move(condition))),
-                                                            codeblock(std::shared_ptr(std::move(codeblock)));
+                                                            codeblock(std::shared_ptr(std::move(codeblock))) {
+    };
 };
 
 
