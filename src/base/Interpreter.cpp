@@ -59,6 +59,7 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
+#include "factories/action/control/OnceExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
 #include "factories/game/functions/EncoderSensorExpressionFactory.h"
 #include "factories/game/functions/EndActivityExpressionFactory.h"
@@ -86,7 +87,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<WhileExpressionFactory>());
     headScope->registerKeyWord(make_unique<WhenExpressionFactory>());
     headScope->registerKeyWord(make_unique<RangeOperatorExpressionFactory>());
-
+    headScope->registerKeyWord(make_unique<OnceExpressionFactory>());
 
     //Math factories
     headScope->registerKeyWord(make_shared<AdditionExpressionFactory>());
@@ -117,6 +118,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<AnalogReadExpressionFactory>());
     headScope->registerKeyWord(make_unique<EncoderSensorExpressionFactory>());
     headScope->registerKeyWord(make_unique<EndActivityExpressionFactory>());
+
+
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
     headScope->registerKeyWord(make_unique<ClearListExpressionFactory>());
