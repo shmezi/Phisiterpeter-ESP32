@@ -6,8 +6,11 @@
 
 #include <algorithm>
 #include <thread>
+#include <driver/uart.h>
+#include <hal/uart_types.h>
 
 #include "Utils.h"
+#include "expressions/game/functions/SendResultExpression.h"
 
 
 void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun) {
@@ -21,6 +24,17 @@ void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::mill
     }
 }
 
+static constexpr auto messageLimit = 300;
+
+void messageLoop() {
+    static auto lastRun = debug::getCurrentMs();
+    if (SendResultExpression::nextMessage == SendResultExpression::prevMessage) return;
+    if (debug::getCurrentMs().count() - lastRun.count() < messageLimit) return;
+
+    const auto cMessage = SendResultExpression::nextMessage.c_str();
+
+    uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
+}
 
 void ScheduleLoop::loop() {
     for (const auto &[condition, task]: conditionalTasks) {
@@ -34,12 +48,14 @@ void ScheduleLoop::loop() {
     for (auto &[cooldown, lastRun]: lastScheduleRun) {
         evaluateAndRunCooldown(cooldown, lastRun);
     }
+
+    messageLoop();
     // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 void ScheduleLoop::startEvent(int param) {
     std::string event = "start";
-   if (param == -1)
+    if (param == -1)
         event = "stop";
     if (!startFunc.contains(event)) {
         debug::error("No event of id '" + event + "' found!");

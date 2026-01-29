@@ -15,13 +15,11 @@ std::string SendResultExpression::expressionName() {
     return "sendResult";
 }
 
-static auto messageQueue = std::queue<std::string>();
+
 
 std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scope> scope) {
-
     const std::string message = name->interpertAsString(scope) + " " + value->interpertAsString(scope) + "\n";
-    const char *cMessage = message.c_str();
-    uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
+    nextMessage = message;
     return std::make_shared<VoidExpression>();
 }
 
