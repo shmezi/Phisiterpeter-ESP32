@@ -16,9 +16,10 @@ move m ( 0 - value )
 
 fn end () {
 
-    print ("Sopping attraction!")
+    print "Sopping attraction!"
     sendResult "a" (now - startTime)
     move m 100
+    endActivity
 
 }
 
@@ -28,14 +29,14 @@ on "stop" {
 }
 
 
-when read 39 {
+when analog 39 {
     print "reached top"
     move m 0
 
 }
 
 
-when read 40 {
+when analog 40 {
     print "reached bottom"
     move m 0
 }

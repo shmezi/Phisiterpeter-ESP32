@@ -1,7 +1,7 @@
 count = 0
 
 
-fn hasPassed (number){
+fn isPastSensor (number){
     sendResult "a" number
 if number > 2000{
     return true
@@ -22,18 +22,18 @@ sendResult "b" 0
 sendResult "c" 0
 }
 
-when hasPassed(analog 13) {
+when isPastSensor(analog 13) {
     reset
 }
 
-when hasPassed(analog 14) {
+when isPastSensor(analog 14) {
     sendResult "a" (now - startTime )
 }
 
-when hasPassed(analog 17) {
+when isPastSensor(analog 17) {
     sendResult "b" (now - startTime )
 }
-when hasPassed(analog 18) {
+when isPastSensor(analog 18) {
     sendResult "c" (now - startTime )
     endActivity
 }
