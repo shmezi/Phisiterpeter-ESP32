@@ -49,12 +49,14 @@ std::shared_ptr<Expression> NumberExpression::unequal(std::shared_ptr<Expression
 std::shared_ptr<Expression> NumberExpression::greater(std::shared_ptr<Expression> &&expression,
                                                       std::shared_ptr<Scope> &parentScope) {
     auto number = dynamic_cast<NumberExpression *>(expression.get());
+    debug::log(std::to_string(contents) + " > " + std::to_string(number->contents));
     return std::make_unique<BooleanExpression>(contents > number->contents);
 }
 
 std::shared_ptr<Expression> NumberExpression::lesser(std::shared_ptr<Expression> &&expression,
                                                      std::shared_ptr<Scope> &parentScope) {
     auto number = dynamic_cast<NumberExpression *>(expression.get());
+    debug::log(std::to_string(contents) + " < " + std::to_string(number->contents));
     return std::make_unique<BooleanExpression>(contents < number->contents);
 }
 

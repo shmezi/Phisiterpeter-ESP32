@@ -22,7 +22,7 @@ std::string WriteExpression::expressionName() {
 std::shared_ptr<Expression> WriteExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto pinNumber = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->
         contents);
-    const auto writeableValue = dynamic_cast<BooleanExpression *>(pin->interpret(scope).get())->contents;
+    const auto writeableValue = dynamic_cast<BooleanExpression *>(value->interpret(scope).get())->contents;
 
     gpio_set_direction(pinNumber, GPIO_MODE_OUTPUT);
     gpio_set_level(pinNumber, writeableValue ? 1 : 0);

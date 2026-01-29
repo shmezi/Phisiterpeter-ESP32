@@ -21,7 +21,10 @@ std::string SendResultExpression::expressionName() {
 
 std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scope> scope) {
     const std::string message = name->interpertAsString(scope) + " " + value->interpertAsString(scope) + "\n";
-    nextMessage = message;
+    // nextMessage = message;
+    const auto cMessage = message.c_str();
+
+    uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
     return std::make_shared<VoidExpression>();
 }
 

@@ -49,8 +49,8 @@ void ScheduleLoop::loop() {
         evaluateAndRunCooldown(cooldown, lastRun);
     }
 
-    messageLoop();
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // messageLoop();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 void ScheduleLoop::startEvent(int param) {
