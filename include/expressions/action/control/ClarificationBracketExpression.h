@@ -28,10 +28,7 @@ public:
 
     explicit ClarificationBracketExpression(std::deque<std::unique_ptr<Expression> > expressions) {
         this->expressions = std::move(expressions);
-        debug::print("Building a clarification from: ");
-        for (const auto &e: this->expressions) {
-            debug::print(e->expressionName());
-        }
+
     }
 };
 

@@ -16,7 +16,6 @@ public:
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     explicit PrintExpression(std::unique_ptr<Expression> expression) : expression(std::move(expression)) {
-        debug::print("Building a print from: " + this->expression->expressionName());
     }
 
     std::string expressionName() override { return "print"; };

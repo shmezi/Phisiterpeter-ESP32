@@ -26,18 +26,25 @@
 #define PIN_NUM_CLK  5
 #define PIN_NUM_CS   4
 
-
 #define TAG "UART_RECEIVER"
 #define RX_BUF_SIZE 1024
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
 #define UART_PORT_NUM UART_NUM_2 // Using UART2
-#define RX_PIN 17 // Example pin, connect to the other device's TX
-#define TX_PIN 18 // Example pin, connect to the other device's RX
+#define RX_PIN 39 // Example pin, connect to the other device's TX
+#define TX_PIN 40 // Example pin, connect to the other device's RX
 #include <dirent.h> // Required for directory operations
+#include <esp_adc/adc_oneshot.h>
+
+#include "expressions/game/functions/AnalogReadExpression.h"
 
 
 uint8_t data_buffer[128]; // Buffer to store received data
 constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
+
+
+
+
+
 
 void uart_init() {
     uart_config_t uart_config = {
@@ -75,7 +82,9 @@ void uart(void *pvParameters) {
 
             ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
         }
+        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
     }
+
 }
 
 void runClock(void *pvParameters) {
@@ -107,6 +116,7 @@ void list_files(const char *dirpath) {
     ESP_LOGI("SD_CARD", "--- Done reading directory %s ---", dirpath);
 }
 
+
 // Call this function in your app_main after mounting:
 // list_files(MOUNT_POINT);
 
@@ -135,6 +145,9 @@ extern "C" void app_main(void) {
 
     esp_err_t ret;
 
+    //Analog pin registration
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_a, &AnalogReadExpression::adc_handle_a));
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
 
     debug::log("Initializing SPI bus...");
 

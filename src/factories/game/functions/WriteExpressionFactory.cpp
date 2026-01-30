@@ -15,7 +15,7 @@ int WriteExpressionFactory::indexStart() {
 }
 
 int WriteExpressionFactory::paramSize() {
-    return 1;
+    return 2;
 }
 
 std::unique_ptr<Expression> WriteExpressionFactory::generate(std::deque<std::unique_ptr<Expression> > &arguments,

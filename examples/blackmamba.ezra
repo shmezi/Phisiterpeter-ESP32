@@ -36,7 +36,7 @@ when analog 39 {
 }
 
 
-when analog 40 {
+once analog 40 {
     print "reached bottom"
     move m 0
 }

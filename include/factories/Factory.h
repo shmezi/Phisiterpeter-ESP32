@@ -30,7 +30,7 @@ class Expression;
  *
  *
  */
-class Factory  {
+class Factory {
 public:
     virtual ~Factory() = default;
 
@@ -45,10 +45,15 @@ public:
 
     virtual int paramSize() = 0;
 
+    virtual bool doesSplit() {
+        return false;
+    };
+
+
 
     // Not gonna lie, i'm not sure why it's ok that we are passing a variable that gets deleted... maybe its because we generate it and then we dont actually need the stuff after that idk.. Im just getting started with memory management stuff.
-    virtual std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression> > &arguments, std::shared_ptr<Scope> &scope) = 0;
-
+    virtual std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression> > &arguments,
+                                                 std::shared_ptr<Scope> &scope) = 0;
 };
 
 #endif //PHISILANDINTERPRETER_FACTORY_H

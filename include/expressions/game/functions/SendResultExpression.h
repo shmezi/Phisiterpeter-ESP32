@@ -10,15 +10,19 @@
 class SendResultExpression : public Expression {
     std::unique_ptr<Expression> name;
     std::unique_ptr<Expression> value;
+
 public:
+    static std::string nextMessage[3];
+    static std::string prevMessage[3];
 
     std::string expressionName() override;
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+
     SendResultExpression(std::unique_ptr<Expression> name,
-    std::unique_ptr<Expression> value);
+                         std::unique_ptr<Expression> value);
 };
 
 
