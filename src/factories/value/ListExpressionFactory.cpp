@@ -32,7 +32,6 @@ std::unique_ptr<Expression> ListExpressionFactory::generate(std::deque<std::uniq
     for (auto &arg: arguments) {
         expressions.push_back(arg->interpret(scope));
     }
-    debug::print("Success,created the list with the arguments!");
 
     return std::make_unique<ValueHoldExpression>(std::make_shared<ListExpression>(expressions));
 }

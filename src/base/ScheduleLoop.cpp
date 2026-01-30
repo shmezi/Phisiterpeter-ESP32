@@ -96,7 +96,7 @@ void ScheduleLoop::start() {
 void ScheduleLoop::onEventListener(const std::string &id, std::function<void(int)> task) {
     if (!startFunc.contains(id)) {
         startFunc[id] = std::vector<std::function<void(int)> >();
-        debug::print("Adding event for " + id);
+        debug::log("Registered event handler with ID: " + id);
     }
     startFunc[id].emplace_back(task);
 }
