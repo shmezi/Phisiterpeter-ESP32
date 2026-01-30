@@ -16,7 +16,7 @@ std::string RotationsExpression::expressionName() {
 std::shared_ptr<Expression> RotationsExpression::interpret(std::shared_ptr<Scope> scope) {
     auto actualMotor = dynamic_cast<MotorExpression *>(motor->interpret(scope).get());
 
-    return std::make_shared<NumberExpression>(actualMotor->rotations);
+    return std::make_shared<NumberExpression>(actualMotor->rotations /330);
 }
 
 std::string RotationsExpression::interpertAsString(std::shared_ptr<Scope> scope) {

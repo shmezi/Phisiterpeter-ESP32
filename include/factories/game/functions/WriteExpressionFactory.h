@@ -15,6 +15,8 @@ public:
 
     int paramSize() override;
 
+
+
     std::unique_ptr<Expression> generate(std::deque<std::unique_ptr<Expression>> &arguments,
         std::shared_ptr<Scope> &scope) override;
 };

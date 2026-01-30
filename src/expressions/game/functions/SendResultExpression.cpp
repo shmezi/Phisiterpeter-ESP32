@@ -10,18 +10,20 @@
 
 #include "../../../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/queue"
 #include "expressions/internal/VoidExpression.h"
-
-std::string SendResultExpression::nextMessage = "";
-std::string SendResultExpression::prevMessage = "";
-
+std::string SendResultExpression::nextMessage[3];
+std::string SendResultExpression::prevMessage[3];
 std::string SendResultExpression::expressionName() {
     return "sendResult";
 }
 
 
 std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scope> scope) {
-    const std::string message = name->interpertAsString(scope) + " " + value->interpertAsString(scope) + "\n";
-    // nextMessage = message;
+    const auto id = name->interpertAsString(scope);
+    // int idInt = id == "a" ? 0 : 1;
+    // if (id == "c") idInt = 2;
+    const std::string message = id + " " + value->interpertAsString(scope) + "\n";
+
+    // nextMessage[idInt] = message;
     const auto cMessage = message.c_str();
 
     uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));

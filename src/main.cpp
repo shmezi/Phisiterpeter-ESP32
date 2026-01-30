@@ -82,7 +82,9 @@ void uart(void *pvParameters) {
 
             ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
         }
+        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
     }
+
 }
 
 void runClock(void *pvParameters) {

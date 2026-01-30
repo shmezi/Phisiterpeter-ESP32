@@ -28,12 +28,17 @@ static constexpr auto messageLimit = 300;
 
 void messageLoop() {
     static auto lastRun = debug::getCurrentMs();
-    if (SendResultExpression::nextMessage == SendResultExpression::prevMessage) return;
     if (debug::getCurrentMs().count() - lastRun.count() < messageLimit) return;
+    for (int i = 0; i < 3; ++i) {
+        if (SendResultExpression::nextMessage[i] == SendResultExpression::prevMessage[i]) continue;
+        const auto cMessage = SendResultExpression::nextMessage[i].c_str();
 
-    const auto cMessage = SendResultExpression::nextMessage.c_str();
+        uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
+    }
 
-    uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
+
+
+
 }
 
 void ScheduleLoop::loop() {

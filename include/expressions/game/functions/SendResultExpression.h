@@ -12,8 +12,8 @@ class SendResultExpression : public Expression {
     std::unique_ptr<Expression> value;
 
 public:
-    static std::string nextMessage;
-    static std::string prevMessage;
+    static std::string nextMessage[3];
+    static std::string prevMessage[3];
 
     std::string expressionName() override;
 
