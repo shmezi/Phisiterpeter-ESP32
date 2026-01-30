@@ -3,3 +3,4 @@ dependencies:
   espp/i2c: "1.0.33"
   espp/timer: "1.0.33"
   espp/as5600: "1.0.33"
+  espressif/led_strip: "3.0.2"

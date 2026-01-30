@@ -42,10 +42,6 @@ uint8_t data_buffer[128]; // Buffer to store received data
 constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 
-
-
-
-
 void uart_init() {
     uart_config_t uart_config = {
         .baud_rate = 115200,
@@ -84,7 +80,6 @@ void uart(void *pvParameters) {
         }
         vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
     }
-
 }
 
 void runClock(void *pvParameters) {
@@ -141,6 +136,13 @@ void printStartupMessage() {
 extern "C" void app_main(void) {
     vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
 
+    ESP_ERROR_CHECK(
+        led_strip_new_rmt_device(
+            &StatusLEDExpression::strip_config,
+            &StatusLEDExpression::rmt_config,
+            &StatusLEDExpression::statusLight));
+
+
     uart_init();
 
     esp_err_t ret;
@@ -191,6 +193,7 @@ extern "C" void app_main(void) {
     if (ret != ESP_OK) {
         debug::error("Failed to mount SD card!");
         spi_bus_free(SPI2_HOST);
+        debug::showColor(debug::COMPILE_CRASH);
         return;
     }
 
@@ -207,11 +210,11 @@ extern "C" void app_main(void) {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         debug::log("Starting tokenization process");
-        // debug::showColor(debug::TOKENIZATION);
+        debug::showColor(debug::TOKENIZATION);
         Tokenizer tokenizer = Tokenizer(*f, scope);
         tokenizer.tokenize();
         debug::log("Starting interpretation process");
-        // debug::showColor(debug::INTERPRETATION);
+        debug::showColor(debug::INTERPRETATION);
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
         debug::showColor(debug::RUNNING);

@@ -22,7 +22,6 @@
 
 #include "driver/gpio.h"
 #include "esp_log.h"
-#include "RmtDriver.h"
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "freertos/FreeRTOS.h"
