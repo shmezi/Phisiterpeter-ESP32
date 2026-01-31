@@ -97,7 +97,6 @@ float GyroScopeSensorExpression::pitch() const {
         return 0.0f;
     }
     if (sqrtf(powf(accel_data.y_axis, 2.0f)) == 0.0f) {
-        debug::error("Cant divide by zero!");
         return 0.0f;
     }
     float pitchValue = atanf(accel_data.x_axis / sqrtf(powf(accel_data.y_axis, 2.0f) + powf(accel_data.z_axis, 2.0f)));

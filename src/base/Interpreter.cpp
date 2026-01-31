@@ -59,6 +59,7 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
+#include "factories/action/arithmetic/AbsExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
 #include "factories/game/functions/EncoderSensorExpressionFactory.h"
@@ -94,6 +95,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<SubtractionExpressionFactorty>());
     headScope->registerKeyWord(make_unique<DivisionExpressionFactorty>());
     headScope->registerKeyWord(make_unique<MultiplicationExpressionFactorty>());
+    headScope->registerKeyWord(make_unique<AbsExpressionFactory>());
 
     //Equality factories
     headScope->registerKeyWord(make_unique<EqualsExpressionFactory>());
