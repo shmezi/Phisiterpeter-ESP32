@@ -1,0 +1,37 @@
+print "-----------------------------------------"
+print "|   Swings - Designed By Ezra Golombek   |"
+print "-----------------------------------------"
+
+screen "swing"
+
+m = motor 10 11 12 15 16
+gyroA = gyro false
+gyroB = gyro true
+
+
+offSetA = angle gyroA
+offSetB = angle gyroBz
+
+
+on "start" {
+offSetA = angle gyroA
+offSetB = angle gyroB
+move m value
+
+after 1000 {
+    move m 0
+    endActivity
+}
+
+}
+
+on "stop" {
+    move m 0
+}
+
+
+when true {
+    sendResult "a" abs(offSetA + (abs angle gyroA))
+    sendResult "b" abs(offSetB + (abs angle gyroB))
+    sendResult "c" rotations m
+}

@@ -12,18 +12,19 @@
 
 class ScheduleLoop {
     std::atomic<bool> active = false;
-    // static ScheduleLoop *instance;
-    std::map<std::string, std::vector<std::function<void(int)> > > startFunc = std::map<std::string, std::vector<
-        std::function<void(int)> > >();
-
-    std::vector<std::function<void()> > always = std::vector<std::function<void()> >();
-    std::vector<std::pair<std::function<bool()>, std::function<void()> > > conditionalTasks =
-            std::vector<std::pair<std::function<bool()>, std::function<void()> > >();
 
 
-    std::map<int, std::vector<std::function<void()> > > scheduled = std::map<int, std::vector<std::function<void
-        ()> > >();
-    std::map<int, std::chrono::milliseconds> lastScheduleRun = std::map<int, std::chrono::milliseconds>();
+    std::map<std::string, std::vector<std::function<void(int)> > > startFunc{};
+
+    std::vector<std::function<void()> > always{};
+
+    std::vector<std::pair<std::function<bool()>, std::function<void()> > > conditionalTasks{};
+
+    std::map<int, std::vector<std::function<void()> > > scheduled{};
+
+    std::map<int, std::vector<std::function<void()> > > delayedTask{};
+
+    std::map<int, std::chrono::milliseconds> lastScheduleRun{};
 
 
     void evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun);
@@ -48,6 +49,8 @@ public:
     void addConditionalTask(const std::function<bool()> &condition, std::function<void()> task);
 
     void addCooldownTask(int cooldown, const std::function<void()> &task);
+
+    void runAfterPeriod(const int &cooldown, std::function<void()> task);
 };
 
 

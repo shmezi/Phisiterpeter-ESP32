@@ -35,10 +35,6 @@ void messageLoop() {
 
         uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
     }
-
-
-
-
 }
 
 void ScheduleLoop::loop() {
@@ -52,6 +48,13 @@ void ScheduleLoop::loop() {
     }
     for (auto &[cooldown, lastRun]: lastScheduleRun) {
         evaluateAndRunCooldown(cooldown, lastRun);
+    }
+    for (auto [timeToRunTasks, tasks]: delayedTask) {
+        if (debug::getCurrentMs().count() - timeToRunTasks < 0) continue;
+        for (auto task: tasks) {
+            task();
+        }
+        delayedTask.erase(timeToRunTasks);
     }
 
     // messageLoop();
@@ -109,6 +112,9 @@ void ScheduleLoop::addConditionalTask(const std::function<bool()> &condition, st
     conditionalTasks.emplace_back(condition, task);
 }
 
+void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> task) {
+    delayedTask[debug::getCurrentMs().count() + cooldown].emplace_back(task);
+}
 
 void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {
     if (!scheduled.contains(cooldown))
