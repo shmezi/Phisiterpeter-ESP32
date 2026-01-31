@@ -68,8 +68,10 @@ namespace debug {
 
 
     static void showColor(RGB color) {
-        StatusLEDExpression::leds[0] = Rgb{color.red, color.green, color.blue};
-        StatusLEDExpression::leds.show();
+        led_strip_set_pixel(StatusLEDExpression::statusLight,0,color.red,color.green,color.blue);
+        led_strip_refresh(StatusLEDExpression::statusLight);
+        // StatusLEDExpression::leds[0] = Rgb{color.red, color.green, color.blue};
+        // StatusLEDExpression::leds.show();
     }
 
 

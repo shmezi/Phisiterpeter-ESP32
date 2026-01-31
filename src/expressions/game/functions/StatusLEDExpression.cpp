@@ -17,7 +17,6 @@
 #include "esp_err.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include <SmartLeds.h>
 #include <thread>
 
 
@@ -25,7 +24,24 @@ std::string StatusLEDExpression::expressionName() {
     return "statusLED";
 }
 
-SmartLed StatusLEDExpression::leds(LED_WS2812B, 1, 48, 0, DoubleBuffer);
+led_strip_config_t StatusLEDExpression::strip_config = {
+    .strip_gpio_num = 48, // The GPIO that connected to the LED strip's data line
+    .max_leds = 1, // The number of LEDs in the strip,
+    .led_model = LED_MODEL_WS2812, // LED strip model, it determines the bit timing
+    .color_component_format = LED_STRIP_COLOR_COMPONENT_FMT_GRB, // The color component format is G-R-B
+    .flags = {
+        .invert_out = false, // don't invert the output signal
+    }
+};
+led_strip_rmt_config_t StatusLEDExpression::rmt_config = {
+    .clk_src = RMT_CLK_SRC_DEFAULT, // different clock source can lead to different power consumption
+    .resolution_hz = 10 * 1000 * 1000, // RMT counter clock frequency: 10MHz
+    .mem_block_symbols = 64, // the memory size of each RMT channel, in words (4 bytes)
+    .flags = {
+        .with_dma = false, // DMA feature is available on chips like ESP32-S3/P4
+    }
+};
+led_strip_handle_t StatusLEDExpression::statusLight = nullptr;
 
 std::shared_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope> scope) {
     unsigned char rLED = static_cast<char>(dynamic_cast<NumberExpression *>(r.get())->contents);
@@ -33,9 +49,9 @@ std::shared_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope
     unsigned char bLED = static_cast<char>(dynamic_cast<NumberExpression *>(b.get())->contents);
 
 
-    leds[0] = Rgb{rLED, gLED, bLED};
-    leds.show();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // leds[0] = Rgb{rLED, gLED, bLED};
+    // leds.show();
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     return std::make_unique<VoidExpression>();
 }

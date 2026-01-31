@@ -4,9 +4,8 @@
 
 #ifndef PHISITERPETER_ESP32_STATUSLEDEXPRESSION_H
 #define PHISITERPETER_ESP32_STATUSLEDEXPRESSION_H
-#include "SmartLeds.h"
 #include "expressions/Expression.h"
-
+#include "managed_components/espressif__led_strip/include/led_strip.h"
 
 class StatusLEDExpression : public Expression {
     std::unique_ptr<Expression> r;
@@ -14,8 +13,12 @@ class StatusLEDExpression : public Expression {
     std::unique_ptr<Expression> b;
 
 public:
-    static SmartLed leds;
+    static led_strip_config_t strip_config;
+    static led_strip_rmt_config_t rmt_config;
+    static led_strip_handle_t statusLight;
+
     std::string expressionName() override;
+
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 

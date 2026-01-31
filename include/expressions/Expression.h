@@ -124,7 +124,9 @@ public:
     virtual std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) = 0;
 
 
-    virtual std::string interpertAsString(std::shared_ptr<Scope> scope) = 0;
+    virtual std::string interpertAsString(std::shared_ptr<Scope> scope) {
+        return interpret(scope)->interpertAsString(scope);
+    };
 };
 
 #endif //PHISILANDINTERPRETER_EXPRESSION_H

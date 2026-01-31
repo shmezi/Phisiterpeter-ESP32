@@ -5,7 +5,7 @@
 #ifndef PHISITERPETER_ESP32_SENDRESULTEXPRESSION_H
 #define PHISITERPETER_ESP32_SENDRESULTEXPRESSION_H
 #include "expressions/Expression.h"
-
+#include  <cstring>
 
 class SendResultExpression : public Expression {
     std::unique_ptr<Expression> name;
