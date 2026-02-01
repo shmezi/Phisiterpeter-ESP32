@@ -49,12 +49,23 @@ void ScheduleLoop::loop() {
     for (auto &[cooldown, lastRun]: lastScheduleRun) {
         evaluateAndRunCooldown(cooldown, lastRun);
     }
-    for (auto [timeToRunTasks, tasks]: delayedTask) {
+    std::vector<std::function<void()>> tasksToRun;
+    std::vector<int> keysToRemove;
+    for (const auto& [timeToRunTasks, tasks]: delayedTask) {
         if (debug::getCurrentMs().count() - timeToRunTasks < 0) continue;
-        for (auto task: tasks) {
-            task();
+        keysToRemove.emplace_back(timeToRunTasks);
+        for (const auto& task : tasks) {
+            tasksToRun.emplace_back(task);
         }
-        delayedTask.erase(timeToRunTasks);
+
+    }
+
+    for (const int  key : keysToRemove) {
+        delayedTask.erase(key);
+    }
+
+    for (const auto& task : tasksToRun) {
+        task();
     }
 
     // messageLoop();
@@ -113,7 +124,10 @@ void ScheduleLoop::addConditionalTask(const std::function<bool()> &condition, st
 }
 
 void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> task) {
-    delayedTask[debug::getCurrentMs().count() + cooldown].emplace_back(task);
+    const auto key = debug::getCurrentMs().count() + cooldown;
+    if (!delayedTask.contains(key))
+        delayedTask[key] = std::vector<std::function<void()> >();
+    delayedTask[key].emplace_back(task);
 }
 
 void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {

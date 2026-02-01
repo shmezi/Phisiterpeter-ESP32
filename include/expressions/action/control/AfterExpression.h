@@ -9,7 +9,7 @@
 
 class AfterExpression : public Expression {
     std::unique_ptr<Expression> duration;
-    std::unique_ptr<Expression> codeblock;
+    std::shared_ptr<Expression> codeblock;
 
 public:
     std::string expressionName() override;
@@ -18,7 +18,7 @@ public:
 
     AfterExpression(std::unique_ptr<Expression> duration,
                     std::unique_ptr<Expression> codeblock) : duration(std::move(duration)),
-                                                             codeblock(std::move(codeblock)) {
+                                                             codeblock(std::shared_ptr(std::move(codeblock))) {
     }
 };
 

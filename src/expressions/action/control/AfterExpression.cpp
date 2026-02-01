@@ -15,12 +15,10 @@ std::string AfterExpression::expressionName() {
 
 std::shared_ptr<Expression> AfterExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto evaluatedDuration = dynamic_cast<NumberExpression *>(duration->interpret(scope).get())->contents;
-    const auto evaluatedCodeblock = dynamic_cast<CodeblockExpression *>(codeblock->interpret(scope).get());
 
-    ScheduleLoop::getInstance()->runAfterPeriod(static_cast<int>(evaluatedDuration), [evaluatedCodeblock,scope] {
-        for (auto &expression: evaluatedCodeblock->expressions) {
-            expression->interpret(scope);
-        };
+
+    ScheduleLoop::getInstance()->runAfterPeriod(static_cast<int>(evaluatedDuration), [passedCodeblock = codeblock,s = scope] {
+        passedCodeblock->interpret(s);
     });
     return std::make_shared<VoidExpression>();
 }
