@@ -63,6 +63,7 @@
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
+#include "factories/game/functions/DegreesExpressionFactory.h"
 #include "factories/game/functions/EncoderSensorExpressionFactory.h"
 #include "factories/game/functions/EndActivityExpressionFactory.h"
 #include "factories/game/functions/ResetRotationsExpressionFactory.h"
@@ -124,6 +125,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<EncoderSensorExpressionFactory>());
     headScope->registerKeyWord(make_unique<EndActivityExpressionFactory>());
     headScope->registerKeyWord(make_unique<ResetRotationsExpressionFactory>());
+    headScope->registerKeyWord(make_unique<DegreesExpressionFactory>());
 
 
     //Lists
