@@ -33,8 +33,14 @@ void MotorExpression::move(const int speedValue) const {
     auto pinB = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(b.get())->contents);
     auto pinSpeed = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(speed.get())->contents);
 
+    debug::print("Running motor at speed of " + std::to_string(speedValue));
     if (!GPIO_IS_VALID_GPIO(pinA) || !GPIO_IS_VALID_GPIO(pinB)) {
         debug::error("Pin is invalid");
+    }
+
+    if (speedValue == 0) {
+        gpio_set_level(pinA, false);
+        gpio_set_level(pinB, false);
     }
 
     gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
@@ -82,13 +88,24 @@ void MotorExpression::rotate() {
     rotations += (gpio_get_level(bActualPin) == 0) ? -1 : 1;
 }
 
+void MotorExpression::rotateUntilRotation(int rotation, int speed) {
+    move(speed);
+    requestRotation = rotation;
+    ScheduleLoop::getInstance()->addTask([r = requestRotation, m = shared_from_this()] {
+        if (r == -1) return;
+        if (r <= m->rotations) {
+            m->move(0);
+        }
+    });
+}
+
 // ISR function for the button
 extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
     auto *expression = static_cast<MotorExpression *>(arg);
     expression->rotate();
 }
 
-void MotorExpression::initEncoder()  {
+void MotorExpression::initEncoder() {
     auto encoderAPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderA.get())->contents);
     auto encoderBPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(encoderB.get())->contents);
 

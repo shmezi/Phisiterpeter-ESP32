@@ -18,6 +18,7 @@ public:
     std::unique_ptr<Expression> encoderA;
     std::unique_ptr<Expression> encoderB;
     volatile int rotations;
+    int requestRotation = -1;
 
     void move(int speedValue) const;
 
@@ -30,6 +31,8 @@ public:
     std::string interpertAsString(std::shared_ptr<Scope> scope) override;
 
     void rotate();
+
+    void rotateUntilRotation(int rotation, int speed);
 
     void initEncoder() ;
 

@@ -1,0 +1,36 @@
+screen "swing"
+
+m = motor 10 11 12 15 16
+offset = (analog 13 / 11.37500)
+on "start" {
+reset m
+move m value
+after 6000 {
+  move m 0
+  endActivity
+
+
+}
+
+}
+
+on "stop" {
+    move m 0
+
+}
+
+
+fn getGoodResult (motorEncoder, angleEncoder){
+
+if (angleEncoder > 180)
+
+}
+
+when true {
+    rot = rotations m
+    r = abs((analog 13 / 11.37500))
+    value = (r - offset)
+    sendResult "a" (value)
+
+    sendResult "c" (rot)
+}
