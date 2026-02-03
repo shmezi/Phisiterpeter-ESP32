@@ -4,9 +4,20 @@
 
 #ifndef PHISITERPETER_ESP32_ROTATEMOTORBYEXPRESSION_H
 #define PHISITERPETER_ESP32_ROTATEMOTORBYEXPRESSION_H
+#include "expressions/Expression.h"
 
 
-class RotateMotorByExpression {
+class RotateMotorByExpression : public Expression {
+    std::unique_ptr<Expression> motor;
+
+    std::unique_ptr<Expression> rotateTo;
+
+    std::unique_ptr<Expression> speed;
+
+public:
+    std::string expressionName() override;
+
+    std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 };
 
 

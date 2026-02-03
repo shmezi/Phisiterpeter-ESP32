@@ -20,6 +20,9 @@ class ScheduleLoop {
 
     std::vector<std::pair<std::function<bool()>, std::function<void()> > > conditionalTasks{};
 
+    std::vector<std::pair<std::function<bool()>, std::function<void()> > > whileTasks{};
+
+
     std::map<int, std::vector<std::function<void()> > > scheduled{};
 
     std::map<int, std::vector<std::function<void()> > > delayedTask{};

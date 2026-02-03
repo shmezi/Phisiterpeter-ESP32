@@ -79,12 +79,12 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 }
 
 void MotorExpression::rotate() {
-    rotations += (gpio_get_level(bActualPin) == 0) ? 1 : -1;
+    rotations += (gpio_get_level(bActualPin) == 0) ? -1 : 1;
 }
 
 // ISR function for the button
 extern "C" void IRAM_ATTR gpio_isr_handler(void *arg) {
-    MotorExpression *expression = static_cast<MotorExpression *>(arg);
+    auto *expression = static_cast<MotorExpression *>(arg);
     expression->rotate();
 }
 

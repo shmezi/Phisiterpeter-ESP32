@@ -17,6 +17,7 @@ std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
 
 std::shared_ptr<Expression> Scope::interpretVariable(const std::string &id) {
     if (variables.contains(id))
+
         return variables[id]->interpret(shared_from_this());
     if (parent != nullptr) {
         return parent->interpretVariable(id);
