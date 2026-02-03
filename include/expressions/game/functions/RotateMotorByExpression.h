@@ -11,18 +11,21 @@
 
 class RotateMotorByExpression : public Expression {
     std::unique_ptr<Expression> motor;
-    std::unique_ptr<Expression> speed;
     std::unique_ptr<Expression> rotateTo;
+    std::unique_ptr<Expression> speed;
 
 public:
     std::string expressionName() override;
 
     RotateMotorByExpression(
         std::unique_ptr<Expression> motor,
-
         std::unique_ptr<Expression> rotateTo,
-
-        std::unique_ptr<Expression> speed);
+        std::unique_ptr<Expression> speed)
+        : motor(std::move(motor)),
+          rotateTo(std::move(rotateTo)),
+          speed(std::move(speed)
+          ) {
+    }
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 };

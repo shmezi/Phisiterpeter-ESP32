@@ -6,37 +6,38 @@ m = motor 10 11 12 15 16
 
 startTime = 0
 screen "blackmamba"
-
+sendResult "a" (0)
 
 on "start" {
-startTime = now
-print ("Starting attraction at a speed of: " + value + "!")
-move m ( 0 - value )
+    sendResult "a" (0)
+    startTime = now
+    rotate m 3 (  value)
+    print "starting"
 }
+toggle = true
 
-fn end () {
-
-    print "Sopping attraction!"
-    sendResult "a" (now - startTime)
-    move m 100
-    endActivity
-
-}
-
-
-on "stop" {
-    end
-}
-
-
-when analog 39 {
-    print "reached top"
+once not read 13 {
+    if not toggle {
     move m 0
+    toggle = true
+    print "Toggle trigger top"
+    }
+
+
+
 
 }
 
+once not read 14 {
+    print "Toggle trigger bottom"
+    if (toggle){
+        sendResult "a" (now - startTime)
 
-once analog 40 {
-    print "reached bottom"
-    move m 0
+        after 3000 {
+            move m (  70 )
+            endActivity
+        }
+        toggle = false
+    }
+
 }

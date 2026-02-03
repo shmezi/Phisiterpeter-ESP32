@@ -28,7 +28,7 @@
 #include "freertos/task.h"
 
 
-void MotorExpression::move(const int speedValue) const {
+void MotorExpression::move(const float speedValue) {
     auto pinA = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(a.get())->contents);
     auto pinB = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(b.get())->contents);
     auto pinSpeed = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(speed.get())->contents);
@@ -42,26 +42,33 @@ void MotorExpression::move(const int speedValue) const {
         gpio_set_level(pinA, false);
         gpio_set_level(pinB, false);
     }
-
-    gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
-    gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
-    // Init MCPWM with 1 kHz frequency, 50% duty
-    mcpwm_config_t pwm_config;
-    pwm_config.frequency = 1000; // 1 kHz
-    pwm_config.cmpr_a = speedValue; // 50% duty cycle
-    pwm_config.cmpr_b = 0.0; // unused
-    pwm_config.counter_mode = MCPWM_UP_COUNTER;
-    pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
-
-
-    mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
-    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, speedValue);
-
-
     gpio_set_level(pinA, speedValue > 0);
     gpio_set_level(pinB, speedValue < 0);
 
-    mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
+    if (!run) {
+
+        gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
+        gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
+        // Init MCPWM with 1 kHz frequency, 50% duty
+        mcpwm_config_t pwm_config;
+        pwm_config.frequency = 1000; // 1 kHz
+        pwm_config.cmpr_a = speedValue; // 50% duty cycle
+        pwm_config.cmpr_b = 0.0; // unused
+        pwm_config.counter_mode = MCPWM_UP_COUNTER;
+        pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
+
+
+        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+
+
+
+
+        mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
+        run = true;
+    }
+    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, abs(speedValue));
+
+
 }
 
 void MotorExpression::stop() {
@@ -87,15 +94,37 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 void MotorExpression::rotate() {
     rotations += (gpio_get_level(bActualPin) == 0) ? -1 : 1;
 }
+int MotorExpression::getActualRotations() const {
+    return rotations / 330;
+}
 
-void MotorExpression::rotateUntilRotation(int rotation, int speed) {
-    move(speed);
-    requestRotation = rotation;
-    ScheduleLoop::getInstance()->addTask([r = requestRotation, m = shared_from_this()] {
-        if (r == -1) return;
-        if (r <= m->rotations) {
+
+void MotorExpression::rotateUntilRotation(int rotateTo, int speedToRunAt) {
+    requestRotation = rotateTo;
+
+    // Determine current position to decide direction
+    int currentPos = getActualRotations();
+    bool movingForward = (rotateTo > currentPos);
+
+    // Apply speed in the correct direction
+    move((movingForward ? -1 : 1) * std::abs(speedToRunAt));
+
+    // Capture the target and direction to monitor progress
+    ScheduleLoop::getInstance()->addTask([rotateTo, movingForward, m = shared_from_this()] {
+        // If target is already reached or request was cleared (e.g., set to 0 elsewhere)
+        if (m->requestRotation == 0) return;
+
+        int current = m->getActualRotations();
+
+        // Stop condition based on direction
+        bool reached = movingForward ? (current >= rotateTo) : (current <= rotateTo);
+
+        if (reached) {
             m->move(0);
+            m->requestRotation = 0; // Clear the request
         }
+
+        debug::print("ITEM LOOP");
     });
 }
 

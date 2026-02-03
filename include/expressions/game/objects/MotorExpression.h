@@ -10,6 +10,8 @@
 
 
 class MotorExpression : public Expression, public std::enable_shared_from_this<MotorExpression> {
+    bool run = false;
+
 public:
     gpio_num_t bActualPin;
     std::unique_ptr<Expression> a;
@@ -18,9 +20,9 @@ public:
     std::unique_ptr<Expression> encoderA;
     std::unique_ptr<Expression> encoderB;
     volatile int rotations;
-    int requestRotation = -1;
+    int requestRotation = 0;
 
-    void move(int speedValue) const;
+    void move(float speedValue);
 
     void stop();
 
@@ -32,9 +34,11 @@ public:
 
     void rotate();
 
-    void rotateUntilRotation(int rotation, int speed);
+    int getActualRotations() const;
 
-    void initEncoder() ;
+    void rotateUntilRotation(int rotateTo, int speed);
+
+    void initEncoder();
 
     MotorExpression(
         std::unique_ptr<Expression> a,

@@ -22,10 +22,11 @@ std::string MoveExpression::expressionName() {
 }
 
 std::shared_ptr<Expression> MoveExpression::interpret(std::shared_ptr<Scope> scope) {
-    const auto motorExpression = motor->interpret(scope);
-    auto castMotor = dynamic_cast<MotorExpression *>(motorExpression.get());
+    auto evaluatedMotor = std::dynamic_pointer_cast<MotorExpression>(motor->interpret(scope));
 
-    castMotor->move(dynamic_cast<NumberExpression *>(speed->interpret(scope).get())->contents);
+    auto evaluatedSpeed = std::dynamic_pointer_cast<NumberExpression>(speed->interpret(scope));
+
+    evaluatedMotor->move(static_cast<int>(evaluatedSpeed->contents));
 
 
     return std::make_unique<VoidExpression>();
@@ -37,5 +38,5 @@ std::string MoveExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 
 MoveExpression::MoveExpression(std::unique_ptr<Expression> motor,
                                std::unique_ptr<Expression> speed) : motor(std::move(motor)),
-                                                                        speed(std::move(speed)) {
+                                                                    speed(std::move(speed)) {
 }
