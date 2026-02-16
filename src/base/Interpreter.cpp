@@ -68,6 +68,7 @@
 #include "factories/game/functions/EndActivityExpressionFactory.h"
 #include "factories/game/functions/ResetRotationsExpressionFactory.h"
 #include "factories/game/functions/RotateMotorByExpressionFactory.h"
+#include "factories/game/functions/Wrap360ExpressionFactory.h"
 #include "factories/value/ListExpressionFactory.h"
 
 using namespace std;
@@ -101,6 +102,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<DivisionExpressionFactorty>());
     headScope->registerKeyWord(make_unique<MultiplicationExpressionFactorty>());
     headScope->registerKeyWord(make_unique<AbsExpressionFactory>());
+    headScope->registerKeyWord(make_shared<Wrap360ExpressionFactory>());
 
     //Equality factories
     headScope->registerKeyWord(make_unique<EqualsExpressionFactory>());
