@@ -2,7 +2,14 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
-
+#include <string.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "esp_wifi.h"       // Main Wi-Fi driver functions
+#include "esp_log.h"        // Logging (optional but recommended)
+#include "esp_event.h"      // Event loop for connection status
+#include "nvs_flash.h"      // NVS flash for storing Wi-Fi credentials
+#include "esp_netif.h"      // Network interface layer
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
@@ -92,24 +99,7 @@ void runClock(void *pvParameters) {
     }
 }
 
-void list_files(const char *dirpath) {
-    DIR *dir = opendir(dirpath);
-    if (!dir) {
-        ESP_LOGE("SD_CARD", "Failed to open directory %s", dirpath);
-        return;
-    }
 
-    struct dirent *entry;
-    ESP_LOGI("SD_CARD", "--- Reading directory %s ---", dirpath);
-
-    while ((entry = readdir(dir)) != NULL) {
-        // You can check entry->d_type if you need to differentiate files from subdirectories
-        ESP_LOGI("SD_CARD", "Found file/directory: %s", entry->d_name);
-    }
-
-    closedir(dir);
-    ESP_LOGI("SD_CARD", "--- Done reading directory %s ---", dirpath);
-}
 void startup() {
     const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
     cout << debug::colorize(c, debug::Color::CYAN);
@@ -138,62 +128,6 @@ void printStartupMessage() {
     cout << "\033[0m\t\t" << endl;
 }
 
-sdmmc_card_t *mountSD() {
-    debug::log("Initializing SPI bus...");
-    vTaskDelay(pdMS_TO_TICKS(500));
-
-    // --- SPI bus configuration ---
-    spi_bus_config_t bus_cfg = {
-        .mosi_io_num = static_cast<gpio_num_t>(PIN_NUM_MOSI),
-        .miso_io_num = static_cast<gpio_num_t>(PIN_NUM_MISO),
-        .sclk_io_num = static_cast<gpio_num_t>(PIN_NUM_CLK),
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .max_transfer_sz = 4000,
-        .flags = SPICOMMON_BUSFLAG_MASTER | SPICOMMON_BUSFLAG_GPIO_PINS
-    };
-
-   esp_err_t  ret = spi_bus_initialize(SPI3_HOST, &bus_cfg, SDSPI_DEFAULT_DMA);
-    if (ret != ESP_OK) {
-        debug::error("Failed to initialize SPI bus!");
-        return nullptr;
-    }
-
-    // --- Host configuration ---
-    sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-    host.slot = SPI3_HOST;
-    host.max_freq_khz = 400;
-
-    // --- Device configuration ---
-    sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-    slot_config.gpio_cs = static_cast<gpio_num_t>(PIN_NUM_CS);
-
-    slot_config.host_id = SPI3_HOST;
-
-    slot_config.gpio_cd = SDSPI_SLOT_NO_CD;
-    slot_config.gpio_wp = SDSPI_SLOT_NO_WP;
-    // --- FATFS mount configuration ---
-    esp_vfs_fat_mount_config_t mount_config = {
-        .format_if_mount_failed = true,
-        .max_files = 5,
-        .allocation_unit_size = 16 * 1024,
-    };
-
-    sdmmc_card_t *card;
-
-    debug::log("Mounting filesystem...");
-    ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
-    if (ret != ESP_OK) {
-        debug::error("Failed to mount SD card!");
-        spi_bus_free(SPI3_HOST);
-        debug::showColor(debug::COMPILE_CRASH);
-        return nullptr;
-    }
-    debug::log("SD card mounted successfully!");
-
-    list_files("/sdcard");
-    return card;
-}
 
 void setupGPIO() {
     ESP_ERROR_CHECK(
@@ -211,27 +145,62 @@ void setupGPIO() {
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
 }
 
+void connectWifi() {
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    esp_netif_create_default_wifi_sta();
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_start());
+    // 1. Scan for networks
+    wifi_scan_config_t scan_config = {.ssid = 0, .bssid = 0, .channel = 0, .show_hidden = false};
+    esp_wifi_scan_start(&scan_config, true); // true = blocking mode
+
+    // 2. Retrieve results
+    uint16_t ap_count = 0;
+    esp_wifi_scan_get_ap_num(&ap_count);
+    wifi_ap_record_t *ap_list = (wifi_ap_record_t *) malloc(sizeof(wifi_ap_record_t) * ap_count);
+    esp_wifi_scan_get_ap_records(&ap_count, ap_list);
+    vTaskDelay(pdMS_TO_TICKS(10000)); //Delay start to allow for monitor
+
+    // 3. Print network info (Example)
+    for (int i = 0; i < ap_count; i++) {
+        printf("SSID: %s, RSSI: %d\n", ap_list[i].ssid, ap_list[i].rssi);
+    }
+    free(ap_list);
+
+    // 4. Connect to a specific network
+    // wifi_config_t wifi_config = {
+    //     .sta = {
+    //         .ssid = "YOUR_SSID",
+    //         .password = "YOUR_PASSWORD",
+    //     },
+    // };
+    // esp_wifi_set_mode(WIFI_MODE_STA);
+    // esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+    // esp_wifi_connect();
+}
+
+
 void runInterpreter() {
-    const char *file_path = "/sdcard/code.ezra";
-
-
-    FILE *f = fopen(file_path, "r");
-    if (f == nullptr) {
-        debug::error("File could not be opened!");
-    } else {
+    {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         debug::log("Starting tokenization process");
         debug::showColor(debug::TOKENIZATION);
-        Tokenizer tokenizer = Tokenizer(*f, scope);
-        tokenizer.tokenize();
-        debug::log("Starting interpretation process");
-        debug::showColor(debug::INTERPRETATION);
-        Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
+
+
+        // Tokenizer tokenizer = Tokenizer(*f, scope);
+        // tokenizer.tokenize();
+        // debug::log("Starting interpretation process");
+        // debug::showColor(debug::INTERPRETATION);
+        // Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
-        debug::showColor(debug::RUNNING);
-        interpreter.run();
-        fclose(f);
+        // debug::showColor(debug::RUNNING);
+        // interpreter.run();
+
         xTaskCreate(
             runClock, // Function that implements the task.
             "MyForeverTask", // Text name for the task.
@@ -251,20 +220,22 @@ void runInterpreter() {
     }
 }
 
-void unmountSD(sdmmc_card_t *card) {
-    esp_vfs_fat_sdcard_unmount("/sdcard", card);
-    spi_bus_free(SPI3_HOST);
-}
 
 extern "C" void app_main(void) {
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+
     vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
 
     setupGPIO();
-    const auto card = mountSD();
-    if (card == nullptr)
-        return;
+    connectWifi();
+
     runInterpreter();
 
-    unmountSD(card);
+
     debug::log("Interpretation has finished! Background tasks are still running fear not!");
 }
