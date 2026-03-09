@@ -46,7 +46,7 @@ std::string AnalogReadExpression::expressionName() {
 
 std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scope> scope) {
     int adc_value;
-     adc_oneshot_unit_handle_t unit = adc_handle_a;
+    adc_oneshot_unit_handle_t unit = adc_handle_a;
     auto pinValue = dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->contents;
     if (pinValue >= 10) {
         pinValue -= 11;
@@ -63,8 +63,16 @@ std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scop
 
 
     ESP_ERROR_CHECK(adc_oneshot_read(unit, actualPinNumber, &adc_value));
+    samples.push_front(adc_value);
+    if (samples.size() > 100)
+        samples.pop_back();
+    uint sum = 0;
+    for (const int &sample: samples) {
+        sum += sample;
+    }
 
-    return std::make_shared<NumberExpression>(adc_value);
+
+    return std::make_shared<NumberExpression>(sum / samples.size());
 }
 
 std::string AnalogReadExpression::interpertAsString(std::shared_ptr<Scope> scope) {

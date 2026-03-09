@@ -9,6 +9,8 @@
 #include "expressions/Expression.h"
 
 
+class Expression;
+
 class ResetRotationsExpression : public Expression {
     std::unique_ptr<Expression> motor;
 

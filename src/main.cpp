@@ -110,10 +110,15 @@ void list_files(const char *dirpath) {
     closedir(dir);
     ESP_LOGI("SD_CARD", "--- Done reading directory %s ---", dirpath);
 }
+void startup() {
+    const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
+    cout << debug::colorize(c, debug::Color::CYAN);
+
+    cout << debug::colorize("© Developed and designed by Ezra Golombek 2025", debug::Color::BLUE) << endl;
 
 
-// Call this function in your app_main after mounting:
-// list_files(MOUNT_POINT);
+    cout << "\033[0m\t\t" << endl;
+}
 
 void printStartupMessage() {
     const auto c = R"(  _   _               _                  _____  _                                             _
@@ -133,25 +138,9 @@ void printStartupMessage() {
     cout << "\033[0m\t\t" << endl;
 }
 
-extern "C" void app_main(void) {
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
-
-    ESP_ERROR_CHECK(
-        led_strip_new_rmt_device(
-            &StatusLEDExpression::strip_config,
-            &StatusLEDExpression::rmt_config,
-            &StatusLEDExpression::statusLight));
-
-
-    uart_init();
-
-    esp_err_t ret;
-
-    //Analog pin registration
-    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_a, &AnalogReadExpression::adc_handle_a));
-    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
-
+sdmmc_card_t *mountSD() {
     debug::log("Initializing SPI bus...");
+    vTaskDelay(pdMS_TO_TICKS(500));
 
     // --- SPI bus configuration ---
     spi_bus_config_t bus_cfg = {
@@ -161,24 +150,28 @@ extern "C" void app_main(void) {
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
         .max_transfer_sz = 4000,
+        .flags = SPICOMMON_BUSFLAG_MASTER | SPICOMMON_BUSFLAG_GPIO_PINS
     };
 
-    ret = spi_bus_initialize(SPI2_HOST, &bus_cfg, SDSPI_DEFAULT_DMA);
+   esp_err_t  ret = spi_bus_initialize(SPI3_HOST, &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK) {
         debug::error("Failed to initialize SPI bus!");
-        return;
+        return nullptr;
     }
 
     // --- Host configuration ---
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
-    host.slot = SPI2_HOST;
+    host.slot = SPI3_HOST;
+    host.max_freq_khz = 400;
 
     // --- Device configuration ---
     sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
     slot_config.gpio_cs = static_cast<gpio_num_t>(PIN_NUM_CS);
-    slot_config.host_id = SPI2_HOST;
 
+    slot_config.host_id = SPI3_HOST;
 
+    slot_config.gpio_cd = SDSPI_SLOT_NO_CD;
+    slot_config.gpio_wp = SDSPI_SLOT_NO_WP;
     // --- FATFS mount configuration ---
     esp_vfs_fat_mount_config_t mount_config = {
         .format_if_mount_failed = true,
@@ -192,14 +185,33 @@ extern "C" void app_main(void) {
     ret = esp_vfs_fat_sdspi_mount("/sdcard", &host, &slot_config, &mount_config, &card);
     if (ret != ESP_OK) {
         debug::error("Failed to mount SD card!");
-        spi_bus_free(SPI2_HOST);
+        spi_bus_free(SPI3_HOST);
         debug::showColor(debug::COMPILE_CRASH);
-        return;
+        return nullptr;
     }
-
     debug::log("SD card mounted successfully!");
 
     list_files("/sdcard");
+    return card;
+}
+
+void setupGPIO() {
+    ESP_ERROR_CHECK(
+        led_strip_new_rmt_device(
+            &StatusLEDExpression::strip_config,
+            &StatusLEDExpression::rmt_config,
+            &StatusLEDExpression::statusLight));
+
+
+    uart_init();
+
+
+    //Analog pin registration
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_a, &AnalogReadExpression::adc_handle_a));
+    ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
+}
+
+void runInterpreter() {
     const char *file_path = "/sdcard/code.ezra";
 
 
@@ -237,10 +249,22 @@ extern "C" void app_main(void) {
             nullptr // Used to pass back the created task's handle.
         );
     }
+}
 
-    // --- Cleanup ---
+void unmountSD(sdmmc_card_t *card) {
     esp_vfs_fat_sdcard_unmount("/sdcard", card);
-    spi_bus_free(SPI2_HOST);
+    spi_bus_free(SPI3_HOST);
+}
 
-    debug::log("Interpertation has finished! Background tasks are still running fear not!");
+extern "C" void app_main(void) {
+    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
+
+    setupGPIO();
+    const auto card = mountSD();
+    if (card == nullptr)
+        return;
+    runInterpreter();
+
+    unmountSD(card);
+    debug::log("Interpretation has finished! Background tasks are still running fear not!");
 }

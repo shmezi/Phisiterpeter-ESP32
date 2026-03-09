@@ -4,12 +4,15 @@
 
 #ifndef PHISITERPETER_ESP32_ANALOGREADEXPRESSION_H
 #define PHISITERPETER_ESP32_ANALOGREADEXPRESSION_H
+#include <deque>
+
 #include "expressions/Expression.h"
 
 #include <esp_adc/adc_oneshot.h>
 
 class AnalogReadExpression : public Expression {
     bool registered = false;
+    std::deque<int> samples = {};
 
 public:
     std::unique_ptr<Expression> pin;

@@ -13,6 +13,11 @@
 #include "expressions/game/functions/StatusLEDExpression.h"
 
 namespace debug {
+    static double wrap360(const double angle) {
+        double result = std::fmod(angle, 360.0);
+        if (result < 0) result += 360.0;
+        return result;
+    }
     enum class Color {
         RED = 31,
         BLUE = 34,

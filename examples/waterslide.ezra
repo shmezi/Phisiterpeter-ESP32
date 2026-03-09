@@ -1,39 +1,33 @@
-count = 0
 
+on "start" {
+write 12 true
 
-fn isPastSensor (number){
-    sendResult "a" number
-if number > 2000{
-    return true
 }
-if 1900 > number{
-    return true
-}
+on "stop" {
+write 12 false
 
-return false
 }
-
 
 startTime = 0
-fn reset () {
+fn startAttraction () {
 startTime = now
 sendResult "a" 0
 sendResult "b" 0
 sendResult "c" 0
 }
 
-when isPastSensor(analog 13) {
-    reset
+when (not read 13) {
+    startAttraction
 }
 
-when isPastSensor(analog 14) {
+when (not read 14) {
     sendResult "a" (now - startTime )
 }
 
-when isPastSensor(analog 17) {
+when (not read 17) {
     sendResult "b" (now - startTime )
 }
-when isPastSensor(analog 18) {
+when (not read 18) {
     sendResult "c" (now - startTime )
     endActivity
 }
