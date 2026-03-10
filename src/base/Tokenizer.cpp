@@ -52,9 +52,8 @@ bool isBad(char32_t cp) {
 }
 void Tokenizer::tokenize() {
     char streamingChar = ' ';
-    int c;
     bool hasBadChar = false;
-    while (((c = fgetc(&stream)) != EOF)) {
+    for (const char c : stream) {
         currentlyParsedChar = static_cast<char>(c);
 
         if (streamingChar != ' ') {
@@ -119,7 +118,7 @@ void Tokenizer::tokenize() {
     }
 }
 
-Tokenizer::Tokenizer(FILE &stream, std::shared_ptr<Scope> headScope) : stream(stream),
+Tokenizer::Tokenizer(std::string &stream, std::shared_ptr<Scope> headScope) : stream(stream),
                                                                        headScope(std::move(headScope)) {
     // if (!stream.is_open()) {
     //     std::cerr << "Error: Unable to open file." << std::endl;
