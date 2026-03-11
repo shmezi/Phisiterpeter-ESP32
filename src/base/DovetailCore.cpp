@@ -11,6 +11,7 @@
 
 #include "esp_http_client.h"
 #include "Utils.h"
+#include "base/Interpreter.h"
 
 // Bits for synchronization
 #define WIFI_CONNECTED_BIT BIT0
@@ -41,17 +42,29 @@ httpd_handle_t DovetailCore::startWebServer() {
     return nullptr;
 }
 
+std::string incoming_code;
+
 esp_err_t DovetailCore::httpClientHandler(esp_http_client_event_t *evt) {
     switch (evt->event_id) {
+        case HTTP_EVENT_ON_CONNECTED:
+            // Clear the string for a fresh start
+            incoming_code.clear();
+            break;
+
         case HTTP_EVENT_ON_DATA:
-            // Check if there is data to print
-            if (!esp_http_client_is_chunked_response(evt->client)) {
-                // Print the data segment received
-                // We use printf with precision to handle non-null-terminated strings
-                codebase = static_cast<char *>(evt->data);
-                // printf("%.*s", evt->data_len, static_cast<char *>(evt->data));
+            if (evt->data_len > 0) {
+                // Safely append the incoming chunk to our string
+                incoming_code.append(static_cast<char *>(evt->data), evt->data_len);
             }
             break;
+
+        case HTTP_EVENT_ON_FINISH:
+            // Now that the data is complete, point codebase to it
+            codebase = const_cast<char *>(incoming_code.c_str());
+            // Trigger your interpreter here or set a flag
+            Interpreter::runInterpreter(codebase);
+            break;
+
         default:
             break;
     }

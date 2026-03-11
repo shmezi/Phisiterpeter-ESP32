@@ -32,6 +32,7 @@ using namespace std;
 #define PIN_NUM_CS   4
 
 #define TAG "UART_RECEIVER"
+
 #define RX_BUF_SIZE 1024
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
 #define UART_PORT_NUM UART_NUM_2 // Using UART2
@@ -67,35 +68,6 @@ void uart_init() {
     ESP_ERROR_CHECK(uart_driver_install(UART_PORT_NUM, RX_BUF_SIZE, TX_BUF_SIZE, 0, NULL, 0));
 }
 
-void uart(void *pvParameters) {
-    auto *data = static_cast<uint8_t *>(malloc(RX_BUF_SIZE + 1));
-    for (;;) {
-        const int rxBytes = uart_read_bytes(UART_PORT_NUM, data, RX_BUF_SIZE, pdMS_TO_TICKS(10));
-        if (rxBytes > 0) {
-            data[rxBytes] = 0;
-
-            auto actualData = reinterpret_cast<char *>(data);
-            // cout << actualData << endl;
-            if (actualData[0] != '~')
-                continue;
-            auto prettyData = string(actualData);
-            prettyData.erase(0, 1);
-
-            ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
-        }
-        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
-    }
-}
-
-void runClock(void *pvParameters) {
-    for (;;) {
-        ScheduleLoop::getInstance()->loop();
-
-        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
-    }
-}
-
-
 void startup() {
     const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
     cout << debug::colorize(c, debug::Color::CYAN);
@@ -106,23 +78,6 @@ void startup() {
     cout << "\033[0m\t\t" << endl;
 }
 
-void printStartupMessage() {
-    const auto c = R"(  _   _               _                  _____  _                                             _
- | \ | |             | |                |  __ \| |                                           | |
- |  \| | _____      _| |_ ___  _ __  ___| |__) | | __ _ _   _  __ _ _ __ ___  _   _ _ __   __| |
- | . ` |/ _ \ \ /\ / / __/ _ \| '_ \/ __|  ___/| |/ _` | | | |/ _` | '__/ _ \| | | | '_ \ / _` |
- | |\  |  __/\ V  V /| || (_) | | | \__ \ |    | | (_| | |_| | (_| | | | (_) | |_| | | | | (_| |
- |_| \_|\___| \_/\_/  \__\___/|_| |_|___/_|    |_|\__,_|\__, |\__, |_|  \___/ \__,_|_| |_|\__,_|
-                                                         __/ | __/ |
-                                                        |___/ |___/
-)";
-    cout << debug::colorize(c, debug::Color::CYAN);
-
-    cout << debug::colorize("© Developed and designed by Ezra Golombek 2025", debug::Color::BLUE) << endl;
-
-
-    cout << "\033[0m\t\t" << endl;
-}
 
 
 void setupGPIO() {
@@ -142,41 +97,6 @@ void setupGPIO() {
 }
 
 
-void runInterpreter(string &code) {
-    {
-        gpio_install_isr_service(0);
-        std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
-        debug::log("Starting tokenization process");
-        debug::showColor(debug::TOKENIZATION);
-
-
-        Tokenizer tokenizer = Tokenizer(code, scope);
-        tokenizer.tokenize();
-        debug::log("Starting interpretation process");
-        debug::showColor(debug::INTERPRETATION);
-        Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
-        printStartupMessage();
-        debug::showColor(debug::RUNNING);
-        interpreter.run();
-
-        xTaskCreate(
-            runClock, // Function that implements the task.
-            "MyForeverTask", // Text name for the task.
-            32768, // Stack size in bytes, adjust as needed.
-            nullptr, // Parameter passed into the task.
-            0, // Priority, with 0 being the lowest.
-            nullptr // Used to pass back the created task's handle.
-        );
-        xTaskCreate(
-            uart, // Function that implements the task.
-            "UART", // Text name for the task.
-            32768, // Stack size in bytes, adjust as needed.
-            nullptr, // Parameter passed into the task.
-            10, // Priority, with 0 being the lowest.
-            nullptr // Used to pass back the created task's handle.
-        );
-    }
-}
 
 extern "C" void app_main(void) {
     esp_err_t ret = nvs_flash_init();
@@ -192,7 +112,7 @@ extern "C" void app_main(void) {
     DovetailCore::innitSystem();
     DovetailCore::send_get_request("192.168.4.1:80/code");
 
-    runInterpreter(DovetailCore::codebase);
+
 
 
     debug::log("Interpretation has finished! Background tasks are still running fear not!");
