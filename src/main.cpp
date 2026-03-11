@@ -22,6 +22,7 @@
 #include "base/Tokenizer.h"
 #include "driver/uart.h"
 using namespace std;
+#include "esp_http_server.h"
 
 #define PIN_NUM_POWER 10
 #define PIN_NUM_MISO 7
@@ -90,9 +91,6 @@ void runClock(void *pvParameters) {
         ScheduleLoop::getInstance()->loop();
 
         vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
-
-        // debug::print("loop test");
-
     }
 }
 
@@ -158,8 +156,20 @@ static void wifi_event_handler(void *arg, esp_event_base_t base, int32_t id, voi
     }
 }
 
-#include "esp_http_client.h"
 string codebase;
+
+httpd_handle_t start_webserver() {
+    httpd_handle_t server = nullptr;
+    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+
+    if (httpd_start(&server, &config) == ESP_OK) {
+        ESP_LOGI(TAG, "Server started successfully, registering URI handlers...");
+        return server;
+    }
+
+    ESP_LOGE(TAG, "Failed to start server");
+    return nullptr;
+}
 
 esp_err_t _http_event_handler(esp_http_client_event_t *evt) {
     switch (evt->event_id) {
@@ -314,6 +324,7 @@ extern "C" void app_main(void) {
 
     setupGPIO();
     connectWifi();
+    start_webserver();
     send_get_request("192.168.4.1:80/code");
     runInterpreter(codebase);
 
