@@ -18,6 +18,7 @@
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "esp_task_wdt.h" // Make sure you include this header
+#include "base/DovetailCore.h"
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
 #include "driver/uart.h"
@@ -140,141 +141,6 @@ void setupGPIO() {
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
 }
 
-#include "esp_http_client.h"
-
-// Bits for synchronization
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
-static EventGroupHandle_t s_wifi_event_group;
-
-// 1. The Event Handler (Must be registered in your main init)
-static void wifi_event_handler(void *arg, esp_event_base_t base, int32_t id, void *data) {
-    if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED) {
-        xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
-    } else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
-        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-    }
-}
-
-string codebase;
-
-httpd_handle_t start_webserver() {
-    httpd_handle_t server = nullptr;
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-
-    if (httpd_start(&server, &config) == ESP_OK) {
-        ESP_LOGI(TAG, "Server started successfully, registering URI handlers...");
-        return server;
-    }
-
-    ESP_LOGE(TAG, "Failed to start server");
-    return nullptr;
-}
-
-esp_err_t _http_event_handler(esp_http_client_event_t *evt) {
-    switch (evt->event_id) {
-        case HTTP_EVENT_ON_DATA:
-            // Check if there is data to print
-            if (!esp_http_client_is_chunked_response(evt->client)) {
-                // Print the data segment received
-                // We use printf with precision to handle non-null-terminated strings
-                codebase = static_cast<char *>(evt->data);
-                // printf("%.*s", evt->data_len, static_cast<char *>(evt->data));
-            }
-            break;
-        default:
-            break;
-    }
-    return ESP_OK;
-}
-
-void send_get_request(const std::string &url) {
-    std::string full_url = "http://" + url;
-
-    esp_http_client_config_t config = {
-        .url = full_url.c_str(),
-        .method = HTTP_METHOD_GET,
-        .event_handler = _http_event_handler,
-    };
-
-    esp_http_client_handle_t client = esp_http_client_init(&config);
-    esp_err_t err = esp_http_client_perform(client);
-
-    if (err == ESP_OK) {
-        printf("HTTP GET Status = %d\n", esp_http_client_get_status_code(client));
-    } else {
-        printf("HTTP GET request failed: %s\n", esp_err_to_name(err));
-    }
-
-    esp_http_client_cleanup(client);
-}
-
-void connectWifi() {
-    // Initialize Event Group
-    s_wifi_event_group = xEventGroupCreate();
-
-    // Standard Init (Assuming NVS is already init in app_main)
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_sta();
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
-    // Register the handler
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL, NULL))
-    ;
-
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
-    // 1. Scan
-    wifi_scan_config_t scan_config = {};
-    esp_wifi_scan_start(&scan_config, true);
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
-    // 2. Retrieve results
-    uint16_t ap_count = 0;
-    esp_wifi_scan_get_ap_num(&ap_count);
-    auto *ap_list = static_cast<wifi_ap_record_t *>(malloc(sizeof(wifi_ap_record_t) * ap_count));
-    esp_wifi_scan_get_ap_records(&ap_count, ap_list);
-
-    // 3. Iterate through filtered SSIDs
-    for (int i = 0; i < ap_count; i++) {
-        std::string ssid_str = reinterpret_cast<char *>(ap_list[i].ssid);
-
-        if (!ssid_str.starts_with("Dovetail-")) continue;
-
-        debug::log("Attempting: " + ssid_str);
-        vTaskDelay(pdMS_TO_TICKS(2000)); //Delay start to allow for monitor
-        // Configure WiFi for this specific SSID
-        wifi_config_t wifi_config = {};
-        strcpy((char *) wifi_config.sta.password, "Phisiland"); // Insert known password
-        memcpy(wifi_config.sta.ssid, ap_list[i].ssid, sizeof(wifi_config.sta.ssid));
-        // wifi_config.sta.threshold.authmode = WIFI_AUTH_OPEN; // Uncomment if networks are open
-
-        ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-        esp_wifi_connect();
-
-        // 4. Wait for Success or Failure (10 second timeout)
-        EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                               WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
-                                               pdTRUE, pdFALSE, pdMS_TO_TICKS(10000));
-
-        if (bits & WIFI_CONNECTED_BIT) {
-            debug::log("Stable connection established to: " + ssid_str);
-
-            // --- Send HTTP Request Here ---
-            // Example: make_http_request("192.168.4.1");
-
-            break; // Stop and stay on this network
-        } else {
-            debug::log("Timed out or failed on: " + ssid_str);
-            esp_wifi_disconnect();
-        }
-    }
-    free(ap_list);
-}
 
 void runInterpreter(string &code) {
     {
@@ -323,10 +189,10 @@ extern "C" void app_main(void) {
     vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
 
     setupGPIO();
-    connectWifi();
-    start_webserver();
-    send_get_request("192.168.4.1:80/code");
-    runInterpreter(codebase);
+    DovetailCore::innitSystem();
+    DovetailCore::send_get_request("192.168.4.1:80/code");
+
+    runInterpreter(DovetailCore::codebase);
 
 
     debug::log("Interpretation has finished! Background tasks are still running fear not!");
