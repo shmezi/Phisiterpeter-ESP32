@@ -26,7 +26,7 @@ void DovetailCore::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t 
     }
 }
 
-static std::string codebase = "";
+std::string DovetailCore::codebase = "";
 
 httpd_handle_t DovetailCore::startWebServer() {
     httpd_handle_t server = nullptr;
@@ -41,7 +41,7 @@ httpd_handle_t DovetailCore::startWebServer() {
     return nullptr;
 }
 
-esp_err_t DovetailCore::httpClientHandler(const esp_http_client_event_t *evt) {
+esp_err_t DovetailCore::httpClientHandler(esp_http_client_event_t *evt) {
     switch (evt->event_id) {
         case HTTP_EVENT_ON_DATA:
             // Check if there is data to print
@@ -71,7 +71,7 @@ void DovetailCore::send_get_request(const std::string &url) {
     esp_err_t err = esp_http_client_perform(client);
 
     if (err != ESP_OK) {
-        debug::error("HTTP GET request to " + std::string(esp_err_to_name(err)) + "failed :(");
+        debug::error(("HTTP GET request to " + std::string(esp_err_to_name(err)) + "failed :("));
     }
 
     esp_http_client_cleanup(client);

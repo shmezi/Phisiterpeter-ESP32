@@ -7,13 +7,13 @@
 #include <esp_event_base.h>
 #include <esp_http_client.h>
 #include <esp_http_server.h>
-#include <bits/basic_string.h>
+#include <string>
 
 
 class DovetailCore {
     static void wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data);
 
-    static esp_err_t httpClientHandler(const esp_http_client_event_t *evt);
+    static esp_err_t httpClientHandler(esp_http_client_event_t *evt);
 
 public:
     static std::string codebase;
