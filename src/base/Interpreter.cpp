@@ -157,11 +157,11 @@ void Interpreter::run() const {
         // try {
         //     expression->interpret(headScope);
         // } catch (std::bad_any_cast &e) {
-        //     debug::error(
+        //     debug::runTimeError(
         //         "Anycast Bad arguments provided for expression: `" + expression->expressionName() + "`" +
         //         " Provided: at line: " + std::to_string(expression->lineNumber));
         // } catch (std::exception &e) {
-        //     debug::error(
+        //     debug::runTimeError(
         //         "General Bad arguments provided for expression: `" + expression->expressionName() + "`" +
         //         " Provided: at line: " + std::to_string(expression->lineNumber));
         // }
@@ -191,7 +191,7 @@ void Interpreter::interpretKeyWordExpression(const Token &token) {
         //Here we must return an expression containing all the obtained expressions.
     }
     if (originalExpressionCount - abstractSyntaxTree.size() < tokenFactory->paramSize()) {
-        debug::error(
+        debug::runTimeError(
             "Not enough arguments found for expression `" + token.tokenId + "` Expected: " +
             std::to_string(tokenFactory->paramSize()) + " Found: " + std::to_string(
                 originalExpressionCount - abstractSyntaxTree.size()));
@@ -327,7 +327,7 @@ void printStartupMessage() {
     cout << "\033[0m\t\t" << endl;
 }
 
-void Interpreter:: runInterpreter(string &code) {
+void Interpreter::runInterpreter(string &code) {
     {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);

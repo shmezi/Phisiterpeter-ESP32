@@ -73,11 +73,12 @@ void ScheduleLoop::loop() {
 }
 
 void ScheduleLoop::startEvent(int param) {
+
     std::string event = "start";
     if (param == -1)
         event = "stop";
     if (!startFunc.contains(event)) {
-        debug::error("No event of id '" + event + "' found!");
+        debug::runTimeError("No event of id '" + event + "' found!");
         return;
     }
     for (const auto &task: startFunc[event]) {

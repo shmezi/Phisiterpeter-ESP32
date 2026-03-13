@@ -17,7 +17,7 @@ class DovetailCore {
 
 public:
     static std::string codebase;
-    static void send_get_request(const std::string &url);
+    static bool send_get_request(const std::string &url);
 
     static httpd_handle_t startWebServer();
 
@@ -25,7 +25,7 @@ public:
 
     static void connectWifi();
 
-    static void innitSystem();
+    static void innitDovetail();
 };
 
 

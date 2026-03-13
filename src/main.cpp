@@ -99,6 +99,8 @@ void setupGPIO() {
 
 
 extern "C" void app_main(void) {
+    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
+    debug::showColor(debug::STARTUP);
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -106,11 +108,13 @@ extern "C" void app_main(void) {
     }
     ESP_ERROR_CHECK(ret);
 
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
+
 
     setupGPIO();
-    DovetailCore::innitSystem();
-    DovetailCore::send_get_request("192.168.4.1:80/code");
+    DovetailCore::innitDovetail();
+    DovetailCore::send_get_request("register?domain=core.it");
+    if (bool codeSuccess = DovetailCore::send_get_request("code"))
+        debug::showColor(debug::CODE_LOADED);
 
 
 

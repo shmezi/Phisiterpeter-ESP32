@@ -20,7 +20,7 @@ std::string WhileExpression::expressionName() {
 
 std::shared_ptr<Expression> WhileExpression::interpret(std::shared_ptr<Scope> scope) {
     if (this->check->interpret(scope)->expressionName() != "booleanExpression") {
-        debug::error(
+        debug::runTimeError(
             "While expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() +
             "! on line: " + std::to_string(this->lineNumber));
         return std::make_unique<VoidExpression>();

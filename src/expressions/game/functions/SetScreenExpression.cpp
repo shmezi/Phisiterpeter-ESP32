@@ -9,6 +9,7 @@
 #include <cstring>
 #include <driver/uart.h>
 
+#include "base/DovetailCore.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string SetScreenExpression::expressionName() {
@@ -17,16 +18,7 @@ std::string SetScreenExpression::expressionName() {
 
 std::shared_ptr<Expression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto screenName = screen->interpertAsString(scope);
-    int value = 1;
-    if (screenName == "swing" || screenName == "ferriswheel")
-        value = 2;
-    if (screenName == "blackmamba")
-        value = 3;
-    const auto screenId = std::to_string(value);
-    const char *rawMessageToSend = screenId.c_str();
-
-    uart_write_bytes(UART_NUM_2, rawMessageToSend, strlen(rawMessageToSend));
-
+    DovetailCore::send_get_request("screen?id=" + screenName);
     return std::make_shared<VoidExpression>();
 }
 

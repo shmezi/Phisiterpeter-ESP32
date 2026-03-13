@@ -15,7 +15,7 @@ on "start" {
     print "starting"
 }
 toggle = true
-
+cv
 once not read 13 {
     if not toggle {
     move m 0

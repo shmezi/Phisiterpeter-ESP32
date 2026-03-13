@@ -27,52 +27,112 @@ void DovetailCore::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t 
     }
 }
 
+
+// Handler for /reset
+esp_err_t PostReset(httpd_req_t *req) {
+    const char *resp_str = "Phisiland Core is now resting!";
+    httpd_resp_send(req, resp_str, strlen(resp_str));
+    debug::log("Rebooting deveice via remote command!");
+    // Logic to reset your DovetailCore or the ESP32
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    esp_restart();
+    return ESP_OK;
+}
+
+esp_err_t PostEvent(httpd_req_t *req) {
+    char buf[64]; // Buffer for the query string
+    char val_str[10] = {0};
+
+
+    // 1. Get the full query string (everything after the '?')
+    if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK) {
+        // 2. Extract specific parameters
+        httpd_query_key_value(buf, "val", val_str, sizeof(val_str));
+    }
+
+    // 3. Convert extracted string to Integer
+    int resultValue = atoi(val_str);
+
+    // 4. Send response back to the client
+    const char *resp_str = "Event Started";
+    httpd_resp_send(req, resp_str, strlen(resp_str));
+
+    // 5. Trigger your logic using the parsed integer
+    // Passing the integer from ?val=
+    ScheduleLoop::getInstance()->startEvent(resultValue);
+
+    return ESP_OK;
+}
+
 std::string DovetailCore::codebase = "";
 
 httpd_handle_t DovetailCore::startWebServer() {
     httpd_handle_t server = nullptr;
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
 
-    if (httpd_start(&server, &config) == ESP_OK) {
-        debug::log("Server started successfully, registering URI handlers...");
-        return server;
+    if (httpd_start(&server, &config) != ESP_OK) {
+        debug::runTimeError("Failed to start server");
+        return nullptr;
     }
 
-    debug::error("Failed to start server");
-    return nullptr;
+    debug::log("Server started successfully, registering URI handlers...");
+
+
+    constexpr httpd_uri_t resetURI = {
+        .uri = "/reset",
+        .method = HTTP_GET,
+        .handler = PostReset,
+        .user_ctx = nullptr
+    };
+    constexpr httpd_uri_t eventURI = {
+        .uri = "/event",
+        .method = HTTP_GET,
+        .handler = PostEvent,
+        .user_ctx = nullptr
+    };
+
+    httpd_register_uri_handler(server, &resetURI);
+    httpd_register_uri_handler(server, &eventURI);
+
+    return server;
 }
 
-std::string incoming_code;
+std::string incomingData;
 
 esp_err_t DovetailCore::httpClientHandler(esp_http_client_event_t *evt) {
     switch (evt->event_id) {
         case HTTP_EVENT_ON_CONNECTED:
             // Clear the string for a fresh start
-            incoming_code.clear();
+            incomingData.clear();
             break;
 
         case HTTP_EVENT_ON_DATA:
             if (evt->data_len > 0) {
                 // Safely append the incoming chunk to our string
-                incoming_code.append(static_cast<char *>(evt->data), evt->data_len);
+                incomingData.append(static_cast<char *>(evt->data), evt->data_len);
             }
             break;
 
         case HTTP_EVENT_ON_FINISH:
-            // Now that the data is complete, point codebase to it
-            codebase = const_cast<char *>(incoming_code.c_str());
-            // Trigger your interpreter here or set a flag
-            Interpreter::runInterpreter(codebase);
+            char url_buffer[128];
+            // Get the URL that was just requested
+            esp_http_client_get_url(evt->client, url_buffer, sizeof(url_buffer));
+            if (strstr(url_buffer, "/code")) {
+                // WE can push this back if we see this doesnt function..
+                debug::log("Code command!");
+                codebase = incomingData;
+                // Trigger your interpreter here or set a flag
+                Interpreter::runInterpreter(codebase);
+            }
             break;
-
         default:
             break;
     }
     return ESP_OK;
 }
 
-void DovetailCore::send_get_request(const std::string &url) {
-    std::string full_url = "http://" + url;
+bool DovetailCore::send_get_request(const std::string &url) {
+    std::string full_url = "http://192.168.4.1/" + url;
 
     esp_http_client_config_t config = {
         .url = full_url.c_str(),
@@ -82,19 +142,21 @@ void DovetailCore::send_get_request(const std::string &url) {
 
     esp_http_client_handle_t client = esp_http_client_init(&config);
     esp_err_t err = esp_http_client_perform(client);
-
-    if (err != ESP_OK) {
-        debug::error(("HTTP GET request to " + std::string(esp_err_to_name(err)) + "failed :("));
-    }
-
     esp_http_client_cleanup(client);
+    if (err != ESP_OK) {
+        debug::runTimeError(("HTTP GET request to " + std::string(esp_err_to_name(err)) + "failed :("));
+        return false;
+    }
+    return true;
 }
 
 void DovetailCore::scanAndJoin() {
+    debug::log("Attempting to join networks!");
+    debug::showColor(debug::SEARCHING_NETWORK);
+    bool connected = false;
     // 1. Scan
     wifi_scan_config_t scan_config = {};
     esp_wifi_scan_start(&scan_config, true);
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
     // 2. Retrieve results
     uint16_t ap_count = 0;
     esp_wifi_scan_get_ap_num(&ap_count);
@@ -126,6 +188,8 @@ void DovetailCore::scanAndJoin() {
 
         if (bits & WIFI_CONNECTED_BIT) {
             debug::log("Connected to: " + ssid_str);
+            connected = true;
+            debug::showColor(debug::JOINED_NETWORK);
             break;
         }
 
@@ -133,6 +197,10 @@ void DovetailCore::scanAndJoin() {
         esp_wifi_disconnect();
     }
     free(ap_list);
+    if (connected) return;
+    debug::log("Failed to connect to any network. Retrying shortly!");
+    vTaskDelay(pdMS_TO_TICKS(3000));
+    scanAndJoin();
 }
 
 void DovetailCore::connectWifi() {
@@ -147,17 +215,17 @@ void DovetailCore::connectWifi() {
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
-    // Register the handler
+    // Register the handlers
     ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifiNetworkHandler, NULL, NULL));
     ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifiNetworkHandler, NULL, NULL))
     ;
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
-    vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
+    debug::showColor(debug::WIFI_SUCCESS);
 }
 
-void DovetailCore::innitSystem() {
+void DovetailCore::innitDovetail() {
     connectWifi();
     scanAndJoin();
     startWebServer();

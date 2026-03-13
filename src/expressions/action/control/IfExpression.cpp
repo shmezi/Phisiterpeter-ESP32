@@ -17,7 +17,7 @@ std::string IfExpression::expressionName() {
 
 std::shared_ptr<Expression> IfExpression::interpret(std::shared_ptr<Scope> scope) {
     if (this->check->interpret(scope)->expressionName() != "booleanExpression") {
-        debug::error("If expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() + "! on line: " + std::to_string(this->lineNumber));
+        debug::runTimeError("If expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() + "! on line: " + std::to_string(this->lineNumber));
         return std::make_unique<VoidExpression>();
     }
     const auto isTrue = dynamic_cast<BooleanExpression *>(this->check->interpret(scope).get())->contents;
