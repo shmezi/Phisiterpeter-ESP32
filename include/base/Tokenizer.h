@@ -15,7 +15,7 @@ class Tokenizer {
     char currentlyParsedChar = ' ';
     std::string currentToken;
     int lineCount = 1;
-    FILE &stream;
+    std::string &stream;
     std::shared_ptr<Scope> headScope;
 
 public:
@@ -25,7 +25,7 @@ public:
 
     void tokenize();
 
-    Tokenizer(FILE &stream, std::shared_ptr<Scope> headScope);
+    Tokenizer(std::string &stream, std::shared_ptr<Scope> headScope);
 
 };
 

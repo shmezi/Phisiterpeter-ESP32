@@ -35,7 +35,7 @@ void MotorExpression::move(const float speedValue) {
 
     debug::print("Running motor at speed of " + std::to_string(speedValue));
     if (!GPIO_IS_VALID_GPIO(pinA) || !GPIO_IS_VALID_GPIO(pinB)) {
-        debug::error("Pin is invalid");
+        debug::runTimeError("Pin is invalid");
     }
 
     if (speedValue == 0) {

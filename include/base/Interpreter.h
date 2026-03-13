@@ -4,6 +4,7 @@
 
 #ifndef PHISILANDINTERPRETER_INTERPRETER_H
 #define PHISILANDINTERPRETER_INTERPRETER_H
+
 #include <map>
 #include <string>
 #include <vector>
@@ -14,6 +15,7 @@
 class Token;
 class Factory;
 using namespace std;
+
 
 class Interpreter {
 
@@ -34,6 +36,8 @@ public:
     void run() const;
 
     void interpret(vector<Token> &tokens, int limit = -1, const string &endToken = " ");
+
+    static void runInterpreter(string &code);
 
     void interpret(int limit = -1) {
         interpret(tokens, limit);

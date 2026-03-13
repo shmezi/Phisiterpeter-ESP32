@@ -11,7 +11,7 @@ void Scope::registerKeyWord(std::shared_ptr<Factory> &&factory) {
 std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
     if (keyWords.contains(id))
         return keyWords[id];
-    debug::error("Unknown ExpressionFactory of id '" + id + "' Are you sure it's registered?");
+    debug::runTimeError("Unknown ExpressionFactory of id '" + id + "' Are you sure it's registered?");
     return nullptr;
 }
 

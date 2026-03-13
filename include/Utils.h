@@ -18,6 +18,7 @@ namespace debug {
         if (result < 0) result += 360.0;
         return result;
     }
+
     enum class Color {
         RED = 31,
         BLUE = 34,
@@ -37,43 +38,52 @@ namespace debug {
         unsigned char blue;
     };
 
-    static constexpr RGB INTERPRETATION = {
-        .red = 102,
-        .green = 0,
-        .blue = 204
-
+    // General Lifecycle
+    static constexpr RGB STARTUP = {
+        .red = 255, .green = 255, .blue = 255 // White: Neutral starting point
     };
+    static constexpr RGB WIFI_SUCCESS = {
+        .red = 0, .green = 255, .blue = 255 // Cyan: Connection established
+    };
+    static constexpr RGB SEARCHING_NETWORK = {
+        .red = 150, .green = 150, .blue = 150 // Dim Grey/Pulsing: Idle/Searching
+    };
+    static constexpr RGB JOINED_NETWORK = {
+        .red = 0, .green = 128, .blue = 255 // Azure: Stable link
+    };
+    static constexpr RGB CODE_LOADED = {
+        .red = 255, .green = 0, .blue = 255 // Magenta: Ready to process
+    };
+
+    // Processing Pipeline
     static constexpr RGB TOKENIZATION = {
-        .red = 0,
-        .green = 0,
-        .blue = 255
+        .red = 0, .green = 0, .blue = 255 // Blue: Logic structure
+    };
+    static constexpr RGB INTERPRETATION = {
+        .red = 102, .green = 0, .blue = 204 // Purple: Deeper analysis
     };
     static constexpr RGB RUNNING = {
-        .red = 0,
-        .green = 255,
-        .blue = 0
-    };
-    static constexpr RGB RUNTIME_CRASH = {
-        .red = 255,
-        .green = 128,
-        .blue = 0
-
+        .red = 0, .green = 255, .blue = 0 // Green: Execution
     };
 
-    static constexpr RGB COMPILE_CRASH = {
-        .red = 255,
-        .green = 0,
-        .blue = 0
+    // Error States
+    static constexpr RGB GENERAL_ERROR = {
+        .red = 255, .green = 0, .blue = 0 // Red: Total failure
+    };
+    static constexpr RGB TOKEN_ERROR = {
+        .red = 255, .green = 0, .blue = 127 // Pinkish-Red: Syntax/Parsing issue
+    };
+    static constexpr RGB INTERPRET_ERROR = {
+        .red = 255, .green = 102, .blue = 0 // Deep Orange: Logic/Runtime issue
     };
     static constexpr RGB WARN = {
         .red = 255,
         .green = 255,
-        .blue = 0
+        .blue = 0 // Pure Yellow: "Attention required, but still running"
     };
 
-
     static void showColor(RGB color) {
-        led_strip_set_pixel(StatusLEDExpression::statusLight,0,color.red,color.green,color.blue);
+        led_strip_set_pixel(StatusLEDExpression::statusLight, 0, color.red, color.green, color.blue);
         led_strip_refresh(StatusLEDExpression::statusLight);
         // StatusLEDExpression::leds[0] = Rgb{color.red, color.green, color.blue};
         // StatusLEDExpression::leds.show();
@@ -84,9 +94,9 @@ namespace debug {
         return "\033[" + std::to_string(static_cast<int>(color)) + "m" + text + "\033[0m";
     }
 
-    inline void error(const std::string &value) {
+    inline void runTimeError(const std::string &value) {
         std::cout << colorize("[ERROR] " + value, Color::RED) << std::endl;
-        showColor(RUNTIME_CRASH);
+        showColor(INTERPRET_ERROR);
     }
 
     inline void log(const std::string &value) {

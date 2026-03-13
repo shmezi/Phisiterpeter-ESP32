@@ -25,14 +25,14 @@ public:
     }
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
-        debug::error("An internal DummyExpression was interpreted even though it is for internal use only!");
+        debug::runTimeError("An internal DummyExpression was interpreted even though it is for internal use only!");
         return nullptr;
     }
 
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override {
         const auto v = "An internal DummyExpression should not be converted to a string representation";
-        debug::error(v);
+        debug::runTimeError(v);
         return v;
     }
 };
