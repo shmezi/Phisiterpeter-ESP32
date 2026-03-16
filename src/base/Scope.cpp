@@ -14,28 +14,13 @@ std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
     debug::runTimeError("Unknown ExpressionFactory of id '" + id + "' Are you sure it's registered?");
     return nullptr;
 }
-
 std::shared_ptr<Expression> Scope::interpretVariable(const std::string &id) {
-    std::shared_ptr<Expression> foundExpression = nullptr;
+    if (variables.contains(id))
 
-    // 1. Lock just long enough to grab the item from the map
-    if (xSemaphoreTake(scopeMutex, portMAX_DELAY)) {
-        if (variables.contains(id)) {
-            foundExpression = variables[id];
-        }
-        xSemaphoreGive(scopeMutex);
-    }
-
-    // 2. If found, interpret it OUTSIDE the lock
-    if (foundExpression) {
-        return foundExpression->interpret(shared_from_this());
-    }
-
-    // 3. If not found, recurse to parent
+        return variables[id]->interpret(shared_from_this());
     if (parent != nullptr) {
         return parent->interpretVariable(id);
     }
-
     return nullptr;
 }
 

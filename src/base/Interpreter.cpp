@@ -84,7 +84,6 @@ using namespace std;
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
 
 
-bool Interpreter::shouldRunCode = false;
 
 void Interpreter::registerFactories() const {
     //Utility factories
@@ -143,8 +142,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<ResetRotationsExpressionFactory>());
     headScope->registerKeyWord(make_unique<DegreesExpressionFactory>());
     headScope->registerKeyWord(make_unique<RotateMotorByExpressionFactory>());
-    // headScope->registerKeyWord(make_unique<ServoExpressionFactory>());
-    // headScope->registerKeyWord(make_unique<InterruptPinExpressionFactory>());
+    headScope->registerKeyWord(make_unique<ServoExpressionFactory>());
+    headScope->registerKeyWord(make_unique<InterruptPinExpressionFactory>());
 
 
     //Lists
@@ -293,7 +292,7 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
 void runClock(void *pvParameters) {
     for (;;) {
         ScheduleLoop::getInstance()->loop();
-        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
+        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
     }
 }
 
@@ -338,8 +337,20 @@ void Interpreter::runInterpreter(string &code) {
             "MyForeverTask", // Text name for the task.
             32768, // Stack size in bytes, adjust as needed.
             nullptr, // Parameter passed into the task.
-            0, // Priority, with 0 being the lowest.
+            10, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
+        printf("\n--- BOOT DIAGNOSTICS ---\n");
+        printf("Free Internal RAM: %d bytes\n", heap_caps_get_free_size(MALLOC_CAP_INTERNAL));
+        printf("Free PSRAM: %d bytes\n", heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
+
+        BaseType_t result = xTaskCreate(runClock, "MyForeverTask", 8192, nullptr, 10, nullptr);
+
+        if (result != pdPASS) {
+            printf("ERROR: Task creation failed! (Likely Out of Memory)\n");
+        } else {
+            printf("SUCCESS: Task created at Priority 10\n");
+        }
+        printf("------------------------\n");
     }
 }
