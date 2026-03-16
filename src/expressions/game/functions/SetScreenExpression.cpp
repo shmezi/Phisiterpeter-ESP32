@@ -6,8 +6,7 @@
 #include "expressions/game/functions/SetScreenExpression.h"
 
 #include <algorithm>
-#include <cstring>
-#include <driver/uart.h>
+
 
 #include "base/DovetailCore.h"
 #include "expressions/internal/VoidExpression.h"
@@ -18,7 +17,7 @@ std::string SetScreenExpression::expressionName() {
 
 std::shared_ptr<Expression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto screenName = screen->interpertAsString(scope);
-    DovetailCore::send_get_request("screen?id=" + screenName);
+    DovetailCore::sendGetRequest("screen?id=" + screenName);
     return std::make_shared<VoidExpression>();
 }
 

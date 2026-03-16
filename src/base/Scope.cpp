@@ -16,12 +16,26 @@ std::shared_ptr<Factory> Scope::getFactoryById(const std::string &id) {
 }
 
 std::shared_ptr<Expression> Scope::interpretVariable(const std::string &id) {
-    if (variables.contains(id))
+    std::shared_ptr<Expression> foundExpression = nullptr;
 
-        return variables[id]->interpret(shared_from_this());
+    // 1. Lock just long enough to grab the item from the map
+    if (xSemaphoreTake(scopeMutex, portMAX_DELAY)) {
+        if (variables.contains(id)) {
+            foundExpression = variables[id];
+        }
+        xSemaphoreGive(scopeMutex);
+    }
+
+    // 2. If found, interpret it OUTSIDE the lock
+    if (foundExpression) {
+        return foundExpression->interpret(shared_from_this());
+    }
+
+    // 3. If not found, recurse to parent
     if (parent != nullptr) {
         return parent->interpretVariable(id);
     }
+
     return nullptr;
 }
 

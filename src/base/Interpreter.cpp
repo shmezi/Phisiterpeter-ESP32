@@ -9,7 +9,10 @@
 #include <iostream>
 #include <memory>
 #include <driver/gpio.h>
-#include <driver/uart.h>
+
+#include "freertos/FreeRTOS.h" // Must be FIRST
+#include "freertos/task.h"     // Required for vTaskDelay
+
 
 #include "../../include/expressions/value/BooleanExpression.h"
 #include "../../include/factories/action/arithmetic/AdditionExpressionFactory.h"
@@ -61,13 +64,16 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
+#include "base/DovetailCore.h"
 #include "factories/action/arithmetic/AbsExpressionFactory.h"
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
+#include "factories/game/functions/ServoExpressionFactory.h"
 #include "factories/game/functions/DegreesExpressionFactory.h"
 #include "factories/game/functions/EncoderSensorExpressionFactory.h"
 #include "factories/game/functions/EndActivityExpressionFactory.h"
+#include "factories/game/functions/InterruptPinExpressionFactory.h"
 #include "factories/game/functions/ResetRotationsExpressionFactory.h"
 #include "factories/game/functions/RotateMotorByExpressionFactory.h"
 #include "factories/game/functions/Wrap360ExpressionFactory.h"
@@ -76,7 +82,9 @@
 using namespace std;
 #define RX_BUF_SIZE 1024
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
-#define UART_PORT_NUM UART_NUM_2 // Using UART2
+
+
+bool Interpreter::shouldRunCode = false;
 
 void Interpreter::registerFactories() const {
     //Utility factories
@@ -135,6 +143,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<ResetRotationsExpressionFactory>());
     headScope->registerKeyWord(make_unique<DegreesExpressionFactory>());
     headScope->registerKeyWord(make_unique<RotateMotorByExpressionFactory>());
+    // headScope->registerKeyWord(make_unique<ServoExpressionFactory>());
+    // headScope->registerKeyWord(make_unique<InterruptPinExpressionFactory>());
 
 
     //Lists
@@ -280,31 +290,10 @@ void Interpreter::interpret(vector<Token> &tokens, int limit, const string &endT
     }
 }
 
-void uart(void *pvParameters) {
-    auto *data = static_cast<uint8_t *>(malloc(RX_BUF_SIZE + 1));
-    for (;;) {
-        const int rxBytes = uart_read_bytes(UART_PORT_NUM, data, RX_BUF_SIZE, pdMS_TO_TICKS(10));
-        if (rxBytes > 0) {
-            data[rxBytes] = 0;
-
-            auto actualData = reinterpret_cast<char *>(data);
-            // cout << actualData << endl;
-            if (actualData[0] != '~')
-                continue;
-            auto prettyData = string(actualData);
-            prettyData.erase(0, 1);
-
-            ScheduleLoop::getInstance()->startEvent(std::stoi(prettyData));
-        }
-        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
-    }
-}
-
 void runClock(void *pvParameters) {
     for (;;) {
         ScheduleLoop::getInstance()->loop();
-
-        vTaskDelay(pdMS_TO_TICKS(10)); // Delay for 1000ms
+        vTaskDelay(pdMS_TO_TICKS(1)); // Delay for 1000ms
     }
 }
 
@@ -341,23 +330,15 @@ void Interpreter::runInterpreter(string &code) {
         debug::showColor(debug::INTERPRETATION);
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
-        debug::showColor(debug::RUNNING);
-        interpreter.run();
 
+        interpreter.run();
+        debug::showColor(debug::RUNNING);
         xTaskCreate(
             runClock, // Function that implements the task.
             "MyForeverTask", // Text name for the task.
             32768, // Stack size in bytes, adjust as needed.
             nullptr, // Parameter passed into the task.
             0, // Priority, with 0 being the lowest.
-            nullptr // Used to pass back the created task's handle.
-        );
-        xTaskCreate(
-            uart, // Function that implements the task.
-            "UART", // Text name for the task.
-            32768, // Stack size in bytes, adjust as needed.
-            nullptr, // Parameter passed into the task.
-            10, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
     }

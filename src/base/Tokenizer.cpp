@@ -100,6 +100,7 @@ void Tokenizer::tokenize() {
                 streamingChar = '#';
                 break;
             case ' ':
+            case '	':
             case ',':
                 pushNewTokenToList();
                 break;

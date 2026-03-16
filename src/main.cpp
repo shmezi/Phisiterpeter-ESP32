@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <esp_mac.h>
 #include <iostream>
 #include <memory>
 #include "freertos/FreeRTOS.h"
@@ -21,7 +22,6 @@
 #include "base/DovetailCore.h"
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
-#include "driver/uart.h"
 using namespace std;
 #include "esp_http_server.h"
 
@@ -31,11 +31,9 @@ using namespace std;
 #define PIN_NUM_CLK  5
 #define PIN_NUM_CS   4
 
-#define TAG "UART_RECEIVER"
 
 #define RX_BUF_SIZE 1024
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
-#define UART_PORT_NUM UART_NUM_2 // Using UART2
 #define RX_PIN 39 // Example pin, connect to the other device's TX
 #define TX_PIN 40 // Example pin, connect to the other device's RX
 #include <dirent.h> // Required for directory operations
@@ -47,26 +45,6 @@ using namespace std;
 uint8_t data_buffer[128]; // Buffer to store received data
 constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
-
-void uart_init() {
-    uart_config_t uart_config = {
-        .baud_rate = 115200,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_DEFAULT,
-    };
-
-    // Configure UART parameters
-    ESP_ERROR_CHECK(uart_param_config(UART_PORT_NUM, &uart_config));
-
-    // Set UART pins (TX, RX, RTS, CTS)
-    ESP_ERROR_CHECK(uart_set_pin(UART_PORT_NUM, TX_PIN, RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
-
-    // Install UART driver, allocating the buffer
-    ESP_ERROR_CHECK(uart_driver_install(UART_PORT_NUM, RX_BUF_SIZE, TX_BUF_SIZE, 0, NULL, 0));
-}
 
 void startup() {
     const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
@@ -81,14 +59,15 @@ void startup() {
 
 
 void setupGPIO() {
+    AnalogReadExpression::init_config_a.unit_id = ADC_UNIT_1;
+    AnalogReadExpression::init_config_a.clk_src = ADC_RTC_CLK_SRC_DEFAULT;
+    AnalogReadExpression::init_config_b.unit_id = ADC_UNIT_2;
+    AnalogReadExpression::init_config_b.clk_src = ADC_RTC_CLK_SRC_DEFAULT;
     ESP_ERROR_CHECK(
         led_strip_new_rmt_device(
             &StatusLEDExpression::strip_config,
             &StatusLEDExpression::rmt_config,
             &StatusLEDExpression::statusLight));
-
-
-    uart_init();
 
 
     //Analog pin registration
@@ -97,26 +76,25 @@ void setupGPIO() {
 }
 
 
-
 extern "C" void app_main(void) {
     vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
-    debug::showColor(debug::STARTUP);
+    esp_log_level_set("wifi", ESP_LOG_VERBOSE);
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-
+    debug::showColor(debug::STARTUP);
 
 
     setupGPIO();
     DovetailCore::innitDovetail();
-    DovetailCore::send_get_request("register?domain=core.it");
-    if (bool codeSuccess = DovetailCore::send_get_request("code"))
+    uint8_t mac[6];
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+    DovetailCore::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
+    if (DovetailCore::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
         debug::showColor(debug::CODE_LOADED);
-
-
 
 
     debug::log("Interpretation has finished! Background tasks are still running fear not!");

@@ -6,8 +6,6 @@
 
 #include <algorithm>
 #include <thread>
-#include <driver/uart.h>
-#include <hal/uart_types.h>
 
 #include "Utils.h"
 #include "expressions/game/functions/SendResultExpression.h"
@@ -24,56 +22,79 @@ void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::mill
     }
 }
 
-static constexpr auto messageLimit = 300;
-
-void messageLoop() {
-    static auto lastRun = debug::getCurrentMs();
-    if (debug::getCurrentMs().count() - lastRun.count() < messageLimit) return;
-    for (int i = 0; i < 3; ++i) {
-        if (SendResultExpression::nextMessage[i] == SendResultExpression::prevMessage[i]) continue;
-        const auto cMessage = SendResultExpression::nextMessage[i].c_str();
-
-        uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
-    }
-}
 
 void ScheduleLoop::loop() {
-    for (const auto &[condition, task]: conditionalTasks) {
+    // ---------------- Conditional Tasks ----------------
+    for (size_t i = 0; i < conditionalTasks.size(); i++) {
+        auto it = conditionalTasks.begin();
+        std::advance(it, i);
+
+        auto condition = it->first;
+        auto task = it->second;
+
+        if (!task) continue;
         if (condition()) {
             task();
         }
     }
-    for (const auto &task: always) {
+
+    // ---------------- Always Tasks ----------------
+    for (size_t i = 0; i < always.size(); i++) {
+        auto task = always[i];
+        if (!task) continue;
         task();
     }
-    for (auto &[cooldown, lastRun]: lastScheduleRun) {
+
+    // ---------------- Last Schedule Run ----------------
+    for (size_t i = 0; i < lastScheduleRun.size(); i++) {
+        auto it = lastScheduleRun.begin();
+        std::advance(it, i);
+
+        auto cooldown = it->first;
+        auto &lastRun = it->second;
+
         evaluateAndRunCooldown(cooldown, lastRun);
     }
-    std::vector<std::function<void()>> tasksToRun;
+
+    // ---------------- Delayed Tasks ----------------
+    std::vector<std::function<void()> > tasksToRun;
     std::vector<int> keysToRemove;
-    for (const auto& [timeToRunTasks, tasks]: delayedTask) {
+
+    std::vector<int> delayedKeys;
+    delayedKeys.reserve(delayedTask.size());
+    for (auto &pair: delayedTask) {
+        delayedKeys.push_back(pair.first);
+    }
+
+    for (size_t i = 0; i < delayedKeys.size(); i++) {
+        int timeToRunTasks = delayedKeys[i];
+        auto &tasks = delayedTask[timeToRunTasks];
+
         if (debug::getCurrentMs().count() - timeToRunTasks < 0) continue;
-        keysToRemove.emplace_back(timeToRunTasks);
-        for (const auto& task : tasks) {
-            tasksToRun.emplace_back(task);
+
+        keysToRemove.push_back(timeToRunTasks);
+
+        for (size_t j = 0; j < tasks.size(); j++) {
+            auto task = tasks[j];
+            if (!task) continue;
+            tasksToRun.push_back(task);
         }
-
     }
 
-    for (const int  key : keysToRemove) {
-        delayedTask.erase(key);
+    for (size_t i = 0; i < keysToRemove.size(); i++) {
+        delayedTask.erase(keysToRemove[i]);
     }
 
-    for (const auto& task : tasksToRun) {
+    for (size_t i = 0; i < tasksToRun.size(); i++) {
+        auto task = tasksToRun[i];
+        if (!task) continue;
         task();
     }
 
-    // messageLoop();
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    // ---------------- Sleep ----------------
 }
 
 void ScheduleLoop::startEvent(int param) {
-
     std::string event = "start";
     if (param == -1)
         event = "stop";
@@ -129,6 +150,16 @@ void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> tas
     if (!delayedTask.contains(key))
         delayedTask[key] = std::vector<std::function<void()> >();
     delayedTask[key].emplace_back(task);
+}
+
+int ScheduleLoop::newIDTask(std::function<void()> task) {
+    int id = idToTask.size() - 1;
+    idToTask[id] = task;
+    return id;
+}
+
+void ScheduleLoop::queueIDTask(int id) {
+    taskIds.insert(id);
 }
 
 void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {

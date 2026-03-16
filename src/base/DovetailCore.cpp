@@ -6,6 +6,7 @@
 
 #include <esp_http_server.h>
 #include <esp_log.h>
+#include <esp_mac.h>
 #include <esp_wifi.h>
 #include <string>
 
@@ -30,6 +31,7 @@ void DovetailCore::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t 
 
 // Handler for /reset
 esp_err_t PostReset(httpd_req_t *req) {
+    debug::showColor(debug::RESTART);
     const char *resp_str = "Phisiland Core is now resting!";
     httpd_resp_send(req, resp_str, strlen(resp_str));
     debug::log("Rebooting deveice via remote command!");
@@ -64,7 +66,7 @@ esp_err_t PostEvent(httpd_req_t *req) {
     return ESP_OK;
 }
 
-std::string DovetailCore::codebase = "";
+std::string DovetailCore::codebase = "print \"Debug Your Code\"";
 
 httpd_handle_t DovetailCore::startWebServer() {
     httpd_handle_t server = nullptr;
@@ -113,7 +115,7 @@ esp_err_t DovetailCore::httpClientHandler(esp_http_client_event_t *evt) {
             }
             break;
 
-        case HTTP_EVENT_ON_FINISH:
+        case HTTP_EVENT_ON_FINISH: {
             char url_buffer[128];
             // Get the URL that was just requested
             esp_http_client_get_url(evt->client, url_buffer, sizeof(url_buffer));
@@ -125,13 +127,15 @@ esp_err_t DovetailCore::httpClientHandler(esp_http_client_event_t *evt) {
                 Interpreter::runInterpreter(codebase);
             }
             break;
+        }
         default:
             break;
     }
     return ESP_OK;
 }
 
-bool DovetailCore::send_get_request(const std::string &url) {
+
+bool DovetailCore::sendGetRequest(const std::string &url) {
     std::string full_url = "http://192.168.4.1/" + url;
 
     esp_http_client_config_t config = {
@@ -201,6 +205,20 @@ void DovetailCore::scanAndJoin() {
     debug::log("Failed to connect to any network. Retrying shortly!");
     vTaskDelay(pdMS_TO_TICKS(3000));
     scanAndJoin();
+}
+
+std::string DovetailCore::getMacAddress() {
+    uint8_t mac[6];
+    char mac_cstr[18];
+
+    // Read the base MAC address for the Wi-Fi station interface
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+
+    // Format into standard notation
+    snprintf(mac_cstr, sizeof(mac_cstr), "%02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    return std::string(mac_cstr);
 }
 
 void DovetailCore::connectWifi() {

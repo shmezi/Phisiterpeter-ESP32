@@ -4,6 +4,7 @@
 
 #ifndef PHISITERPETER_ESP32_MOTOREXPRESSION_H
 #define PHISITERPETER_ESP32_MOTOREXPRESSION_H
+#include <driver/mcpwm_types.h>
 #include <soc/gpio_num.h>
 
 #include "expressions/Expression.h"
@@ -12,6 +13,12 @@
 class MotorExpression : public Expression, public std::enable_shared_from_this<MotorExpression> {
     bool run = false;
 
+
+    // Add these modern MCPWM handles here
+    mcpwm_timer_handle_t timer = nullptr;
+    mcpwm_oper_handle_t oper = nullptr;
+    mcpwm_cmpr_handle_t comparator = nullptr;
+    mcpwm_gen_handle_t generator = nullptr;
 public:
     gpio_num_t bActualPin;
     std::unique_ptr<Expression> a;

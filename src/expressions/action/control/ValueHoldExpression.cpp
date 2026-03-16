@@ -9,7 +9,8 @@ std::string ValueHoldExpression::expressionName() {
 }
 
 std::shared_ptr<Expression> ValueHoldExpression::interpret(std::shared_ptr<Scope> scope) {
-    return expression;
+    return expression->interpret(scope);
+    //Modify to allow running of the internal expressions (should be harmless and only benefit us)
 }
 
 std::string ValueHoldExpression::interpertAsString(std::shared_ptr<Scope> scope) {

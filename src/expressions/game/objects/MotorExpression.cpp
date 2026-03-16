@@ -16,7 +16,7 @@
 #include "Utils.h"
 #include "driver/gpio.h"
 #include "expressions/value/NumberExpression.h"
-#include "driver/mcpwm.h"
+// #include "driver/mcpwm.h"
 #include "esp_log.h"
 
 
@@ -27,48 +27,82 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "driver/mcpwm_prelude.h"
+
 
 void MotorExpression::move(const float speedValue) {
     auto pinA = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(a.get())->contents);
     auto pinB = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(b.get())->contents);
     auto pinSpeed = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(speed.get())->contents);
 
-    debug::print("Running motor at speed of " + std::to_string(speedValue));
-    if (!GPIO_IS_VALID_GPIO(pinA) || !GPIO_IS_VALID_GPIO(pinB)) {
-        debug::runTimeError("Pin is invalid");
-    }
 
-    if (speedValue == 0) {
-        gpio_set_level(pinA, false);
-        gpio_set_level(pinB, false);
-    }
-    gpio_set_level(pinA, speedValue > 0);
-    gpio_set_level(pinB, speedValue < 0);
-
+    // ---- Initialize MCPWM once ----
     if (!run) {
+        run = true;
 
         gpio_set_direction(pinA, GPIO_MODE_OUTPUT);
         gpio_set_direction(pinB, GPIO_MODE_OUTPUT);
-        // Init MCPWM with 1 kHz frequency, 50% duty
-        mcpwm_config_t pwm_config;
-        pwm_config.frequency = 1000; // 1 kHz
-        pwm_config.cmpr_a = speedValue; // 50% duty cycle
-        pwm_config.cmpr_b = 0.0; // unused
-        pwm_config.counter_mode = MCPWM_UP_COUNTER;
-        pwm_config.duty_mode = MCPWM_DUTY_MODE_0;
 
+        mcpwm_timer_config_t timer_config = {};
+        timer_config.group_id = 0;
+        timer_config.clk_src = MCPWM_TIMER_CLK_SRC_DEFAULT;
+        timer_config.resolution_hz = 1000000; // 1 MHz resolution
+        timer_config.count_mode = MCPWM_TIMER_COUNT_MODE_UP;
+        timer_config.period_ticks = 20000; // 20 kHz PWM
+        mcpwm_new_timer(&timer_config, &timer);
 
-        mcpwm_init(MCPWM_UNIT_0, MCPWM_TIMER_0, &pwm_config);
+        mcpwm_operator_config_t operator_config = {};
+        operator_config.group_id = 0;
+        mcpwm_new_operator(&operator_config, &oper);
 
+        mcpwm_operator_connect_timer(oper, timer);
 
+        mcpwm_comparator_config_t comparator_config = {};
 
+        comparator_config.flags.update_cmp_on_tez = true;
 
-        mcpwm_gpio_init(MCPWM_UNIT_0, MCPWM0A, pinSpeed);
-        run = true;
+        mcpwm_new_comparator(oper, &comparator_config, &comparator);
+
+        mcpwm_generator_config_t gen_config = {};
+        gen_config.gen_gpio_num = pinSpeed;
+        mcpwm_new_generator(oper, &gen_config, &generator);
+
+        mcpwm_generator_set_action_on_timer_event(
+            generator,
+            MCPWM_GEN_TIMER_EVENT_ACTION(
+                MCPWM_TIMER_DIRECTION_UP,
+                MCPWM_TIMER_EVENT_EMPTY,
+                MCPWM_GEN_ACTION_HIGH));
+
+        mcpwm_generator_set_action_on_compare_event(
+            generator,
+            MCPWM_GEN_COMPARE_EVENT_ACTION(
+                MCPWM_TIMER_DIRECTION_UP,
+                comparator,
+                MCPWM_GEN_ACTION_LOW));
+
+        mcpwm_timer_enable(timer);
+        mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP);
     }
-    mcpwm_set_duty(MCPWM_UNIT_0, MCPWM_TIMER_0, MCPWM_GEN_A, abs(speedValue));
+
+    // ---- Direction control ----
+    bool forward = speedValue >= 0;
 
 
+    if (speedValue == 0) {
+        gpio_set_level(pinA, 1);
+        gpio_set_level(pinB, 1);
+        return;
+    }
+
+    float speedAbs = std::min(std::abs(speedValue), 100.0f);
+
+    gpio_set_level(pinA, forward ? 1 : 0);
+    gpio_set_level(pinB, forward ? 0 : 1);
+
+    // ---- Set PWM duty ----
+    auto duty = static_cast<uint32_t>((speedAbs / 100.0f) * 20000);
+    mcpwm_comparator_set_compare_value(comparator, duty);
 }
 
 void MotorExpression::stop() {
@@ -94,6 +128,7 @@ std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
 void MotorExpression::rotate() {
     rotations += (gpio_get_level(bActualPin) == 0) ? -1 : 1;
 }
+
 int MotorExpression::getActualRotations() const {
     return rotations / 330;
 }
@@ -124,7 +159,7 @@ void MotorExpression::rotateUntilRotation(int rotateTo, int speedToRunAt) {
             m->requestRotation = 0; // Clear the request
         }
 
-        debug::print("ITEM LOOP");
+        debug::print("ITEM LOOP: " + std::to_string(current) + " " + std::to_string(rotateTo));
     });
 }
 

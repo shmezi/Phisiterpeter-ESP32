@@ -8,12 +8,14 @@
 #include <iostream>
 #include <string>
 #include <random>
+#include "freertos/FreeRTOS.h"
 
 #include "../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/chrono"
 #include "expressions/game/functions/StatusLEDExpression.h"
 
 namespace debug {
-    static double wrap360(const double angle) {
+
+    inline double wrap360(const double angle) {
         double result = std::fmod(angle, 360.0);
         if (result < 0) result += 360.0;
         return result;
@@ -80,6 +82,11 @@ namespace debug {
         .red = 255,
         .green = 255,
         .blue = 0 // Pure Yellow: "Attention required, but still running"
+    };
+    static constexpr RGB RESTART = {
+        .red = 0,
+        .green = 0,
+        .blue = 255
     };
 
     static void showColor(RGB color) {

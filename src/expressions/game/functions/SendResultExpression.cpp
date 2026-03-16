@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <cstring>
-#include <driver/uart.h>
 
 #include "../../../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/queue"
 #include "base/DovetailCore.h"
@@ -21,13 +20,10 @@ std::string SendResultExpression::expressionName() {
 
 std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto id = name->interpertAsString(scope);
-    // int idInt = id == "a" ? 0 : 1;
-    // if (id == "c") idInt = 2;
+
     const std::string v = (value->interpertAsString(scope));
 
-    // nextMessage[idInt] = message;
-    DovetailCore::send_get_request("sendResult?val=" + v + "&slot=" + id);
-    // uart_write_bytes(UART_NUM_2, cMessage, strlen(cMessage));
+    DovetailCore::sendGetRequest("sendResult?val=" + v + "&slot=" + id);
     return std::make_shared<VoidExpression>();
 }
 

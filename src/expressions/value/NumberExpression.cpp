@@ -21,6 +21,9 @@ std::shared_ptr<Expression> NumberExpression::interpret(std::shared_ptr<Scope> s
 }
 
 std::string NumberExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+    if (fmodf(contents, 1) == 0)
+        return std::to_string(static_cast<int>(contents));
+
     return std::to_string(contents);
 }
 

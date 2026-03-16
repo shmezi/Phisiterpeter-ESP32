@@ -8,11 +8,13 @@
 #include <chrono>
 #include <functional>
 #include <map>
+#include <set>
+#include "freertos/FreeRTOS.h"
+#include <freertos/task.h>
 
 
 class ScheduleLoop {
     std::atomic<bool> active = false;
-
 
     std::map<std::string, std::vector<std::function<void(int)> > > startFunc{};
 
@@ -29,10 +31,15 @@ class ScheduleLoop {
 
     std::map<int, std::chrono::milliseconds> lastScheduleRun{};
 
+    std::map<int, std::function<void()> > idToTask{};
+
+    std::set<int> taskIds{};
 
     void evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun);
 
 public:
+    static TaskHandle_t interpreterTaskHandle;
+
     static ScheduleLoop *getInstance();
 
     void loop();
@@ -54,6 +61,10 @@ public:
     void addCooldownTask(int cooldown, const std::function<void()> &task);
 
     void runAfterPeriod(const int &cooldown, std::function<void()> task);
+
+    int newIDTask(std::function<void()> task);
+
+    void queueIDTask(int id);
 };
 
 

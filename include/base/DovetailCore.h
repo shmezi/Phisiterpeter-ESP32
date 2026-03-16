@@ -17,11 +17,13 @@ class DovetailCore {
 
 public:
     static std::string codebase;
-    static bool send_get_request(const std::string &url);
+    static bool sendGetRequest(const std::string &url);
 
     static httpd_handle_t startWebServer();
 
     static void scanAndJoin();
+
+    static std::string getMacAddress();
 
     static void connectWifi();
 
