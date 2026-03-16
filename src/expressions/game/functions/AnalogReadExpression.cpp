@@ -30,15 +30,18 @@ adc_oneshot_unit_handle_t AnalogReadExpression::adc_handle_b;
 
 
 adc_oneshot_unit_init_cfg_t AnalogReadExpression::init_config_a = {
-    .unit_id = ADC_UNIT_1,
-    .clk_src = ADC_RTC_CLK_SRC_DEFAULT,
+
+
 };
 
 adc_oneshot_unit_init_cfg_t AnalogReadExpression::init_config_b = {
-    .unit_id = ADC_UNIT_2,
-    .clk_src = ADC_RTC_CLK_SRC_DEFAULT,
+
 };
 
+AnalogReadExpression::AnalogReadExpression(std::unique_ptr<Expression> pin) {
+    this->pin = std::move(pin);
+
+}
 
 std::string AnalogReadExpression::expressionName() {
     return "analog";
@@ -77,8 +80,4 @@ std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scop
 
 std::string AnalogReadExpression::interpertAsString(std::shared_ptr<Scope> scope) {
     return interpret(scope)->interpertAsString(scope);
-}
-
-AnalogReadExpression::AnalogReadExpression(std::unique_ptr<Expression> pin) {
-    this->pin = std::move(pin);
 }
