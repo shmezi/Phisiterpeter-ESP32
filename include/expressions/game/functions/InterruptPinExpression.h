@@ -4,8 +4,10 @@
 
 #ifndef PHISITERPETER_ESP32_INTERUPTPINEXPRESSION_H
 #define PHISITERPETER_ESP32_INTERUPTPINEXPRESSION_H
-#include "expressions/Expression.h"
+#include <utility>
 
+#include "Utils.h"
+#include "expressions/Expression.h"
 
 
 class InterruptPinExpression : public Expression, public std::enable_shared_from_this<InterruptPinExpression> {
@@ -20,16 +22,20 @@ public:
 
     std::string expressionName() override;
 
-     int taskID = -2;
+    int taskID = -2;
 
-    void trampoline();
+    void trampoline(int id);
 
-    InterruptPinExpression(std::shared_ptr<Expression> pin,
-                           std::shared_ptr<Expression> codeBlock) : pin(pin), codeBlock(codeBlock) {
-
+    InterruptPinExpression(
+        std::shared_ptr<Expression> pin,
+        std::shared_ptr<Expression> codeBlock) : pin(std::move(pin)), codeBlock(std::move(codeBlock)) {
     }
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
+
+    ~InterruptPinExpression() override {
+        debug::log("deleting interrupt");
+    }
 };
 
 

@@ -17,13 +17,18 @@ std::string InterruptPinExpression::expressionName() {
     return "reactOn";
 }
 
+struct ISRArgs {
+    InterruptPinExpression *obj;
+    int id;
+};
 
-void InterruptPinExpression::trampoline() {
-    ScheduleLoop::getInstance()->queueIDTask(taskID);
+void InterruptPinExpression::trampoline(int id) {
+    ScheduleLoop::getInstance()->queueIDTask(id);
 }
 
 void IRAM_ATTR handleGlobalInterrupt(void *arg) {
-    static_cast<InterruptPinExpression *>(arg)->trampoline();
+    const auto obj = static_cast<ISRArgs *>(arg);
+    obj->obj->trampoline(obj->id);
 }
 
 std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Scope> scope) {
@@ -40,11 +45,14 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
             .intr_type = GPIO_INTR_NEGEDGE, // Trigger on falling edge (button press)
         };
         gpio_config(&io_conf);
-        // gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) this);
+
 
         taskID = ScheduleLoop::getInstance()->newIDTask([cb = codeBlock,scope] {
             cb->interpret(scope);
         });
+        auto *args = new ISRArgs{this, taskID};
+        gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) args);
+        debug::log("Registered task id: " + std::to_string(taskID));
     }
     return shared_from_this();
 }

@@ -15,6 +15,7 @@
 
 class ScheduleLoop {
     std::atomic<bool> active = false;
+    std::mutex taskMutex;
 
     std::map<std::string, std::vector<std::function<void(int)> > > startFunc{};
 

@@ -24,6 +24,23 @@ void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::mill
 
 
 void ScheduleLoop::loop() {
+    //ID tasks should be first to give them priority :)
+    std::deque<int> idTasksToRun;
+    {
+        std::lock_guard lock(taskMutex);
+        idTasksToRun.swap(queuedIDTasks);
+    }
+    while (!idTasksToRun.empty()) {
+        auto taskID = idTasksToRun.front();
+        idTasksToRun.pop_front(); // Pop early to avoid issues if task() throws or returns
+
+        if (auto task = idToTask[taskID]) {
+            task();
+            debug::log("Ran task id: " + std::to_string(taskID));
+        } else {
+            debug::warn("Tried to run task id: " + std::to_string(taskID) + " but it was null!");
+        }
+    }
     // ---------------- Conditional Tasks ----------------
     for (size_t i = 0; i < conditionalTasks.size(); i++) {
         auto it = conditionalTasks.begin();
@@ -44,16 +61,6 @@ void ScheduleLoop::loop() {
         if (!task) continue;
         task();
     }
-    // for (size_t i = 0; i < queuedIDTasks.size(); i++) {
-    //     auto taskID = queuedIDTasks.front();
-    //     auto task = idToTask[taskID];
-    //     if (task)
-    //         task();
-    //     else
-    //         debug::warn("Tried to run task id: " + std::to_string(taskID) + " But it was null!");
-    //     debug::log("Ran task id: " + std::to_string(taskID));
-    //     queuedIDTasks.pop_front();
-    // }
 
 
     // ---------------- Last Schedule Run ----------------
@@ -171,6 +178,8 @@ int ScheduleLoop::newIDTask(std::function<void()> task) {
 }
 
 void ScheduleLoop::queueIDTask(int id) {
+    std::lock_guard lock(taskMutex);
+
     queuedIDTasks.push_back(id);
 }
 

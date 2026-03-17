@@ -4,8 +4,7 @@
 #include <iostream>
 #include <memory>
 #include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-#include "esp_wifi.h"       // Main Wi-Fi driver functions
+
 #include "esp_log.h"        // Logging (optional but recommended)
 #include "esp_event.h"      // Event loop for connection status
 #include "nvs_flash.h"      // NVS flash for storing Wi-Fi credentials
@@ -57,8 +56,6 @@ void startup() {
     cout << "\033[0m\t\t" << endl;
 }
 
-#include "esp_mac.h"
-#include <stdio.h>
 
 void force_factory_mac() {
     // S3 eFuse Base Address is 0x60007000
