@@ -5,11 +5,13 @@
 #include "../../../../include/expressions/game/functions/InterruptPinExpression.h"
 
 #include <esp_attr.h>
+#include <esp_timer.h>
 #include <driver/gpio.h>
 
 #include "Utils.h"
 #include "base/DovetailCore.h"
 #include "base/ScheduleLoop.h"
+#include "base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/NumberExpression.h"
 
@@ -20,10 +22,11 @@ std::string InterruptPinExpression::expressionName() {
 struct ISRArgs {
     InterruptPinExpression *obj;
     int id;
+    std::shared_ptr<Scope> scope;
 };
 
 void InterruptPinExpression::trampoline(int id) {
-    ScheduleLoop::getInstance()->queueIDTask(id);
+    ScheduleLoop::getInstance()->queueIDTask(id, esp_timer_get_time());
 }
 
 void IRAM_ATTR handleGlobalInterrupt(void *arg) {
@@ -47,10 +50,8 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
         gpio_config(&io_conf);
 
 
-        taskID = ScheduleLoop::getInstance()->newIDTask([cb = codeBlock,scope] {
-            cb->interpret(scope);
-        });
-        auto *args = new ISRArgs{this, taskID};
+        taskID = ScheduleLoop::getInstance()->newIDTask(codeBlock, scope);
+        auto *args = new ISRArgs{this, taskID, scope};
         gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) args);
         debug::log("Registered task id: " + std::to_string(taskID));
     }

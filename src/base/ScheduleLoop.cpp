@@ -8,7 +8,9 @@
 #include <thread>
 
 #include "Utils.h"
+#include "base/Scope.h"
 #include "expressions/game/functions/SendResultExpression.h"
+#include "expressions/value/NumberExpression.h"
 
 
 void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun) {
@@ -25,7 +27,7 @@ void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::mill
 
 void ScheduleLoop::loop() {
     //ID tasks should be first to give them priority :)
-    std::deque<int> idTasksToRun;
+    std::deque<IdTaskQueueItem> idTasksToRun;
     {
         std::lock_guard lock(taskMutex);
         idTasksToRun.swap(queuedIDTasks);
@@ -34,11 +36,13 @@ void ScheduleLoop::loop() {
         auto taskID = idTasksToRun.front();
         idTasksToRun.pop_front(); // Pop early to avoid issues if task() throws or returns
 
-        if (auto task = idToTask[taskID]) {
-            task();
-            debug::log("Ran task id: " + std::to_string(taskID));
+        if (auto [expression, scope] = idToTask[taskID.id]; expression) {
+            debug::log("Task " + std::to_string(taskID.id) + " run at " + std::to_string(taskID.time));
+            const auto newScope = std::make_shared<Scope>("interrupt", scope);
+            newScope->setVariable("exactTime", std::make_shared<NumberExpression>(taskID.time));
+            expression->interpret(newScope);
         } else {
-            debug::warn("Tried to run task id: " + std::to_string(taskID) + " but it was null!");
+            debug::warn("Tried to run task id: " + std::to_string(taskID.id) + " but it was null!");
         }
     }
     // ---------------- Conditional Tasks ----------------
@@ -170,17 +174,17 @@ void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> tas
     delayedTask[key].emplace_back(task);
 }
 
-int ScheduleLoop::newIDTask(std::function<void()> task) {
-    int id = idToTask.size() - 1;
+int ScheduleLoop::newIDTask(const std::shared_ptr<Expression> &task, const std::shared_ptr<Scope> &scope) {
+    const int id = idToTask.size();
     debug::log("A new task has been registered ID: " + std::to_string(id));
-    idToTask[id] = task;
+    idToTask[id] = IdTask(task, scope);
     return id;
 }
 
-void ScheduleLoop::queueIDTask(int id) {
+void ScheduleLoop::queueIDTask(int id, int64_t time) {
     std::lock_guard lock(taskMutex);
 
-    queuedIDTasks.push_back(id);
+    queuedIDTasks.push_back(IdTaskQueueItem(id, time));
 }
 
 void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {

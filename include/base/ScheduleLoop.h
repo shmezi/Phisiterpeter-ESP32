@@ -12,8 +12,20 @@
 #include "freertos/FreeRTOS.h"
 #include <freertos/task.h>
 
+#include "expressions/Expression.h"
+
 
 class ScheduleLoop {
+
+    struct IdTaskQueueItem {
+        int id;
+        int64_t time;
+    };
+    struct IdTask {
+        std::shared_ptr<Expression> expression;
+        std::shared_ptr<Scope> scope;
+    };
+
     std::atomic<bool> active = false;
     std::mutex taskMutex;
 
@@ -32,9 +44,9 @@ class ScheduleLoop {
 
     std::map<int, std::chrono::milliseconds> lastScheduleRun{};
 
-    std::map<int, std::function<void()> > idToTask{};
+    std::map<int, IdTask > idToTask{};
 
-    std::deque<int> queuedIDTasks{};
+    std::deque<IdTaskQueueItem> queuedIDTasks{};
 
     void evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun);
 
@@ -63,9 +75,9 @@ public:
 
     void runAfterPeriod(const int &cooldown, std::function<void()> task);
 
-    int newIDTask(std::function<void()> task);
+    int newIDTask(const std::shared_ptr<Expression> &task, const std::shared_ptr<Scope> &scope);
 
-    void queueIDTask(int id);
+    void queueIDTask(int id, int64_t time);
 };
 
 

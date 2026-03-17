@@ -10,6 +10,8 @@
 #include "expressions/Expression.h"
 
 
+struct ISRArgs;
+
 class InterruptPinExpression : public Expression, public std::enable_shared_from_this<InterruptPinExpression> {
 public:
     std::shared_ptr<Expression> pin;
