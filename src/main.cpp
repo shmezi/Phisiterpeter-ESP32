@@ -22,6 +22,10 @@
 #include "base/DovetailCore.h"
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
+#include <esp_adc/adc_oneshot.h>
+
+#include "expressions/game/functions/AnalogReadExpression.h"
+
 using namespace std;
 #include "esp_http_server.h"
 
@@ -36,10 +40,6 @@ using namespace std;
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
 #define RX_PIN 39 // Example pin, connect to the other device's TX
 #define TX_PIN 40 // Example pin, connect to the other device's RX
-#include <dirent.h> // Required for directory operations
-#include <esp_adc/adc_oneshot.h>
-
-#include "expressions/game/functions/AnalogReadExpression.h"
 
 
 uint8_t data_buffer[128]; // Buffer to store received data

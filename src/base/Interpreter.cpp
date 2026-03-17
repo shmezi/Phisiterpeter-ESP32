@@ -337,7 +337,7 @@ void Interpreter::runInterpreter(string &code) {
             "MyForeverTask", // Text name for the task.
             32768, // Stack size in bytes, adjust as needed.
             nullptr, // Parameter passed into the task.
-            10, // Priority, with 0 being the lowest.
+            1, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
         printf("\n--- BOOT DIAGNOSTICS ---\n");

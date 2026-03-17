@@ -44,6 +44,17 @@ void ScheduleLoop::loop() {
         if (!task) continue;
         task();
     }
+    // for (size_t i = 0; i < queuedIDTasks.size(); i++) {
+    //     auto taskID = queuedIDTasks.front();
+    //     auto task = idToTask[taskID];
+    //     if (task)
+    //         task();
+    //     else
+    //         debug::warn("Tried to run task id: " + std::to_string(taskID) + " But it was null!");
+    //     debug::log("Ran task id: " + std::to_string(taskID));
+    //     queuedIDTasks.pop_front();
+    // }
+
 
     // ---------------- Last Schedule Run ----------------
     for (size_t i = 0; i < lastScheduleRun.size(); i++) {
@@ -154,12 +165,13 @@ void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> tas
 
 int ScheduleLoop::newIDTask(std::function<void()> task) {
     int id = idToTask.size() - 1;
+    debug::log("A new task has been registered ID: " + std::to_string(id));
     idToTask[id] = task;
     return id;
 }
 
 void ScheduleLoop::queueIDTask(int id) {
-    taskIds.insert(id);
+    queuedIDTasks.push_back(id);
 }
 
 void ScheduleLoop::addCooldownTask(int cooldown, const std::function<void()> &task) {

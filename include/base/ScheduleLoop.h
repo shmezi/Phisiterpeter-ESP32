@@ -8,7 +8,7 @@
 #include <chrono>
 #include <functional>
 #include <map>
-#include <set>
+#include <deque>
 #include "freertos/FreeRTOS.h"
 #include <freertos/task.h>
 
@@ -33,7 +33,7 @@ class ScheduleLoop {
 
     std::map<int, std::function<void()> > idToTask{};
 
-    std::set<int> taskIds{};
+    std::deque<int> queuedIDTasks{};
 
     void evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun);
 

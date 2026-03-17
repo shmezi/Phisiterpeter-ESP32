@@ -20,7 +20,7 @@ public:
 
     std::string expressionName() override;
 
-    static int taskID;
+     int taskID = -2;
 
     void trampoline();
 

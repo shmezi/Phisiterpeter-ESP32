@@ -17,7 +17,6 @@ std::string InterruptPinExpression::expressionName() {
     return "reactOn";
 }
 
-int InterruptPinExpression::taskID;
 
 void InterruptPinExpression::trampoline() {
     ScheduleLoop::getInstance()->queueIDTask(taskID);
@@ -41,7 +40,7 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
             .intr_type = GPIO_INTR_NEGEDGE, // Trigger on falling edge (button press)
         };
         gpio_config(&io_conf);
-        gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) this);
+        // gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) this);
 
         taskID = ScheduleLoop::getInstance()->newIDTask([cb = codeBlock,scope] {
             cb->interpret(scope);
