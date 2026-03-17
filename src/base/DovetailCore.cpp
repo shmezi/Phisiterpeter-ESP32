@@ -22,9 +22,17 @@ static EventGroupHandle_t s_wifi_event_group;
 // 1. The Event Handler (Must be registered in your main init)
 void DovetailCore::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data) {
     if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED) {
-        xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
+        esp_wifi_connect();
+        debug::warn("WiFi was disconnected! Attempting to reconnect!");
     } else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
+        // Reset retry counter on successful connection
+
+        xEventGroupClearBits(s_wifi_event_group, WIFI_FAIL_BIT);
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+
+        auto *event = static_cast<ip_event_got_ip_t *>(data);
+
+        ESP_LOGI("WIFI", "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
     }
 }
 
@@ -45,8 +53,8 @@ esp_err_t PostEvent(httpd_req_t *req) {
     char buf[64]; // Buffer for the query string
     char val_str[10] = {0};
     ESP_LOGI("SERVER", "Free Internal: %d, Free PSRAM: %d",
-              heap_caps_get_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
-              heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
+             heap_caps_get_free_size(MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL),
+             heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
 
     // 1. Get the full query string (everything after the '?')
     if (httpd_req_get_url_query_str(req, buf, sizeof(buf)) == ESP_OK) {
