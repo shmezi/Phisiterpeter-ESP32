@@ -23,7 +23,8 @@
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
 #include <esp_adc/adc_oneshot.h>
-
+#include "soc/efuse_reg.h"
+#include "esp_mac.h"
 #include "expressions/game/functions/AnalogReadExpression.h"
 
 using namespace std;
@@ -56,7 +57,33 @@ void startup() {
     cout << "\033[0m\t\t" << endl;
 }
 
+#include "esp_mac.h"
+#include <stdio.h>
 
+void force_factory_mac() {
+    // S3 eFuse Base Address is 0x60007000
+    // MAC_LOW (BLK0_RDATA1) is at offset 0x44
+    // MAC_HIGH (BLK0_RDATA2) is at offset 0x48
+    const volatile auto *mac_reg_low = reinterpret_cast<volatile uint32_t *>(0x60007000 + 0x44);
+    const volatile auto *mac_reg_high = reinterpret_cast<volatile uint32_t *>(0x60007000 + 0x48);
+
+    const uint32_t reg_low = *mac_reg_low;
+    const uint32_t reg_high = *mac_reg_high;
+
+    uint8_t mac[6];
+    mac[0] = static_cast<uint8_t>(reg_high >> 8);
+    mac[1] = static_cast<uint8_t>(reg_high);
+    mac[2] = static_cast<uint8_t>(reg_low >> 24);
+    mac[3] = static_cast<uint8_t>(reg_low >> 16);
+    mac[4] = static_cast<uint8_t>(reg_low >> 8);
+    mac[5] = static_cast<uint8_t>(reg_low);
+
+    printf("[HARDWARE] Raw Silicon MAC Read: %02x:%02x:%02x:%02x:%02x:%02x\n",
+           mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    // Force the WiFi stack to use this REAL address
+    esp_base_mac_addr_set(mac);
+}
 
 void setupGPIO() {
     AnalogReadExpression::init_config_a.unit_id = ADC_UNIT_1;
@@ -75,7 +102,6 @@ void setupGPIO() {
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&AnalogReadExpression::init_config_b, &AnalogReadExpression::adc_handle_b));
 }
 
-
 extern "C" void app_main(void) {
     vTaskDelay(pdMS_TO_TICKS(3000)); //Delay start to allow for monitor
     esp_log_level_set("wifi", ESP_LOG_VERBOSE);
@@ -84,14 +110,15 @@ extern "C" void app_main(void) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
+
+    force_factory_mac();
     ESP_ERROR_CHECK(ret);
     debug::showColor(debug::STARTUP);
-
 
     setupGPIO();
     DovetailCore::innitDovetail();
     uint8_t mac[6];
-    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+    esp_efuse_mac_get_default(mac);
     DovetailCore::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
     if (DovetailCore::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
         debug::showColor(debug::CODE_LOADED);
