@@ -47,11 +47,7 @@ std::shared_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope
     unsigned char rLED = static_cast<char>(dynamic_cast<NumberExpression *>(r.get())->contents);
     unsigned char gLED = static_cast<char>(dynamic_cast<NumberExpression *>(g.get())->contents);
     unsigned char bLED = static_cast<char>(dynamic_cast<NumberExpression *>(b.get())->contents);
-
-
-    // leds[0] = Rgb{rLED, gLED, bLED};
-    // leds.show();
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    debug::showColor({rLED, gLED, bLED});
 
     return std::make_unique<VoidExpression>();
 }
