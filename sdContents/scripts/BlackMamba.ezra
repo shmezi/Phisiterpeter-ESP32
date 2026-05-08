@@ -1,0 +1,105 @@
+print "----------------------"
+print "|     Black Mamba     |"
+print "----------------------"
+
+
+screen "blackmamba"
+
+
+topPin = 18 
+bottomPin = 40
+
+
+sensorAPin = 41
+sensorBPin = 42
+
+servoPin = 17
+
+m = motor 10 11 12 15 16
+
+
+startTime = now
+reachedTop = false
+reachedBottom = false
+
+
+
+
+on "start" {
+    print "Started!"
+    sendResult "a" 0
+    sendResult "b" 0
+    sendResult "c" 0
+    servo servoPin 0
+
+    startTime = now
+
+
+}
+
+on "stop"{
+    print "Stopped?"
+}
+
+reactOn bottomPin {
+    if not reachedTop {
+        reachedTop = true
+
+        print "Reached bottom"
+        after 3000 {
+            servo servoPin 0
+            move m (0 - 60)
+        }
+
+        sendResult "c" ((exactTime - startTime))
+
+
+    }
+
+
+}
+
+
+
+
+reactOn sensorAPin {
+    if not reachedTop{
+
+        time = ((exactTime - startTime) )
+        print ("A: " + time)
+        sendResult "a" time
+
+
+    }
+}
+
+reactOn sensorBPin {
+    if not reachedTop{
+
+        time = ((exactTime - startTime))
+        print ("B: " + time)
+        sendResult "b" time
+
+
+    }
+}
+
+
+
+once read topPin and reachedTop {
+    reachedTop = false
+    print "Reached top"
+    servo servoPin 180
+    after 500 {
+        move m 100
+        after 850{
+            move m 0
+        }
+
+    }
+}
+
+
+
+
+

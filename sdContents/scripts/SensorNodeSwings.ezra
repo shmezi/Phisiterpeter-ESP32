@@ -1,0 +1,21 @@
+a = gyro true
+b = gyro false
+
+prev = now
+
+cooldown = (1000 * 250)
+
+when true {
+    if (( now - prev) > cooldown)
+
+    {
+        sendResult "a" angle a
+        sendResult "b" angle b
+        prev = now
+    }
+
+}
+after 1000 {
+status 0 0 0
+
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Swings",
+  "description": "A walk in the park!",
+  "devices": [
+    {
+      "id": "core",
+      "description": "Main controller",
+      "file": "Swings.ezra"
+    },
+    {
+      "id": "SensorNode",
+      "description": "MPU sensor controller",
+      "file": "SensorNodeSwings.ezra"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+print "Waterslide is now active!"
+screen "waterslide"
+
+startA = now
+startB = now
+
+sendResult "a" 0
+sendResult "b" 0
+
+when not read 13 {
+startA = now
+sendResult "a" 0
+
+}
+when not read 14 {
+sendResult "a" (now - startA)
+}
+when not read 17 {
+startB = now
+sendResult "b" 0
+}
+
+when not read 18 {
+sendResult "b" (now - startB)
+}

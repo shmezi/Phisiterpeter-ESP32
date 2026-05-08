@@ -1,0 +1,11 @@
+{
+  "name": "Black Mamba",
+  "description": "A walk in the park!",
+  "devices": [
+    {
+      "id": "core",
+      "description": "The main controller",
+      "file": "BlackMamba.ezra"
+    }
+  ]
+}

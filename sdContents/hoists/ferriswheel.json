@@ -1,0 +1,16 @@
+{
+  "name": "Ferris Wheel",
+  "description": "A walk in the park!",
+  "devices": [
+    {
+      "id": "core",
+      "description": "Main controller",
+      "file": "FerrisWheel.ezra"
+    },
+    {
+      "id": "sensorNode",
+      "description": "MPU sensor controller",
+      "file": "SensorNodeFerris.ezra"
+    }
+  ]
+}

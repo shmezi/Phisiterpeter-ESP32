@@ -1,0 +1,32 @@
+print "----------------------"
+print "|       Swings       |"
+print "----------------------"
+
+m = motor 10 11 12 15 16
+
+
+screen "swings"
+started = false
+on "start" {
+    if not started{
+        started = true
+        reset m
+
+        move m value
+
+        after 5000 {
+            move m 0
+            started = false
+            endActivity
+        }}
+
+}
+when true {
+    sendResult "c" abs rotations m
+
+
+}
+
+on "stop" {
+    move m 0
+}
