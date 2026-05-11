@@ -50,13 +50,16 @@ void startup() {
     const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
     cout << debug::colorize(c, debug::Color::CYAN);
 
-    cout << debug::colorize("© Developed and designed by Ezra Golombek 2025", debug::Color::BLUE) << endl;
+    cout << debug::colorize("© Developed and designed by Ezra Golombek 2026", debug::Color::BLUE) << endl;
 
 
     cout << "\033[0m\t\t" << endl;
 }
 
-
+/*
+ * Since we change various settings to enabled the external PS-RAM, the mac address is reset to nothing.
+ * Thus we need to force the ESP32 to use the actual factory MAC ID.
+ */
 void force_factory_mac() {
     // S3 eFuse Base Address is 0x60007000
     // MAC_LOW (BLK0_RDATA1) is at offset 0x44
