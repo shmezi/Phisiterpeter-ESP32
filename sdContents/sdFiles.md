@@ -32,7 +32,7 @@ The storage location for the functional logic files.
 * **Format**: All files must use the `.ezra` extension.
 * **Role**: These scripts are interpreted and executed by the EzraScript runtime.
 
-### 📄 index.html
+### 📄 index.html.gz
 
 The core web interface for the project.
 
