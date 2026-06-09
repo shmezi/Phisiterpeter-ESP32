@@ -8,7 +8,7 @@
 #include <algorithm>
 
 
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string SetScreenExpression::expressionName() {

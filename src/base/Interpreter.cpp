@@ -64,7 +64,7 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
-#include "base/DovetailCore.h"
+#include "../../include/base/dovetail/DovetailCore.h"
 #include "factories/action/arithmetic/AbsExpressionFactory.h"
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"

@@ -18,7 +18,7 @@
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "esp_task_wdt.h" // Make sure you include this header
-#include "base/DovetailCore.h"
+#include "../include/base/dovetail/DovetailCore.h"
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
 #include <esp_adc/adc_oneshot.h>

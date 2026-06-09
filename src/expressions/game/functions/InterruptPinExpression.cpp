@@ -9,7 +9,7 @@
 #include <driver/gpio.h>
 
 #include "Utils.h"
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "expressions/internal/VoidExpression.h"

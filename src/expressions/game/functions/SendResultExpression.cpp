@@ -8,7 +8,7 @@
 #include <cstring>
 
 #include "../../../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/queue"
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
 #include "expressions/internal/VoidExpression.h"
 std::string SendResultExpression::nextMessage[3];
 std::string SendResultExpression::prevMessage[3];

@@ -7,7 +7,7 @@
 #include <cstring>
 #include <driver/uart.h>
 
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string EndActivityExpression::expressionName() {

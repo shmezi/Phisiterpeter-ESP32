@@ -9,23 +9,18 @@
 #include <esp_http_server.h>
 #include <string>
 
+#define WIFI_CONNECTED_BIT BIT0
+#define WIFI_FAIL_BIT      BIT1
 
 class DovetailCore {
-    static void wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data);
-
-    static esp_err_t httpClientHandler(esp_http_client_event_t *evt);
-
 public:
     static std::string codebase;
-    static bool sendGetRequest(const std::string &url);
 
-    static httpd_handle_t startWebServer();
 
     static void scanAndJoin();
 
     static std::string getMacAddress();
 
-    static void connectWifi();
 
     static void innitDovetail();
 };

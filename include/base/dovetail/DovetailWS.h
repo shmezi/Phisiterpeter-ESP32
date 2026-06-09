@@ -1,0 +1,13 @@
+//
+// Created by Ezra Golombek on 09/06/2026.
+//
+
+#ifndef PHISITERPETER_ESP32_DOVETAILWS_H
+#define PHISITERPETER_ESP32_DOVETAILWS_H
+
+
+class DovetailWS {
+};
+
+
+#endif //PHISITERPETER_ESP32_DOVETAILWS_H
