@@ -8,8 +8,8 @@
 
 #include "esp_websocket_client.h"
 #include "Utils.h"
+#include <ArduinoJson.h>  // works fine via lib_deps
 
-// #include "managed_components/espressif_esp_websocket_client/"
 esp_websocket_client_handle_t DovetailWS::client = nullptr;
 
 
@@ -19,6 +19,7 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
 
     switch (event_id) {
         case WEBSOCKET_EVENT_CONNECTED:
+            // JsonDocument doc;
             debug::log("Successfully connected to WebSocket Server!");
             // Send a test message immediately upon connection
             esp_websocket_client_send_text(client, "Hello from ESP32-S3!", 20, portMAX_DELAY);
@@ -33,10 +34,14 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
                 debug::log("Still playing ping pong :)");
                 break; // Drop it, ESP-IDF automatically sends the Pong back!
             }
+            //
 
-            std::string incoming_msg(reinterpret_cast<const char *>(data->data_ptr), data->data_len);
+
+            std::string message(data->data_ptr, data->data_len);
+            JsonDocument doc;
+            deserializeJson(doc, message);
             // Log incoming messages safely without spilling over memory limits
-            debug::log("Received message: " + incoming_msg);
+            debug::log("Received message: " + doc["name"]);
             break;
         }
 
