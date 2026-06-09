@@ -8,6 +8,10 @@
 
 
 class DovetailWS {
+    static bool isPingPongMessage(const esp_websocket_event_data_t *data);
+
+    static void requestRegistration();
+
     static void websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
 
     static esp_websocket_client_handle_t client;

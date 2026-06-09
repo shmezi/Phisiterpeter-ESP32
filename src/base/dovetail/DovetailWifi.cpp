@@ -14,7 +14,6 @@
 #include "base/dovetail/DovetailCore.h"
 
 EventGroupHandle_t DovetailWifi::s_wifi_event_group;
-
 // 1. The Event Handler (Must be registered in your main init)
 void DovetailWifi::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data) {
     if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED) {
@@ -32,7 +31,7 @@ void DovetailWifi::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t 
     }
 }
 
-void DovetailWifi::connectWifi() {
+void DovetailWifi::initWifiClient() {
     // Initialize Event Group
     s_wifi_event_group = xEventGroupCreate();
 

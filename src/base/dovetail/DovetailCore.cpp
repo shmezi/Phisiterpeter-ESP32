@@ -13,11 +13,15 @@
 #include "esp_http_client.h"
 #include "Utils.h"
 #include "base/Interpreter.h"
+#include "base/dovetail/DovetailClient.h"
 #include "base/dovetail/DovetailWifi.h"
 #include "base/dovetail/DovetailWS.h"
 
 // Bits for synchronization
 
+SemaphoreHandle_t DovetailCore::dovetailRegisteredSuccessfully = xSemaphoreCreateBinary();
+
+bool DovetailCore::shouldUpdateCodeBase = false;
 
 std::string DovetailCore::codebase = "print \"Debug Your Code\"";
 
@@ -47,8 +51,20 @@ void DovetailCore::connectToNetwork(const wifi_ap_record_t &network) {
     esp_wifi_connect();
 }
 
+bool DovetailCore::verifyRegistration() {
+    if (xSemaphoreTake(dovetailRegisteredSuccessfully, pdMS_TO_TICKS(10000)) == pdTRUE) {
+        debug::log("Successfully registered!");
+        debug::showColor(debug::JOINED_NETWORK);
+        xSemaphoreGive(dovetailRegisteredSuccessfully);
 
-bool DovetailCore::verifyConnection(bool &connected, const std::string &ssid) {
+        return true;
+    }
+    debug::runTimeError("Device failed registeration, (Most likely Server is lagging). Moving on.");
+
+    return false;
+}
+
+bool DovetailCore::verifyConnection() {
     const EventBits_t bits = xEventGroupWaitBits(
         DovetailWifi::s_wifi_event_group,
         WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
@@ -57,8 +73,8 @@ bool DovetailCore::verifyConnection(bool &connected, const std::string &ssid) {
         pdMS_TO_TICKS(10000));
 
     if (bits & WIFI_CONNECTED_BIT) {
-        debug::log("Connected to: " + ssid);
-        connected = true;
+        debug::log("Connected to network!");
+
         debug::showColor(debug::JOINED_NETWORK);
         return true;
     }
@@ -67,18 +83,22 @@ bool DovetailCore::verifyConnection(bool &connected, const std::string &ssid) {
 
 void DovetailCore::onFailedNetworkScan() {
     debug::log("Failed to connect to any network. Retrying shortly!");
-    vTaskDelay(pdMS_TO_TICKS(3000));
-    scanAndJoin();
 }
 
-void DovetailCore::scanAndJoin() {
+bool DovetailCore::hasDovetailRegistered() {
+    const auto isRegistered = xSemaphoreTake(dovetailRegisteredSuccessfully, 0) == pdTRUE;
+    if (isRegistered)
+        xSemaphoreGive(dovetailRegisteredSuccessfully);
+    return isRegistered;
+}
+
+void DovetailCore::scanAndConnect() {
     debug::log("Attempting to join networks!");
     debug::showColor(debug::SEARCHING_NETWORK);
-    bool connected = false;
 
 
     for (const auto &network: scanNetworks()) {
-        std::string ssid(reinterpret_cast<const char *>(network.ssid), sizeof(network.ssid));
+        std::string ssid = utils::bytesToString(network.ssid);
 
         if (!isDovetailNetwork(ssid)) continue;
 
@@ -89,18 +109,25 @@ void DovetailCore::scanAndJoin() {
 
         connectToNetwork(network);
 
-        // 4. Wait for Success or Failure (10 second timeout)
-        if (verifyConnection(connected, ssid)) break;
+        // Wait for Success or Failure (10 second timeout)
+        if (!verifyConnection()) {
+            esp_wifi_disconnect();
+            continue;
+        }
+
+        DovetailWS::initWS();
+        if (verifyRegistration()) {
+            loadAndExecuteCodebase();
+            break;
+        }
 
         debug::log("Failed to connect to: " + ssid);
 
         esp_wifi_disconnect();
     }
-    if (!connected)
-        onFailedNetworkScan();
 }
 
-std::string DovetailCore::getMacAddress() {
+std::string DovetailCore::getFormattedMacAddress() {
     uint8_t mac[6];
     char mac_cstr[18];
 
@@ -114,9 +141,27 @@ std::string DovetailCore::getMacAddress() {
     return mac_cstr;
 }
 
+array<uint8_t, 6> DovetailCore::getMacAddress() {
+    array<uint8_t, 6> mac;
+    esp_read_mac(mac.data(), ESP_MAC_WIFI_STA);
+    return mac;
+}
+
+void DovetailCore::loadCodebase() {
+}
+
+void DovetailCore::loadAndExecuteCodebase() {
+    DovetailClient::sendGetRequest("code");
+}
+
 
 void DovetailCore::innitDovetail() {
-    DovetailWifi::connectWifi();
-    scanAndJoin();
-    DovetailWS::initWS();
+    DovetailWifi::initWifiClient();
+    debug::log("© 2026 Dovetail System by Ezra Golombek, has started.");
+    while (true) {
+        scanAndConnect();
+        if (hasDovetailRegistered()) break;
+        onFailedNetworkScan();
+        vTaskDelay(pdMS_TO_TICKS(3000));
+    }
 }

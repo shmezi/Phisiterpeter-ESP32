@@ -21,19 +21,35 @@ public:
     static std::string codebase;
 
 
+    static bool shouldUpdateCodeBase;
+
     static std::vector<wifi_ap_record_t> scanNetworks();
 
     static bool isDovetailNetwork(const std::string &ssid);
 
     static void connectToNetwork(const wifi_ap_record_t &network);
 
-    static bool verifyConnection(bool &connected, const std::string &ssid);
+    static bool verifyRegistration();
+
+    static bool verifyConnection();
 
     static void onFailedNetworkScan();
 
-    static void scanAndJoin();
+    static bool hasDovetailRegistered();
 
-    static std::string getMacAddress();
+    static void scanAndConnect();
+
+    static std::string getFormattedMacAddress();
+
+    static std::array<unsigned char, 6> getMacAddress();
+
+    static void loadCodebase();
+
+    static void loadAndExecuteCodebase();
+
+    static void retrieveCodebaseAndInterpert();
+
+    static SemaphoreHandle_t dovetailRegisteredSuccessfully;
 
 
     static void innitDovetail();

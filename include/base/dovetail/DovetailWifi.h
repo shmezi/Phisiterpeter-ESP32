@@ -13,7 +13,7 @@ class DovetailWifi {
     static void wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data);
 
 public:
-    static void connectWifi();
+    static void initWifiClient();
 
     static EventGroupHandle_t s_wifi_event_group;
 };

@@ -10,36 +10,50 @@
 #include "Utils.h"
 #include <ArduinoJson.h>  // works fine via lib_deps
 
+#include "base/dovetail/DovetailCore.h"
+#include "base/dovetail/DovetailWifi.h"
+
 esp_websocket_client_handle_t DovetailWS::client = nullptr;
 
+bool DovetailWS::isPingPongMessage(const esp_websocket_event_data_t *data) {
+    return data->op_code == 0x09 || data->op_code == 0x0A;
+}
+
+void DovetailWS::requestRegistration() {
+    JsonDocument doc;
+    doc["command"] = "register";
+    doc["mac"] = DovetailCore::getFormattedMacAddress();
+    char buffer[256];
+    const size_t len = serializeJson(doc, buffer, sizeof(buffer));
+
+    esp_websocket_client_send_text(client, buffer, len, portMAX_DELAY);
+}
 
 void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id,
                                          void *event_data) {
     auto *data = static_cast<esp_websocket_event_data_t *>(event_data);
 
     switch (event_id) {
-        case WEBSOCKET_EVENT_CONNECTED:
+        case WEBSOCKET_EVENT_CONNECTED: {
             // JsonDocument doc;
             debug::log("Successfully connected to WebSocket Server!");
-            // Send a test message immediately upon connection
-            esp_websocket_client_send_text(client, "Hello from ESP32-S3!", 20, portMAX_DELAY);
+            requestRegistration();
             break;
+        }
 
         case WEBSOCKET_EVENT_DISCONNECTED:
             debug::warn("Disconnected from server.");
             break;
 
         case WEBSOCKET_EVENT_DATA: {
-            if (data->op_code == 0x09 || data->op_code == 0x0A) {
-                debug::log("Still playing ping pong :)");
-                break; // Drop it, ESP-IDF automatically sends the Pong back!
-            }
-            //
-
+            if (isPingPongMessage(data)) break;
 
             std::string message(data->data_ptr, data->data_len);
             JsonDocument doc;
             deserializeJson(doc, message);
+            if (doc["command"] == "register_success") {
+                xSemaphoreGive(DovetailCore::dovetailRegisteredSuccessfully);
+            }
             // Log incoming messages safely without spilling over memory limits
             debug::log("Received message: " + std::string(doc["command"]));
             break;
@@ -52,6 +66,12 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
 }
 
 void DovetailWS::initWS() {
+    if (client != nullptr) {
+        esp_websocket_client_stop(client);
+        esp_websocket_client_destroy(client);
+        client = nullptr;
+    }
+
     esp_websocket_client_config_t config{
         .uri = "ws://192.168.4.1/ws"
     };

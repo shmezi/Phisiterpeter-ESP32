@@ -62,7 +62,7 @@ bool DovetailClient::sendGetRequest(const std::string &url) {
     esp_err_t err = esp_http_client_perform(client);
     esp_http_client_cleanup(client);
     if (err != ESP_OK) {
-        debug::runTimeError(("HTTP GET request to " + std::string(esp_err_to_name(err)) + "failed :("));
+        debug::runTimeError("HTTP GET request to " + url + " failed :( Error: " + std::string(esp_err_to_name(err)));
         return false;
     }
     return true;

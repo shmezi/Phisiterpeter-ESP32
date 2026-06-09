@@ -14,7 +14,6 @@
 #include "expressions/game/functions/StatusLEDExpression.h"
 
 namespace debug {
-
     inline double wrap360(const double angle) {
         double result = std::fmod(angle, 360.0);
         if (result < 0) result += 360.0;
@@ -166,9 +165,16 @@ namespace debug {
 } // namespace debug
 #include <string>
 
-inline bool is_number(const std::string &s) {
-    return !s.empty() && std::find_if(s.begin(),
-                                      s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+namespace utils {
+    template<size_t N>
+    std::string bytesToString(const uint8_t (&data)[N]) {
+        return std::string(reinterpret_cast<const char *>(data), N);
+    }
+
+    inline bool is_number(const std::string &s) {
+        return !s.empty() && std::ranges::find_if(s, [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+    }
 }
+
 
 #endif //PHISILANDINTERPRETER_UTILS_H
