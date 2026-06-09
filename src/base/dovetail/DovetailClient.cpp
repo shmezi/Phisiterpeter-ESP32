@@ -2,17 +2,17 @@
 // Created by Ezra Golombek on 09/06/2026.
 //
 
-#include "../../../include/base/dovetail/DovetailClient.h"
+#include "base/dovetail/DovetailClient.h"
 
 #include <esp_err.h>
 #include <esp_http_client.h>
-#include <string>
+
 
 #include "Utils.h"
 #include "base/Interpreter.h"
 #include "base/dovetail/DovetailCore.h"
 
-std::string incomingData;
+std::string DovetailClient::incomingData;
 
 esp_err_t DovetailClient::httpClientHandler(esp_http_client_event_t *evt) {
     switch (evt->event_id) {
@@ -20,6 +20,7 @@ esp_err_t DovetailClient::httpClientHandler(esp_http_client_event_t *evt) {
             // Clear the string for a fresh start
             incomingData.clear();
             break;
+
 
         case HTTP_EVENT_ON_DATA:
             if (evt->data_len > 0) {

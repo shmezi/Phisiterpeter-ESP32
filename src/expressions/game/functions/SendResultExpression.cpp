@@ -9,6 +9,7 @@
 
 #include "../../../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/queue"
 #include "../../../../include/base/dovetail/DovetailCore.h"
+#include "base/dovetail/DovetailClient.h"
 #include "expressions/internal/VoidExpression.h"
 std::string SendResultExpression::nextMessage[3];
 std::string SendResultExpression::prevMessage[3];
@@ -23,7 +24,7 @@ std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scop
 
     const std::string v = (value->interpertAsString(scope));
 
-    DovetailCore::sendGetRequest("sendResult?val=" + v + "&slot=" + id);
+    DovetailClient::sendGetRequest("sendResult?val=" + v + "&slot=" + id);
     return std::make_shared<VoidExpression>();
 }
 

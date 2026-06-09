@@ -119,9 +119,10 @@ extern "C" void app_main(void) {
     DovetailCore::innitDovetail();
     uint8_t mac[6];
     esp_efuse_mac_get_default(mac);
-    DovetailCore::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
-    if (DovetailCore::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
-        debug::showColor(debug::CODE_LOADED);
+    //TODO: Add back registeration etc with ws.
+    // DovetailClient::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
+    // if (DovetailClient::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
+    //     debug::showColor(debug::CODE_LOADED);
 
 
     debug::log("Interpretation has finished! Background tasks are still running fear not!");
