@@ -4,9 +4,15 @@
 
 #ifndef PHISITERPETER_ESP32_DOVETAILWS_H
 #define PHISITERPETER_ESP32_DOVETAILWS_H
+#include "esp_websocket_client.h"
 
 
 class DovetailWS {
+    static void websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
+
+    static esp_websocket_client_handle_t client;
+
+public:
     static void initWS();
 };
 

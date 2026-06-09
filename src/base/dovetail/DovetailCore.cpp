@@ -14,6 +14,7 @@
 #include "Utils.h"
 #include "base/Interpreter.h"
 #include "base/dovetail/DovetailWifi.h"
+#include "base/dovetail/DovetailWS.h"
 
 // Bits for synchronization
 
@@ -117,4 +118,5 @@ std::string DovetailCore::getMacAddress() {
 void DovetailCore::innitDovetail() {
     DovetailWifi::connectWifi();
     scanAndJoin();
+    DovetailWS::initWS();
 }
