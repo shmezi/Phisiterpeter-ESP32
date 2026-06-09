@@ -7,6 +7,7 @@
 
 
 class DovetailWS {
+    static void initWS();
 };
 
 

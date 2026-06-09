@@ -9,7 +9,7 @@ maintainers:
 - William Emfinger <waemfinger@gmail.com>
 repository: git://github.com/esp-cpp/espp.git
 repository_info:
-  commit_sha: 4ed418ef029caf4885182c12a0fbbee3b23d4497
+  commit_sha: e8442f8bda331c24515d9a2f23d2749b6400eb4f
   path: components/task
 tags:
 - cpp
@@ -17,4 +17,4 @@ tags:
 - Task
 - Thread
 url: https://github.com/esp-cpp/espp/tree/main/components/task
-version: 1.0.34
+version: 1.1.0

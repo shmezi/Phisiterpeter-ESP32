@@ -4,3 +4,4 @@ dependencies:
   espp/timer: "1.0.33"
   espp/as5600: "1.0.33"
   espressif/led_strip: "3.0.2"
+  espressif/esp_websocket_client: "1.7.0"
