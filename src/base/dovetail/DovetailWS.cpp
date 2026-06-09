@@ -41,7 +41,7 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
             JsonDocument doc;
             deserializeJson(doc, message);
             // Log incoming messages safely without spilling over memory limits
-            debug::log("Received message: " + doc["name"]);
+            debug::log("Received message: " + std::string(doc["command"]));
             break;
         }
 
