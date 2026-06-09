@@ -7,7 +7,11 @@
 #include <esp_event_base.h>
 #include <esp_http_client.h>
 #include <esp_http_server.h>
+#include <esp_wifi_types_generic.h>
 #include <string>
+
+#include "../../../../../.platformio/packages/toolchain-riscv32-esp@14.2.0+20251107/riscv32-esp-elf/include/c++/14.2.0/vector"
+
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
@@ -16,6 +20,16 @@ class DovetailCore {
 public:
     static std::string codebase;
 
+
+    static std::vector<wifi_ap_record_t> scanNetworks();
+
+    static bool isDovetailNetwork(const std::string &ssid);
+
+    static void connectToNetwork(const wifi_ap_record_t &network);
+
+    static bool verifyConnection(bool &connected, const std::string &ssid);
+
+    static void onFailedNetworkScan();
 
     static void scanAndJoin();
 
