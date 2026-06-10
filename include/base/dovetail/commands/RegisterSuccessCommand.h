@@ -7,7 +7,7 @@
 #include "Command.h"
 
 
-class RegisterSuccess : public Command {
+class RegisterSuccessCommand : public Command {
 public:
     std::string name() override;
 

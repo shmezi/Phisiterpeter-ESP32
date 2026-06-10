@@ -84,7 +84,6 @@ using namespace std;
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
 
 
-
 void Interpreter::registerFactories() const {
     //Utility factories
     headScope->registerKeyWord(make_unique<PrintExpressionFactory>());
@@ -322,6 +321,7 @@ void Interpreter::runInterpreter(string &code) {
         debug::log("Starting tokenization process");
         debug::showColor(debug::TOKENIZATION);
 
+        debug::log(code);
 
         Tokenizer tokenizer = Tokenizer(code, scope);
         tokenizer.tokenize();
