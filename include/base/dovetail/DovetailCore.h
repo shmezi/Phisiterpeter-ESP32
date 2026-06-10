@@ -35,9 +35,9 @@ public:
 
     static void connectToNetwork(const wifi_ap_record_t &network);
 
-    static bool verifyRegistration();
+    static bool validateRegisteration();
 
-    static bool verifyConnection();
+    static bool validateConnection();
 
     static void onFailedNetworkScan();
 

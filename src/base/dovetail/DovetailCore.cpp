@@ -13,6 +13,7 @@
 #include "Utils.h"
 #include "base/Interpreter.h"
 #include "base/dovetail/DovetailClient.h"
+#include "base/dovetail/DovetailMessageHandler.h"
 #include "base/dovetail/DovetailWifi.h"
 #include "base/dovetail/DovetailWS.h"
 
@@ -49,11 +50,12 @@ void DovetailCore::connectToNetwork(const wifi_ap_record_t &network) {
     strcpy(reinterpret_cast<char *>(wifi_config.sta.password), "Phisiland"); // Insert known password
     memcpy(wifi_config.sta.ssid, network.ssid, sizeof(wifi_config.sta.ssid));
 
+
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     esp_wifi_connect();
 }
 
-bool DovetailCore::verifyRegistration() {
+bool DovetailCore::validateRegisteration() {
     if (xSemaphoreTake(dovetailRegisteredSuccessfully, pdMS_TO_TICKS(10000)) == pdTRUE) {
         debug::log("Successfully registered!");
         debug::showColor(debug::JOINED_NETWORK);
@@ -66,7 +68,7 @@ bool DovetailCore::verifyRegistration() {
     return false;
 }
 
-bool DovetailCore::verifyConnection() {
+bool DovetailCore::validateConnection() {
     const EventBits_t bits = xEventGroupWaitBits(
         DovetailWifi::s_wifi_event_group,
         WIFI_CONNECTED_BIT | WIFI_FAIL_BIT,
@@ -112,13 +114,13 @@ void DovetailCore::scanAndConnect() {
         connectToNetwork(network);
 
         // Wait for Success or Failure (10 second timeout)
-        if (!verifyConnection()) {
+        if (!validateConnection()) {
             esp_wifi_disconnect();
             continue;
         }
 
         DovetailWS::initWS();
-        if (verifyRegistration()) {
+        if (validateRegisteration()) {
             loadAndExecuteCodebase();
             break;
         }
@@ -166,6 +168,7 @@ void shutdown_handler_task(void *arg) {
 
 void DovetailCore::innitDovetail() {
     DovetailWifi::initWifiClient();
+    DovetailMessageHandler::registerAllInternalCommands();
     xTaskCreate(shutdown_handler_task, "ws_shutdown", 4096, nullptr, 1, nullptr);
 
     debug::log("© 2026 Dovetail System by Ezra Golombek, has started.");

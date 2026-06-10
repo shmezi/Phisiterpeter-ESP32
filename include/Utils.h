@@ -168,7 +168,7 @@ namespace debug {
 namespace utils {
     template<size_t N>
     std::string bytesToString(const uint8_t (&data)[N]) {
-        return std::string(reinterpret_cast<const char *>(data), N);
+        return {reinterpret_cast<const char *>(data), N};
     }
 
     inline bool is_number(const std::string &s) {

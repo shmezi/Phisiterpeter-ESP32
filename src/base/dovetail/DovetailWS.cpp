@@ -12,6 +12,7 @@
 #include <esp_wifi.h>
 
 #include "base/dovetail/DovetailCore.h"
+#include "base/dovetail/DovetailMessageHandler.h"
 #include "base/dovetail/DovetailWifi.h"
 
 esp_websocket_client_handle_t DovetailWS::client = nullptr;
@@ -49,18 +50,12 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
         case WEBSOCKET_EVENT_DATA: {
             if (isPingPongMessage(data)) break;
 
-            std::string message(data->data_ptr, data->data_len);
-            JsonDocument doc;
-            deserializeJson(doc, message);
-            if (doc["command"] == "register_success") {
-                xSemaphoreGive(DovetailCore::dovetailRegisteredSuccessfully);
-            }
-            if (doc["command"] == "register_failure") {
-                xSemaphoreGive(DovetailCore::shutdownWS);
+            std::string unParsedMessage(data->data_ptr, data->data_len);
 
-            }
-            // Log incoming messages safely without spilling over memory limits
-            debug::log("Received message: " + std::string(doc["command"]));
+            JsonDocument doc;
+            deserializeJson(doc, unParsedMessage);
+            DovetailMessageHandler::onIncomingMessage(doc);
+
             break;
         }
 
