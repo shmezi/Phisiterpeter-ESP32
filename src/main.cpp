@@ -56,10 +56,16 @@ void startup() {
     cout << "\033[0m\t\t" << endl;
 }
 
+std::string formatMacAddress(const std::array<uint8_t, 6> &mac) {
+    return std::format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
+                       mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+}
+
 /*
  * Since we change various settings to enabled the external PS-RAM, the mac address is reset to nothing.
  * Thus we need to force the ESP32 to use the actual factory MAC ID.
  */
+
 void force_factory_mac() {
     // S3 eFuse Base Address is 0x60007000
     // MAC_LOW (BLK0_RDATA1) is at offset 0x44
@@ -70,19 +76,20 @@ void force_factory_mac() {
     const uint32_t reg_low = *mac_reg_low;
     const uint32_t reg_high = *mac_reg_high;
 
-    uint8_t mac[6];
+    array<uint8_t, 6> mac;
     mac[0] = static_cast<uint8_t>(reg_high >> 8);
     mac[1] = static_cast<uint8_t>(reg_high);
     mac[2] = static_cast<uint8_t>(reg_low >> 24);
     mac[3] = static_cast<uint8_t>(reg_low >> 16);
     mac[4] = static_cast<uint8_t>(reg_low >> 8);
     mac[5] = static_cast<uint8_t>(reg_low);
-
+    DovetailCore::selfMac = mac;
+    DovetailCore::prettyMac = formatMacAddress(mac);
     printf("[HARDWARE] Raw Silicon MAC Read: %02x:%02x:%02x:%02x:%02x:%02x\n",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
     // Force the WiFi stack to use this REAL address
-    esp_base_mac_addr_set(mac);
+    esp_base_mac_addr_set(mac.data());
 }
 
 void setupGPIO() {

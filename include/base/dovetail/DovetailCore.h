@@ -23,6 +23,12 @@ public:
 
     static bool shouldUpdateCodeBase;
 
+    static std::array<unsigned char, 6> selfMac;
+
+    static std::string prettyMac;
+
+    static SemaphoreHandle_t shutdownWS;
+
     static std::vector<wifi_ap_record_t> scanNetworks();
 
     static bool isDovetailNetwork(const std::string &ssid);

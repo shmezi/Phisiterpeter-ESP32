@@ -10,7 +10,6 @@
 #include <esp_wifi.h>
 #include <string>
 
-#include "esp_http_client.h"
 #include "Utils.h"
 #include "base/Interpreter.h"
 #include "base/dovetail/DovetailClient.h"
@@ -20,8 +19,11 @@
 // Bits for synchronization
 
 SemaphoreHandle_t DovetailCore::dovetailRegisteredSuccessfully = xSemaphoreCreateBinary();
-
+array<uint8_t, 6> DovetailCore::selfMac;
+std::string DovetailCore::prettyMac;
 bool DovetailCore::shouldUpdateCodeBase = false;
+SemaphoreHandle_t DovetailCore::shutdownWS = xSemaphoreCreateBinary();
+
 
 std::string DovetailCore::codebase = "print \"Debug Your Code\"";
 
@@ -59,7 +61,7 @@ bool DovetailCore::verifyRegistration() {
 
         return true;
     }
-    debug::runTimeError("Device failed registeration, (Most likely Server is lagging). Moving on.");
+    debug::runTimeError("Device failed registration, (Most likely Server is lagging). Moving on.");
 
     return false;
 }
@@ -151,12 +153,21 @@ void DovetailCore::loadCodebase() {
 }
 
 void DovetailCore::loadAndExecuteCodebase() {
-    DovetailClient::sendGetRequest("code");
+    DovetailClient::sendGetRequest("code?mac=" + prettyMac);
 }
 
+void shutdown_handler_task(void *arg) {
+    for (;;) {
+        xSemaphoreTake(DovetailCore::shutdownWS, portMAX_DELAY);
+        DovetailWS::stopWS();
+        esp_wifi_disconnect();
+    }
+}
 
 void DovetailCore::innitDovetail() {
     DovetailWifi::initWifiClient();
+    xTaskCreate(shutdown_handler_task, "ws_shutdown", 4096, nullptr, 1, nullptr);
+
     debug::log("© 2026 Dovetail System by Ezra Golombek, has started.");
     while (true) {
         scanAndConnect();

@@ -9,6 +9,7 @@
 #include "esp_websocket_client.h"
 #include "Utils.h"
 #include <ArduinoJson.h>  // works fine via lib_deps
+#include <esp_wifi.h>
 
 #include "base/dovetail/DovetailCore.h"
 #include "base/dovetail/DovetailWifi.h"
@@ -54,6 +55,10 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
             if (doc["command"] == "register_success") {
                 xSemaphoreGive(DovetailCore::dovetailRegisteredSuccessfully);
             }
+            if (doc["command"] == "register_failure") {
+                xSemaphoreGive(DovetailCore::shutdownWS);
+
+            }
             // Log incoming messages safely without spilling over memory limits
             debug::log("Received message: " + std::string(doc["command"]));
             break;
@@ -65,12 +70,16 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
     }
 }
 
-void DovetailWS::initWS() {
+void DovetailWS::stopWS() {
     if (client != nullptr) {
         esp_websocket_client_stop(client);
         esp_websocket_client_destroy(client);
         client = nullptr;
     }
+}
+
+void DovetailWS::initWS() {
+    stopWS();
 
     esp_websocket_client_config_t config{
         .uri = "ws://192.168.4.1/ws"

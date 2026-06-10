@@ -17,8 +17,9 @@ EventGroupHandle_t DovetailWifi::s_wifi_event_group;
 // 1. The Event Handler (Must be registered in your main init)
 void DovetailWifi::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t id, void *data) {
     if (base == WIFI_EVENT && id == WIFI_EVENT_STA_DISCONNECTED) {
-        esp_wifi_connect();
-        debug::warn("WiFi was disconnected! Attempting to reconnect!");
+        // esp_wifi_connect();
+        //TODO WE NEED TO ADD A STATUS FOR THE ENTIRE SYSTEM!
+        // debug::warn("WiFi was disconnected! Attempting to reconnect!");
     } else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
         // Reset retry counter on successful connection
 
