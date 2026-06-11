@@ -50,14 +50,10 @@ constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 void startup() {
     Logger::log("PhisilandInterpreter version: " + VERSION);
-    const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
-    cout << debug::colorize(c, debug::Color::CYAN);
+    Logger::bootMessage("PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.");
 
 
-    cout << debug::colorize("© Developed and designed by Ezra Golombek 2026", debug::Color::BLUE) << endl;
-
-
-    cout << "\033[0m\t\t" << endl;
+    Logger::bootMessage("© Developed and designed by Ezra Golombek 2026");
 }
 
 std::string formatMacAddress(const std::array<uint8_t, 6> &mac) {
@@ -121,6 +117,7 @@ extern "C" void app_main(void) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
+    startup();
 
     force_factory_mac();
     ESP_ERROR_CHECK(ret);

@@ -98,7 +98,7 @@ bool DovetailCore::hasDovetailRegistered() {
 }
 
 void DovetailCore::scanAndConnect() {
-    Logger::bootMessage("Attempting to join networks!");
+    Logger::log("Attempting to join networks!");
     debug::showColor(debug::SEARCHING_NETWORK);
 
 
