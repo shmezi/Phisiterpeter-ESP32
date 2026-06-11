@@ -39,7 +39,7 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
     switch (event_id) {
         case WEBSOCKET_EVENT_CONNECTED: {
             // JsonDocument doc;
-            Logger::log("Successfully connected to WebSocket Server!");
+            Logger::bootMessage("Successfully connected to WebSocket Server!");
             requestRegistration();
             break;
         }

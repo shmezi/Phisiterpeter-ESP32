@@ -24,6 +24,7 @@
 #include <esp_adc/adc_oneshot.h>
 #include "soc/efuse_reg.h"
 #include "esp_mac.h"
+#include "Version.h"
 #include "expressions/game/functions/AnalogReadExpression.h"
 #include "logging/Logger.h"
 
@@ -48,8 +49,10 @@ constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 
 void startup() {
+    Logger::log("PhisilandInterpreter version: " + VERSION);
     const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
     cout << debug::colorize(c, debug::Color::CYAN);
+
 
     cout << debug::colorize("© Developed and designed by Ezra Golombek 2026", debug::Color::BLUE) << endl;
 
