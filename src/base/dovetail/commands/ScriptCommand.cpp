@@ -7,12 +7,13 @@
 #include <esp_system.h>
 
 #include "Utils.h"
+#include "logging/Logger.h"
 
 std::string ScriptCommand::name() {
     return "script";
 }
 
 void ScriptCommand::execute(JsonDocument doc) {
-    debug::log("DovetailEditor has requested a reboot! Rebooting ESP!");
+    Logger::log("DovetailEditor has requested a reboot! Rebooting ESP!");
     esp_restart();
 }

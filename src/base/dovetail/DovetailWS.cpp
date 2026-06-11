@@ -14,6 +14,7 @@
 #include "base/dovetail/DovetailCore.h"
 #include "base/dovetail/DovetailMessageHandler.h"
 #include "base/dovetail/DovetailWifi.h"
+#include "logging/Logger.h"
 
 esp_websocket_client_handle_t DovetailWS::client = nullptr;
 
@@ -38,13 +39,13 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
     switch (event_id) {
         case WEBSOCKET_EVENT_CONNECTED: {
             // JsonDocument doc;
-            debug::log("Successfully connected to WebSocket Server!");
+            Logger::log("Successfully connected to WebSocket Server!");
             requestRegistration();
             break;
         }
 
         case WEBSOCKET_EVENT_DISCONNECTED:
-            debug::warn("Disconnected from server.");
+            Logger::warn("Disconnected from server.");
             break;
 
         case WEBSOCKET_EVENT_DATA: {
@@ -60,7 +61,7 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
         }
 
         case WEBSOCKET_EVENT_ERROR:
-            debug::runTimeError("An error occurred inside the WS loop.");
+            Logger::error("An error occurred inside the WS loop.");
             break;
     }
 }

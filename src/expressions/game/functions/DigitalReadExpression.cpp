@@ -9,6 +9,7 @@
 
 #include "Utils.h"
 #include "expressions/value/BooleanExpression.h"
+#include "logging/Logger.h"
 
 std::string DigitalReadExpression::expressionName() {
     return "digitalRead";
@@ -23,7 +24,7 @@ std::shared_ptr<Expression> DigitalReadExpression::interpret(std::shared_ptr<Sco
 
     const auto gpio = static_cast<gpio_num_t>(pinNumber);
     if (!hasRun) {
-        debug::log("Configured pin " + std::to_string(pinNumber) + " as an input!");
+        Logger::configuration("Configured pin " + std::to_string(pinNumber) + " as an input!");
         gpio_set_direction(gpio, GPIO_MODE_INPUT);
         gpio_set_pull_mode(gpio, GPIO_PULLUP_ONLY);
         hasRun = true;

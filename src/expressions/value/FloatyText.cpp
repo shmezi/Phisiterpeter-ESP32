@@ -10,6 +10,7 @@
 #include "Utils.h"
 #include "expressions/internal/VoidExpression.h"
 #include "expressions/value/NumberExpression.h"
+#include "logging/Logger.h"
 
 std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText))
@@ -19,7 +20,7 @@ std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) 
         }
         printf("\n");
         std::cout <<   "Value " << actualFloatyText << " END" <<std::endl;
-        debug::runTimeError(
+        Logger::error(
             "No declaration found token: `" + actualFloatyText + "`" + " at line " + std::to_string(lineNumber));
         return nullptr;
     }
@@ -32,7 +33,7 @@ std::string FloatyText::interpertAsString(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText)) {
 
 
-        debug::runTimeError(
+        Logger::error(
             "No declaration found token: `" + actualFloatyText + "`" + " at line " + std::to_string(lineNumber));
         return "";
     }

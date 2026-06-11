@@ -11,6 +11,7 @@
 #include "Utils.h"
 #include "base/Interpreter.h"
 #include "base/dovetail/DovetailCore.h"
+#include "logging/Logger.h"
 
 std::string DovetailClient::incomingData;
 
@@ -35,7 +36,7 @@ esp_err_t DovetailClient::httpClientHandler(esp_http_client_event_t *evt) {
             esp_http_client_get_url(evt->client, url_buffer, sizeof(url_buffer));
             if (strstr(url_buffer, "/code")) {
                 // WE can push this back if we see this doesnt function..
-                debug::log("Code command!");
+                Logger::log("Code command!");
                 DovetailCore::codebase = incomingData;
                 // Trigger your interpreter here or set a flag
                 Interpreter::runInterpreter(DovetailCore::codebase);
@@ -62,7 +63,7 @@ bool DovetailClient::sendGetRequest(const std::string &url) {
     esp_err_t err = esp_http_client_perform(client);
     esp_http_client_cleanup(client);
     if (err != ESP_OK) {
-        debug::runTimeError("HTTP GET request to " + url + " failed :( Error: " + std::string(esp_err_to_name(err)));
+        Logger::error("HTTP GET request to " + url + " failed :( Error: " + std::string(esp_err_to_name(err)));
         return false;
     }
     return true;

@@ -12,19 +12,20 @@
 #include "base/dovetail/commands/RegisterFailureCommand.h"
 #include "base/dovetail/commands/RegisterSuccessCommand.h"
 #include "base/dovetail/commands/ScriptCommand.h"
+#include "logging/Logger.h"
 std::map<std::string, std::unique_ptr<Command> > DovetailMessageHandler::commands;
 
 
 void DovetailMessageHandler::onIncomingMessage(JsonDocument &doc) {
     const char *cmdName = doc["command"];
     if (!cmdName) {
-        debug::warn("No command field in JSON!");
+        Logger::warn("No command field in JSON!");
         return;
     }
     const auto command = commands.find(cmdName);
 
     if (command == commands.end()) {
-        debug::warn("Command not found!");
+        Logger::warn("Command not found!");
         return;
     }
     command->second->execute(doc);

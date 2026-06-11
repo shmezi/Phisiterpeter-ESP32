@@ -16,6 +16,7 @@
 #include "base/dovetail/DovetailMessageHandler.h"
 #include "base/dovetail/DovetailWifi.h"
 #include "base/dovetail/DovetailWS.h"
+#include "logging/Logger.h"
 
 // Bits for synchronization
 
@@ -57,13 +58,13 @@ void DovetailCore::connectToNetwork(const wifi_ap_record_t &network) {
 
 bool DovetailCore::validateRegisteration() {
     if (xSemaphoreTake(dovetailRegisteredSuccessfully, pdMS_TO_TICKS(10000)) == pdTRUE) {
-        debug::log("Successfully registered!");
+        Logger::configuration("Successfully registered!");
         debug::showColor(debug::JOINED_NETWORK);
         xSemaphoreGive(dovetailRegisteredSuccessfully);
 
         return true;
     }
-    debug::runTimeError("Device failed registration, (Most likely Server is lagging). Moving on.");
+    Logger::error("Device failed registration, (Most likely Server is lagging). Moving on.");
 
     return false;
 }
@@ -77,7 +78,7 @@ bool DovetailCore::validateConnection() {
         pdMS_TO_TICKS(10000));
 
     if (bits & WIFI_CONNECTED_BIT) {
-        debug::log("Connected to network!");
+        Logger::bootMessage("Connected to network!");
 
         debug::showColor(debug::JOINED_NETWORK);
         return true;
@@ -86,7 +87,7 @@ bool DovetailCore::validateConnection() {
 }
 
 void DovetailCore::onFailedNetworkScan() {
-    debug::log("Failed to connect to any network. Retrying shortly!");
+    Logger::error("Failed to connect to any network. Retrying shortly!");
 }
 
 bool DovetailCore::hasDovetailRegistered() {
@@ -97,7 +98,7 @@ bool DovetailCore::hasDovetailRegistered() {
 }
 
 void DovetailCore::scanAndConnect() {
-    debug::log("Attempting to join networks!");
+    Logger::bootMessage("Attempting to join networks!");
     debug::showColor(debug::SEARCHING_NETWORK);
 
 
@@ -106,7 +107,7 @@ void DovetailCore::scanAndConnect() {
 
         if (!isDovetailNetwork(ssid)) continue;
 
-        debug::log("Attempting to join network: " + ssid);
+        Logger::bootMessage("Attempting to join network: " + ssid);
 
         //I switched delay from 2000 to 20!!! PLEASE MAKE SURE IT STILL FUNCTIONS 11/03/26 - 09/06/26 I think it works, great work me :)
         vTaskDelay(pdMS_TO_TICKS(20));
@@ -125,7 +126,7 @@ void DovetailCore::scanAndConnect() {
             break;
         }
 
-        debug::log("Failed to connect to: " + ssid);
+        Logger::bootMessage("Failed to connect to: " + ssid);
 
         esp_wifi_disconnect();
     }
@@ -171,7 +172,7 @@ void DovetailCore::innitDovetail() {
     DovetailMessageHandler::registerAllInternalCommands();
     xTaskCreate(shutdown_handler_task, "ws_shutdown", 4096, nullptr, 1, nullptr);
 
-    debug::log("© 2026 Dovetail System by Ezra Golombek, has started.");
+    Logger::bootMessage("© 2026 Dovetail System by Ezra Golombek, has started.");
     while (true) {
         scanAndConnect();
         if (hasDovetailRegistered()) break;

@@ -25,6 +25,7 @@
 #include "soc/efuse_reg.h"
 #include "esp_mac.h"
 #include "expressions/game/functions/AnalogReadExpression.h"
+#include "logging/Logger.h"
 
 using namespace std;
 #include "esp_http_server.h"
@@ -126,11 +127,7 @@ extern "C" void app_main(void) {
     DovetailCore::innitDovetail();
     uint8_t mac[6];
     esp_efuse_mac_get_default(mac);
-    //TODO: Add back registeration etc with ws.
-    // DovetailClient::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
-    // if (DovetailClient::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
-    //     debug::showColor(debug::CODE_LOADED);
 
 
-    debug::log("Interpretation has finished! Background tasks are still running fear not!");
+    Logger::bootMessage("Interpretation has finished! Background tasks are still running fear not!");
 }
