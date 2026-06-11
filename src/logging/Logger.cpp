@@ -9,7 +9,7 @@
 
 void Logger::log(const std::string &contents) {
     std::cout << (apply(Color::BOLD) + apply(Color::BRIGHT_CYAN) + "[LOG] " + apply(Color::RESET) +
-                  apply(Color::BRIGHT_WHITE) + contents);
+                  apply(Color::BRIGHT_WHITE) + contents) << std::endl;
 }
 
 void Logger::warn(const std::string &contents) {
