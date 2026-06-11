@@ -117,15 +117,13 @@ void ScheduleLoop::loop() {
     // ---------------- Sleep ----------------
 }
 
-void ScheduleLoop::startEvent(int param) {
-    std::string event = "start";
-    if (param == -1)
-        event = "stop";
-    if (!startFunc.contains(event)) {
+void ScheduleLoop::runEvent(const std::string &event, const int param) {
+
+    if (!eventDrivenTasks.contains(event)) {
         Logger::error("No event of id '" + event + "' found!");
         return;
     }
-    for (const auto &task: startFunc[event]) {
+    for (const auto &task: eventDrivenTasks[event]) {
         task(param);
     }
 }
@@ -153,11 +151,11 @@ void ScheduleLoop::start() {
 }
 
 void ScheduleLoop::onEventListener(const std::string &id, std::function<void(int)> task) {
-    if (!startFunc.contains(id)) {
-        startFunc[id] = std::vector<std::function<void(int)> >();
+    if (!eventDrivenTasks.contains(id)) {
+        eventDrivenTasks[id] = std::vector<std::function<void(int)> >();
         Logger::configuration("Registered event handler with ID: " + id);
     }
-    startFunc[id].emplace_back(task);
+    eventDrivenTasks[id].emplace_back(task);
 }
 
 void ScheduleLoop::addTask(const std::function<void()> &task) {

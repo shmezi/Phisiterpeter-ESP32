@@ -10,6 +10,7 @@
 
 #include "../../../../include/base/dovetail/DovetailCore.h"
 #include "base/dovetail/DovetailClient.h"
+#include "base/dovetail/DovetailMessageHandler.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string SetScreenExpression::expressionName() {
@@ -18,7 +19,7 @@ std::string SetScreenExpression::expressionName() {
 
 std::shared_ptr<Expression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
     const auto screenName = screen->interpertAsString(scope);
-    DovetailClient::sendGetRequest("screen?id=" + screenName);
+    DovetailMessageHandler::changeScreen(screenName);
     return std::make_shared<VoidExpression>();
 }
 

@@ -22,15 +22,6 @@ bool DovetailWS::isPingPongMessage(const esp_websocket_event_data_t *data) {
     return data->op_code == 0x09 || data->op_code == 0x0A;
 }
 
-void DovetailWS::requestRegistration() {
-    JsonDocument doc;
-    doc["command"] = "register";
-    doc["mac"] = DovetailCore::getFormattedMacAddress();
-    char buffer[256];
-    const size_t len = serializeJson(doc, buffer, sizeof(buffer));
-
-    esp_websocket_client_send_text(client, buffer, len, portMAX_DELAY);
-}
 
 void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id,
                                          void *event_data) {
@@ -40,7 +31,7 @@ void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t ba
         case WEBSOCKET_EVENT_CONNECTED: {
             // JsonDocument doc;
             Logger::bootMessage("Successfully connected to WebSocket Server!");
-            requestRegistration();
+            DovetailMessageHandler::requestRegistration();
             break;
         }
 

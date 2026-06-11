@@ -29,7 +29,7 @@ class ScheduleLoop {
     std::atomic<bool> active = false;
     std::mutex taskMutex;
 
-    std::map<std::string, std::vector<std::function<void(int)> > > startFunc{};
+    std::map<std::string, std::vector<std::function<void(int)> > > eventDrivenTasks{};
 
     std::vector<std::function<void()> > always{};
 
@@ -57,7 +57,7 @@ public:
 
     void loop();
 
-    void startEvent(int param);
+    void runEvent(const std::string &event, int param);
 
     ScheduleLoop();
 

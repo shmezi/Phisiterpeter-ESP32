@@ -49,7 +49,7 @@ constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 
 void startup() {
-    Logger::log("PhisilandInterpreter version: " + VERSION);
+    Logger::bootMessage("PhisilandInterpreter version: " + VERSION);
     Logger::bootMessage("PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.");
 
 
