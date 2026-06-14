@@ -15,8 +15,8 @@ std::shared_ptr<Expression> OrExpression::interpret(std::shared_ptr<Scope> scope
     return (left->interpret(scope)->orOperator(right->interpret(scope), scope));
 }
 
-std::string OrExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string OrExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 OrExpression::OrExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {

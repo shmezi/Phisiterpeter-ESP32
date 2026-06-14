@@ -39,7 +39,7 @@ public:
 
     float role() const;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     GyroScopeSensorExpression(bool toggle);
 };

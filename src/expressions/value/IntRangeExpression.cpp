@@ -13,7 +13,7 @@ std::shared_ptr<Expression> IntRangeExpression::interpret(std::shared_ptr<Scope>
     return std::make_unique<IntRangeExpression>(startRange, endRange);
 }
 
-std::string IntRangeExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string IntRangeExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return std::to_string(startRange) + ".." + std::to_string(endRange);
 }
 

@@ -21,7 +21,7 @@ public:
 
     ~AdditionExpression() override = default;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 };
 
 

@@ -29,7 +29,7 @@ std::shared_ptr<Expression> FloatyText::interpret(std::shared_ptr<Scope> scope) 
     return (scope->interpretVariable(actualFloatyText));
 }
 
-std::string FloatyText::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string FloatyText::interpretAsString(std::shared_ptr<Scope> scope) {
     if (!scope->isVariable(actualFloatyText)) {
 
 
@@ -38,7 +38,7 @@ std::string FloatyText::interpertAsString(std::shared_ptr<Scope> scope) {
         return "";
     }
 
-    return scope->interpretVariable(actualFloatyText)->interpertAsString(scope);
+    return scope->interpretVariable(actualFloatyText)->interpretAsString(scope);
 }
 
 

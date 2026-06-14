@@ -13,6 +13,6 @@ std::string RemoteLogExpression::expressionName() {
 }
 
 std::shared_ptr<Expression> RemoteLogExpression::interpret(std::shared_ptr<Scope> scope) {
-    DovetailMessageHandler::sendLog(contents->interpertAsString(scope));
+    DovetailMessageHandler::sendLog(contents->interpretAsString(scope));
     return std::make_shared<VoidExpression>();
 }

@@ -119,7 +119,7 @@ std::shared_ptr<Expression> MotorExpression::interpret(std::shared_ptr<Scope> sc
 }
 
 
-std::string MotorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string MotorExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return std::to_string(rotations);
     // return "A: " + a->interpertAsString(scope) + " B: " + b->interpertAsString(scope) + " Speed: " + speed->
     //        interpertAsString(scope) + " EncoderA: "

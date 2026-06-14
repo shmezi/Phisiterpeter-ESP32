@@ -32,7 +32,7 @@ std::shared_ptr<Expression> MoveExpression::interpret(std::shared_ptr<Scope> sco
     return std::make_unique<VoidExpression>();
 }
 
-std::string MoveExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string MoveExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "motor spin woooooo";
 }
 

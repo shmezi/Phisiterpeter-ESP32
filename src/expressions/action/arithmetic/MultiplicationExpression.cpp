@@ -13,6 +13,6 @@ MultiplicationExpression::MultiplicationExpression(std::unique_ptr<Expression> r
     //Most likely need to shift to something that allows for the pointers stay.. given that it could be a reference to a variable.
 }
 
-std::string MultiplicationExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string MultiplicationExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

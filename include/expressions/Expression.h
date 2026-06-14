@@ -124,8 +124,8 @@ public:
     virtual std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) = 0;
 
 
-    virtual std::string interpertAsString(std::shared_ptr<Scope> scope) {
-        return interpret(scope)->interpertAsString(scope);
+    virtual std::string interpretAsString(std::shared_ptr<Scope> scope) {
+        return interpret(scope)->interpretAsString(scope);
     };
 };
 

@@ -17,14 +17,14 @@ std::shared_ptr<Expression> ListExpression::interpret(std::shared_ptr<Scope> sco
     return shared_from_this();
 }
 
-std::string ListExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string ListExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     std::string value = "[";
     bool first = true;
     for (auto &item: items) {
         if (!first) {
             value += ", ";
         }
-        value += item.get()->interpertAsString(scope);
+        value += item.get()->interpretAsString(scope);
         first = false;
     }
     value += "]";

@@ -11,12 +11,12 @@
 #include "expressions/internal/VoidExpression.h"
 
 std::shared_ptr<Expression> PrintExpression::interpret(std::shared_ptr<Scope> scope) {
-    std::cout << this->expression->interpertAsString(scope) << std::endl;
+    std::cout << this->expression->interpretAsString(scope) << std::endl;
     return std::make_unique<VoidExpression>();
 }
 
 PrintExpression::~PrintExpression() = default;
 
-std::string PrintExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return expression->interpertAsString(scope);
+std::string PrintExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return expression->interpretAsString(scope);
 }

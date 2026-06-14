@@ -21,6 +21,6 @@ std::shared_ptr<Expression> EndActivityExpression::interpret(std::shared_ptr<Sco
     return std::make_shared<VoidExpression>();
 }
 
-std::string EndActivityExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string EndActivityExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "sending an end activity!";
 }

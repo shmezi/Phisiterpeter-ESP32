@@ -15,7 +15,7 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     explicit AbsExpression(std::unique_ptr<Expression> number) : number(std::move(number)) {
     }

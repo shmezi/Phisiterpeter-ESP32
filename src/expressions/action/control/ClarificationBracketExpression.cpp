@@ -21,8 +21,8 @@ std::shared_ptr<Expression> ClarificationBracketExpression::interpret(std::share
     return this->expressions.front()->interpret(scope);
 }
 
-std::string ClarificationBracketExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return this->expressions.front()->interpertAsString(scope);
+std::string ClarificationBracketExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return this->expressions.front()->interpretAsString(scope);
 }
 
 int ClarificationBracketExpression::expressionCount() const {

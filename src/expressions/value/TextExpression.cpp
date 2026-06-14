@@ -12,11 +12,11 @@ std::shared_ptr<Expression> TextExpression::interpret(std::shared_ptr<Scope> sco
     return std::make_unique<TextExpression>(contents);
 }
 
-std::string TextExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string TextExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return contents;
 }
 
 std::shared_ptr<Expression> TextExpression::addition(std::shared_ptr<Expression> &&expression,
                                                      std::shared_ptr<Scope> &parentScope) {
-    return make_unique<TextExpression>(this->contents + expression->interpertAsString(parentScope));
+    return make_unique<TextExpression>(this->contents + expression->interpretAsString(parentScope));
 }

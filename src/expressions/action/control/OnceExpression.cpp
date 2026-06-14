@@ -32,6 +32,6 @@ std::shared_ptr<Expression> OnceExpression::interpret(std::shared_ptr<Scope> sco
     return std::make_unique<VoidExpression>();
 }
 
-std::string OnceExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string OnceExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "onceExpression";
 }

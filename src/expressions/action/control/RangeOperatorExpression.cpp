@@ -13,8 +13,8 @@ std::shared_ptr<Expression> RangeOperatorExpression::interpret(std::shared_ptr<S
     return first->interpret(scope)->toOperator(second->interpret(scope), scope);
 }
 
-std::string RangeOperatorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string RangeOperatorExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 RangeOperatorExpression::RangeOperatorExpression(std::unique_ptr<Expression> start,

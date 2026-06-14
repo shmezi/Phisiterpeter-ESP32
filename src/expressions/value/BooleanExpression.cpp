@@ -15,7 +15,7 @@ std::shared_ptr<Expression> BooleanExpression::interpret(std::shared_ptr<Scope> 
     return std::make_unique<BooleanExpression>(contents);
 }
 
-std::string BooleanExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string BooleanExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return this->contents ? "true" : "false";
 }
 

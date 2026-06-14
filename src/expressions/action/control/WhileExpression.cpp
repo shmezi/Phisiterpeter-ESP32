@@ -35,7 +35,7 @@ std::shared_ptr<Expression> WhileExpression::interpret(std::shared_ptr<Scope> sc
     return std::make_unique<VoidExpression>();
 }
 
-std::string WhileExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string WhileExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "For some reason we are printing an If stat?!";
 }
 

@@ -29,6 +29,6 @@ std::shared_ptr<Expression> WriteExpression::interpret(std::shared_ptr<Scope> sc
     return std::make_unique<VoidExpression>();
 }
 
-std::string WriteExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return "Writing to pin: " + pin->interpertAsString(scope);
+std::string WriteExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return "Writing to pin: " + pin->interpretAsString(scope);
 }

@@ -17,8 +17,8 @@ std::shared_ptr<Expression> ClearCountExpression::interpret(std::shared_ptr<Scop
     return std::make_shared<VoidExpression>();
 }
 
-std::string ClearCountExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string ClearCountExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 ClearCountExpression::ClearCountExpression(std::unique_ptr<Expression> motor) : motor(std::move(motor)) {

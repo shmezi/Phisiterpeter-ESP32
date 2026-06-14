@@ -17,7 +17,7 @@ std::shared_ptr<Expression> ClearListExpression::interpret(std::shared_ptr<Scope
     return std::make_shared<VoidExpression>();
 }
 
-std::string ClearListExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string ClearListExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "clearing list";
 }
 

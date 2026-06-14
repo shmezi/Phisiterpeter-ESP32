@@ -21,17 +21,17 @@ std::string SendResultExpression::expressionName() {
 
 
 std::shared_ptr<Expression> SendResultExpression::interpret(std::shared_ptr<Scope> scope) {
-    const auto id = name->interpertAsString(scope);
+    const auto id = name->interpretAsString(scope);
 
-    const std::string v = (value->interpertAsString(scope));
+    const std::string v = (value->interpretAsString(scope));
 
     DovetailMessageHandler::sendResult(id, v);
 
     return std::make_shared<VoidExpression>();
 }
 
-std::string SendResultExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string SendResultExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 SendResultExpression::SendResultExpression(std::unique_ptr<Expression> name, std::unique_ptr<Expression> value) : name(

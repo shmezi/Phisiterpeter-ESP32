@@ -20,7 +20,7 @@ std::string CodeblockExpression::expressionName() {
     return "codeblock";
 }
 
-std::string CodeblockExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string CodeblockExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "CODEBLOCK of scope: " + scope->scopeId + " With " + std::to_string(expressions.size()) + " expressions.";
 }
 
