@@ -21,7 +21,7 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     explicit CodeblockExpression(std::deque<std::unique_ptr<Expression> > expressions) {
 

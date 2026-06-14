@@ -13,8 +13,8 @@ std::shared_ptr<Expression> ValueHoldExpression::interpret(std::shared_ptr<Scope
     //Modify to allow running of the internal expressions (should be harmless and only benefit us)
 }
 
-std::string ValueHoldExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string ValueHoldExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 ValueHoldExpression::ValueHoldExpression(const std::shared_ptr<Expression> &expression) : expression(expression) {

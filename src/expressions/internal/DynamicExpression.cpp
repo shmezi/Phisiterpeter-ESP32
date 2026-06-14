@@ -23,6 +23,6 @@ std::shared_ptr<Expression> DynamicExpression::interpret(std::shared_ptr<Scope> 
     return (evaluated->interpret(secondaryScope));
 }
 
-std::string DynamicExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string DynamicExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

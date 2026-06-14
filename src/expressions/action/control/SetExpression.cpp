@@ -30,6 +30,6 @@ SetExpression::SetExpression(std::unique_ptr<Expression> name, std::unique_ptr<E
     this->content = std::move(content);
 }
 
-std::string SetExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string SetExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "Setting a value :)";
 }

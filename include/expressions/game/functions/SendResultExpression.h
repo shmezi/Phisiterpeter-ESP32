@@ -19,7 +19,7 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     SendResultExpression(std::unique_ptr<Expression> name,
                          std::unique_ptr<Expression> value);

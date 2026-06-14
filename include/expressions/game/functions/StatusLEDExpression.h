@@ -22,7 +22,7 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     StatusLEDExpression(std::unique_ptr<Expression> r, std::unique_ptr<Expression> g, std::unique_ptr<Expression> b);
 };

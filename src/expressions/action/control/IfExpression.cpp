@@ -29,7 +29,7 @@ std::shared_ptr<Expression> IfExpression::interpret(std::shared_ptr<Scope> scope
     return std::make_unique<VoidExpression>();
 }
 
-std::string IfExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string IfExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "For some reason we are printing an If stat?!";
 }
 

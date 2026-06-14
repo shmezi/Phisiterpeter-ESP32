@@ -78,6 +78,6 @@ std::shared_ptr<Expression> AnalogReadExpression::interpret(std::shared_ptr<Scop
     return std::make_shared<NumberExpression>(sum / samples.size());
 }
 
-std::string AnalogReadExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string AnalogReadExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

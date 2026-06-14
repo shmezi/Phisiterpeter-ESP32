@@ -19,8 +19,8 @@ std::shared_ptr<Expression> AddToListExpression::interpret(std::shared_ptr<Scope
     return std::make_shared<VoidExpression>();
 }
 
-std::string AddToListExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return "Adding " + newItem->interpertAsString(scope) + " to a list";
+std::string AddToListExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return "Adding " + newItem->interpretAsString(scope) + " to a list";
 }
 
 AddToListExpression::AddToListExpression(std::unique_ptr<Expression> list, std::unique_ptr<Expression> newItem)

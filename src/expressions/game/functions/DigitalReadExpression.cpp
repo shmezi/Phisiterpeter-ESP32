@@ -33,6 +33,6 @@ std::shared_ptr<Expression> DigitalReadExpression::interpret(std::shared_ptr<Sco
     return std::make_unique<BooleanExpression>(gpio_get_level(gpio) != 1);
 }
 
-std::string DigitalReadExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return this->interpret(scope)->interpertAsString(scope);
+std::string DigitalReadExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return this->interpret(scope)->interpretAsString(scope);
 }

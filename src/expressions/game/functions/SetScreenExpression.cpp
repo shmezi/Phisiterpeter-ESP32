@@ -18,12 +18,12 @@ std::string SetScreenExpression::expressionName() {
 }
 
 std::shared_ptr<Expression> SetScreenExpression::interpret(std::shared_ptr<Scope> scope) {
-    const auto screenName = screen->interpertAsString(scope);
+    const auto screenName = screen->interpretAsString(scope);
     DovetailMessageHandler::changeScreen(screenName);
     return std::make_shared<VoidExpression>();
 }
 
-std::string SetScreenExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string SetScreenExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "Set screen!";
 }
 

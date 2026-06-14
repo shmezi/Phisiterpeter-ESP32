@@ -20,7 +20,7 @@ public:
 
     ~LesserExpression() override = default;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 };
 
 #endif //PHISILANDINTERPRETER_LESSEREXPRESSION_H

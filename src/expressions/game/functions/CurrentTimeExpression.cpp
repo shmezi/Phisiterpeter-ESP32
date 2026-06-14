@@ -18,6 +18,6 @@ std::shared_ptr<Expression> CurrentTimeExpression::interpret(std::shared_ptr<Sco
     return std::make_shared<NumberExpression>(esp_timer_get_time());
 }
 
-std::string CurrentTimeExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string CurrentTimeExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

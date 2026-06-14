@@ -17,7 +17,7 @@ std::shared_ptr<Expression> ReturnExpression::interpret(std::shared_ptr<Scope> s
 }
 
 
-std::string ReturnExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string ReturnExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "returnStatement";
 }
 

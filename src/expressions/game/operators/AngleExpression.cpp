@@ -19,8 +19,8 @@ std::shared_ptr<Expression> AngleExpression::interpret(std::shared_ptr<Scope> sc
     return std::make_shared<NumberExpression>(sensor->pitch());
 }
 
-std::string AngleExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string AngleExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 AngleExpression::AngleExpression(std::unique_ptr<Expression> encoder) : encoder(std::move(encoder)) {

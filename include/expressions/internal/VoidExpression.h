@@ -17,7 +17,7 @@ public:
         return std::make_unique<VoidExpression>(*this);
     }
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override {
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override {
         return "You just printed… nothing. Congratulations, you've invented silence.";
     }
 };

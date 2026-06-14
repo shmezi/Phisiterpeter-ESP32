@@ -15,6 +15,6 @@ std::shared_ptr<Expression> AbsExpression::interpret(std::shared_ptr<Scope> scop
         std::abs(dynamic_cast<NumberExpression *>(number->interpret(scope).get())->contents));
 }
 
-std::string AbsExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string AbsExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

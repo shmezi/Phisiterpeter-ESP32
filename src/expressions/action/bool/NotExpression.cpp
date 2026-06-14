@@ -17,6 +17,6 @@ std::shared_ptr<Expression> NotExpression::interpret(std::shared_ptr<Scope> scop
     return (contents->interpret(scope)->notOperator(scope));
 }
 
-std::string NotExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string NotExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

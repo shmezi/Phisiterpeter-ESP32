@@ -17,7 +17,7 @@ public:
 
     explicit TextExpression(std::string contents) : contents(std::move(contents)){};
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
     std::string expressionName() override {return "text";};
     ~TextExpression() override = default;
 

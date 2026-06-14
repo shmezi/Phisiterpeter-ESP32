@@ -16,7 +16,7 @@ public:
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override;
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
     MoveExpression(std::unique_ptr<Expression> motor, std::unique_ptr<Expression> speed);
 };

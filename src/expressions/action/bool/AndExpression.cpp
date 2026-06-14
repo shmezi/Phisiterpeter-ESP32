@@ -19,8 +19,8 @@ std::shared_ptr<Expression> AndExpression::interpret(std::shared_ptr<Scope> scop
     return (left->interpret(scope)->andOperator(right->interpret(scope), scope));
 }
 
-std::string AndExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string AndExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 AndExpression::AndExpression(std::unique_ptr<Expression> right, std::unique_ptr<Expression> left) {

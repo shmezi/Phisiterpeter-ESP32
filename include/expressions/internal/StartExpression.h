@@ -28,7 +28,7 @@ public:
     }
 
 
-    std::string interpertAsString(std::shared_ptr<Scope> scope) override {
+    std::string interpretAsString(std::shared_ptr<Scope> scope) override {
         const auto v = "An internal StartExpression should not be converted to a string representation";
         Logger::error(v);
         return v;

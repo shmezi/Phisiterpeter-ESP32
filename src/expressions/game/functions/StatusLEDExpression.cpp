@@ -52,7 +52,7 @@ std::shared_ptr<Expression> StatusLEDExpression::interpret(std::shared_ptr<Scope
     return std::make_unique<VoidExpression>();
 }
 
-std::string StatusLEDExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string StatusLEDExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "";
 }
 

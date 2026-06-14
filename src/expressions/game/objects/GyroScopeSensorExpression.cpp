@@ -119,6 +119,6 @@ float GyroScopeSensorExpression::role() const {
     return rollValue * 57.2958f;
 }
 
-std::string GyroScopeSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string GyroScopeSensorExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "gyroValue";
 }

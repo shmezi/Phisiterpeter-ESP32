@@ -26,8 +26,8 @@ std::shared_ptr<Expression> RotationsExpression::interpret(std::shared_ptr<Scope
     return std::make_shared<NumberExpression>(actualMotor->rotations / 330);
 }
 
-std::string RotationsExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string RotationsExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
 
 RotationsExpression::RotationsExpression(std::unique_ptr<Expression> motor) : motor(std::move(motor)) {

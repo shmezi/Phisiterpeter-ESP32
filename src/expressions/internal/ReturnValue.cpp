@@ -14,6 +14,6 @@ std::shared_ptr<Expression> ReturnValue::interpret(std::shared_ptr<Scope> scope)
     return std::make_shared<ReturnValue>(std::move(contents));
 }
 
-std::string ReturnValue::interpertAsString(std::shared_ptr<Scope> scope) {
-    return (contents->interpertAsString(scope));
+std::string ReturnValue::interpretAsString(std::shared_ptr<Scope> scope) {
+    return (contents->interpretAsString(scope));
 }

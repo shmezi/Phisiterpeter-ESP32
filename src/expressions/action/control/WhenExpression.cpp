@@ -33,6 +33,6 @@ std::shared_ptr<Expression> WhenExpression::interpret(std::shared_ptr<Scope> sco
     return std::make_unique<VoidExpression>();
 }
 
-std::string WhenExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string WhenExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "when expression was printed ?";
 }

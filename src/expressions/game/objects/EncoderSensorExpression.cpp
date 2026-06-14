@@ -82,6 +82,6 @@ return std::make_shared<VoidExpression>();
 }
 
 
-std::string EncoderSensorExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string EncoderSensorExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }

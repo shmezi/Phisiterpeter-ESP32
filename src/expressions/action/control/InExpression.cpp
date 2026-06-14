@@ -14,6 +14,6 @@ std::shared_ptr<Expression> InExpression::interpret(std::shared_ptr<Scope> scope
 return std::make_unique<VoidExpression>();
 }
 
-std::string InExpression::interpertAsString(std::shared_ptr<Scope> scope) {
+std::string InExpression::interpretAsString(std::shared_ptr<Scope> scope) {
     return "";
 }

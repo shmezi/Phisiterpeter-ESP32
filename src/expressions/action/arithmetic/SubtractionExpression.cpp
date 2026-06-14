@@ -14,6 +14,6 @@ SubtractionExpression::SubtractionExpression(std::unique_ptr<Expression> right, 
     //Most likely need to shift to something that allows for the pointers stay.. given that it could be a reference to a variable.
 }
 
-std::string SubtractionExpression::interpertAsString(std::shared_ptr<Scope> scope) {
-    return interpret(scope)->interpertAsString(scope);
+std::string SubtractionExpression::interpretAsString(std::shared_ptr<Scope> scope) {
+    return interpret(scope)->interpretAsString(scope);
 }
