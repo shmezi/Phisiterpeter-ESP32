@@ -9,7 +9,7 @@
 #include <driver/gpio.h>
 
 #include "Utils.h"
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "expressions/internal/VoidExpression.h"
@@ -38,7 +38,7 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
     if (!registered) {
         auto evaluatedPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->
             contents);
-        debug::log("Registering interupt pin on pin: " + std::to_string(evaluatedPin));
+        Logger::log("Registering interupt pin on pin: " + std::to_string(evaluatedPin));
         registered = true;
         gpio_config_t io_conf = {
             .pin_bit_mask = (1ULL << evaluatedPin),
@@ -53,7 +53,7 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
         taskID = ScheduleLoop::getInstance()->newIDTask(codeBlock, scope);
         auto *args = new ISRArgs{this, taskID, scope};
         gpio_isr_handler_add(evaluatedPin, handleGlobalInterrupt, (void *) args);
-        debug::log("Registered task id: " + std::to_string(taskID));
+        Logger::log("Registered task id: " + std::to_string(taskID));
     }
     return shared_from_this();
 }

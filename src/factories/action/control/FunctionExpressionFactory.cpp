@@ -28,7 +28,7 @@ std::unique_ptr<Expression> FunctionExpressionFactory::generate(
     auto codeBlock = dynamic_cast<CodeblockExpression *>(arguments[2].release());
 
     if (!params || !codeBlock) {
-        debug::runTimeError("Invalid arguments for function expression");
+        Logger::error("Invalid arguments for function expression");
         return nullptr;
     }
     std::deque<std::string> paramNames;

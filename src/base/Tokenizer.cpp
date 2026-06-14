@@ -12,6 +12,7 @@
 
 #include "../../../../.platformio/packages/toolchain-riscv32-esp/riscv32-esp-elf/include/c++/14.2.0/regex"
 #include "base/Scope.h"
+#include "logging/Logger.h"
 std::regex pattern("^\\d+(\\.\\d+)?$");
 
 void Tokenizer::pushNewTokenToList(const char streamingChar = ' ') {
@@ -115,7 +116,7 @@ void Tokenizer::tokenize() {
     }
     pushNewTokenToList(); //Push final token to tokens.
     if (hasBadChar) {
-        debug::warn("You have included a bad character in your file! Please make sure to use a proper text editor!");
+        Logger::warn("You have included a bad character in your file! Please make sure to use a proper text editor!");
     }
 }
 

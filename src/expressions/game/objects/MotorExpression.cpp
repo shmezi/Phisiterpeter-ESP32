@@ -28,6 +28,7 @@
 #include "freertos/task.h"
 
 #include "driver/mcpwm_prelude.h"
+#include "logging/Logger.h"
 
 
 void MotorExpression::move(const float speedValue) {
@@ -159,7 +160,7 @@ void MotorExpression::rotateUntilRotation(int rotateTo, int speedToRunAt) {
             m->requestRotation = 0; // Clear the request
         }
 
-        debug::print("ITEM LOOP: " + std::to_string(current) + " " + std::to_string(rotateTo));
+        Logger::log("ITEM LOOP: " + std::to_string(current) + " " + std::to_string(rotateTo));
     });
 }
 

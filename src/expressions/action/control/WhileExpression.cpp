@@ -9,6 +9,8 @@
 #include "expressions/value/BooleanExpression.h"
 
 #include "../../../../include/expressions/action/control/WhileExpression.h"
+
+#include "logging/Logger.h"
 //
 // Created by Ezra Golombek on 08/11/2025.
 //
@@ -20,7 +22,7 @@ std::string WhileExpression::expressionName() {
 
 std::shared_ptr<Expression> WhileExpression::interpret(std::shared_ptr<Scope> scope) {
     if (this->check->interpret(scope)->expressionName() != "booleanExpression") {
-        debug::runTimeError(
+        Logger::error(
             "While expression expected a boolean value but got a " + this->check->interpret(scope)->expressionName() +
             "! on line: " + std::to_string(this->lineNumber));
         return std::make_unique<VoidExpression>();

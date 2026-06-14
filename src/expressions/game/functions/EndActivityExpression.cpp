@@ -7,7 +7,9 @@
 #include <cstring>
 #include <driver/uart.h>
 
-#include "base/DovetailCore.h"
+#include "../../../../include/base/dovetail/DovetailCore.h"
+#include "base/dovetail/DovetailClient.h"
+#include "base/dovetail/DovetailMessageHandler.h"
 #include "expressions/internal/VoidExpression.h"
 
 std::string EndActivityExpression::expressionName() {
@@ -15,10 +17,7 @@ std::string EndActivityExpression::expressionName() {
 }
 
 std::shared_ptr<Expression> EndActivityExpression::interpret(std::shared_ptr<Scope> scope) {
-    // auto rawMessageToSend = "s";
-
-    // uart_write_bytes(UART_NUM_2, rawMessageToSend, strlen(rawMessageToSend));
-    DovetailCore::sendGetRequest("endActivity");
+    DovetailMessageHandler::endActivity();
     return std::make_shared<VoidExpression>();
 }
 

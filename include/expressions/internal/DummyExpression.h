@@ -8,6 +8,7 @@
 
 #include "../Expression.h"
 #include "Utils.h"
+#include "logging/Logger.h"
 
 /**
  * StartExpression is a VERY special expression that can not be created without other expressions.
@@ -25,14 +26,14 @@ public:
     }
 
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override {
-        debug::runTimeError("An internal DummyExpression was interpreted even though it is for internal use only!");
+        Logger::error("An internal DummyExpression was interpreted even though it is for internal use only!");
         return nullptr;
     }
 
 
     std::string interpertAsString(std::shared_ptr<Scope> scope) override {
         const auto v = "An internal DummyExpression should not be converted to a string representation";
-        debug::runTimeError(v);
+        Logger::error(v);
         return v;
     }
 };

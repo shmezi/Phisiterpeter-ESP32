@@ -11,6 +11,7 @@
 #include "base/Scope.h"
 #include "expressions/game/functions/SendResultExpression.h"
 #include "expressions/value/NumberExpression.h"
+#include "logging/Logger.h"
 
 
 void ScheduleLoop::evaluateAndRunCooldown(const int &cooldown, std::chrono::milliseconds &lastRun) {
@@ -37,12 +38,12 @@ void ScheduleLoop::loop() {
         idTasksToRun.pop_front(); // Pop early to avoid issues if task() throws or returns
 
         if (auto [expression, scope] = idToTask[taskID.id]; expression) {
-            debug::log("Task " + std::to_string(taskID.id) + " run at " + std::to_string(taskID.time));
+            Logger::log("Task " + std::to_string(taskID.id) + " run at " + std::to_string(taskID.time));
             const auto newScope = std::make_shared<Scope>("interrupt", scope);
             newScope->setVariable("exactTime", std::make_shared<NumberExpression>(taskID.time));
             expression->interpret(newScope);
         } else {
-            debug::warn("Tried to run task id: " + std::to_string(taskID.id) + " but it was null!");
+            Logger::warn("Tried to run task id: " + std::to_string(taskID.id) + " but it was null!");
         }
     }
     // ---------------- Conditional Tasks ----------------
@@ -116,15 +117,13 @@ void ScheduleLoop::loop() {
     // ---------------- Sleep ----------------
 }
 
-void ScheduleLoop::startEvent(int param) {
-    std::string event = "start";
-    if (param == -1)
-        event = "stop";
-    if (!startFunc.contains(event)) {
-        debug::runTimeError("No event of id '" + event + "' found!");
+void ScheduleLoop::runEvent(const std::string &event, const int param) {
+
+    if (!eventDrivenTasks.contains(event)) {
+        Logger::error("No event of id '" + event + "' found!");
         return;
     }
-    for (const auto &task: startFunc[event]) {
+    for (const auto &task: eventDrivenTasks[event]) {
         task(param);
     }
 }
@@ -152,11 +151,11 @@ void ScheduleLoop::start() {
 }
 
 void ScheduleLoop::onEventListener(const std::string &id, std::function<void(int)> task) {
-    if (!startFunc.contains(id)) {
-        startFunc[id] = std::vector<std::function<void(int)> >();
-        debug::log("Registered event handler with ID: " + id);
+    if (!eventDrivenTasks.contains(id)) {
+        eventDrivenTasks[id] = std::vector<std::function<void(int)> >();
+        Logger::configuration("Registered event handler with ID: " + id);
     }
-    startFunc[id].emplace_back(task);
+    eventDrivenTasks[id].emplace_back(task);
 }
 
 void ScheduleLoop::addTask(const std::function<void()> &task) {
@@ -176,7 +175,7 @@ void ScheduleLoop::runAfterPeriod(const int &cooldown, std::function<void()> tas
 
 int ScheduleLoop::newIDTask(const std::shared_ptr<Expression> &task, const std::shared_ptr<Scope> &scope) {
     const int id = idToTask.size();
-    debug::log("A new task has been registered ID: " + std::to_string(id));
+    Logger::configuration("A new task has been registered ID: " + std::to_string(id));
     idToTask[id] = IdTask(task, scope);
     return id;
 }

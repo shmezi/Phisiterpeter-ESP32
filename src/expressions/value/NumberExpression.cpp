@@ -9,6 +9,7 @@
 #include "Utils.h"
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/IntRangeExpression.h"
+#include "logging/Logger.h"
 
 
 NumberExpression::NumberExpression(const float contents)
@@ -65,7 +66,7 @@ std::shared_ptr<Expression> NumberExpression::division(std::shared_ptr<Expressio
                                                        std::shared_ptr<Scope> &parentScope) {
     auto number = dynamic_cast<NumberExpression *>(expression.get());
     if (contents == 0) {
-        debug::runTimeError("Cannot divide by zero!");
+        Logger::error("Cannot divide by zero!");
         return std::make_unique<NumberExpression>(0);
     }
 

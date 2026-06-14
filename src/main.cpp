@@ -18,13 +18,15 @@
 #include "base/ScheduleLoop.h"
 #include "base/Scope.h"
 #include "esp_task_wdt.h" // Make sure you include this header
-#include "base/DovetailCore.h"
+#include "../include/base/dovetail/DovetailCore.h"
 #include "base/Interpreter.h"
 #include "base/Tokenizer.h"
 #include <esp_adc/adc_oneshot.h>
 #include "soc/efuse_reg.h"
 #include "esp_mac.h"
+#include "Version.h"
 #include "expressions/game/functions/AnalogReadExpression.h"
+#include "logging/Logger.h"
 
 using namespace std;
 #include "esp_http_server.h"
@@ -47,19 +49,23 @@ constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 
 void startup() {
-    const auto c = "PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.";
-    cout << debug::colorize(c, debug::Color::CYAN);
-
-    cout << debug::colorize("© Developed and designed by Ezra Golombek 2026", debug::Color::BLUE) << endl;
+    Logger::bootMessage("PhisilandInterpreter version: " + getVersion());
+    Logger::bootMessage("PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.");
 
 
-    cout << "\033[0m\t\t" << endl;
+    Logger::bootMessage("© Developed and designed by Ezra Golombek 2026");
+}
+
+std::string formatMacAddress(const std::array<uint8_t, 6> &mac) {
+    return std::format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
+                       mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
 
 /*
  * Since we change various settings to enabled the external PS-RAM, the mac address is reset to nothing.
  * Thus we need to force the ESP32 to use the actual factory MAC ID.
  */
+
 void force_factory_mac() {
     // S3 eFuse Base Address is 0x60007000
     // MAC_LOW (BLK0_RDATA1) is at offset 0x44
@@ -70,19 +76,20 @@ void force_factory_mac() {
     const uint32_t reg_low = *mac_reg_low;
     const uint32_t reg_high = *mac_reg_high;
 
-    uint8_t mac[6];
+    array<uint8_t, 6> mac;
     mac[0] = static_cast<uint8_t>(reg_high >> 8);
     mac[1] = static_cast<uint8_t>(reg_high);
     mac[2] = static_cast<uint8_t>(reg_low >> 24);
     mac[3] = static_cast<uint8_t>(reg_low >> 16);
     mac[4] = static_cast<uint8_t>(reg_low >> 8);
     mac[5] = static_cast<uint8_t>(reg_low);
-
+    DovetailCore::selfMac = mac;
+    DovetailCore::prettyMac = formatMacAddress(mac);
     printf("[HARDWARE] Raw Silicon MAC Read: %02x:%02x:%02x:%02x:%02x:%02x\n",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
     // Force the WiFi stack to use this REAL address
-    esp_base_mac_addr_set(mac);
+    esp_base_mac_addr_set(mac.data());
 }
 
 void setupGPIO() {
@@ -110,19 +117,19 @@ extern "C" void app_main(void) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
+    setupGPIO();
+
+    startup();
 
     force_factory_mac();
     ESP_ERROR_CHECK(ret);
     debug::showColor(debug::STARTUP);
 
-    setupGPIO();
+
     DovetailCore::innitDovetail();
     uint8_t mac[6];
     esp_efuse_mac_get_default(mac);
-    DovetailCore::sendGetRequest("register?mac=" + DovetailCore::getMacAddress());
-    if (DovetailCore::sendGetRequest("code?mac=" + DovetailCore::getMacAddress()))
-        debug::showColor(debug::CODE_LOADED);
 
 
-    debug::log("Interpretation has finished! Background tasks are still running fear not!");
+    Logger::bootMessage("Interpretation has finished! Background tasks are still running fear not!");
 }

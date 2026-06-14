@@ -64,10 +64,11 @@
 #include "factories/game/functions/SendResultExpressionFactory.h"
 #include "factories/game/functions/SetScreenExpressionFactory.h"
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
-#include "base/DovetailCore.h"
+#include "../../include/base/dovetail/DovetailCore.h"
 #include "factories/action/arithmetic/AbsExpressionFactory.h"
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
+#include "factories/dovetail/RemoteLogExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
 #include "factories/game/functions/ServoExpressionFactory.h"
 #include "factories/game/functions/DegreesExpressionFactory.h"
@@ -78,11 +79,11 @@
 #include "factories/game/functions/RotateMotorByExpressionFactory.h"
 #include "factories/game/functions/Wrap360ExpressionFactory.h"
 #include "factories/value/ListExpressionFactory.h"
+#include "logging/Logger.h"
 
 using namespace std;
 #define RX_BUF_SIZE 1024
 #define TX_BUF_SIZE 1024 // We don't need a TX buffer for only receiving
-
 
 
 void Interpreter::registerFactories() const {
@@ -145,6 +146,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<ServoExpressionFactory>());
     headScope->registerKeyWord(make_unique<InterruptPinExpressionFactory>());
 
+    //Dovetail factories!
+    headScope->registerKeyWord(make_unique<RemoteLogExpressionFactory>());
 
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
@@ -166,11 +169,11 @@ void Interpreter::run() const {
         // try {
         //     expression->interpret(headScope);
         // } catch (std::bad_any_cast &e) {
-        //     debug::runTimeError(
+        //     Logger::error(
         //         "Anycast Bad arguments provided for expression: `" + expression->expressionName() + "`" +
         //         " Provided: at line: " + std::to_string(expression->lineNumber));
         // } catch (std::exception &e) {
-        //     debug::runTimeError(
+        //     Logger::error(
         //         "General Bad arguments provided for expression: `" + expression->expressionName() + "`" +
         //         " Provided: at line: " + std::to_string(expression->lineNumber));
         // }
@@ -200,7 +203,7 @@ void Interpreter::interpretKeyWordExpression(const Token &token) {
         //Here we must return an expression containing all the obtained expressions.
     }
     if (originalExpressionCount - abstractSyntaxTree.size() < tokenFactory->paramSize()) {
-        debug::runTimeError(
+        Logger::error(
             "Not enough arguments found for expression `" + token.tokenId + "` Expected: " +
             std::to_string(tokenFactory->paramSize()) + " Found: " + std::to_string(
                 originalExpressionCount - abstractSyntaxTree.size()));
@@ -319,13 +322,13 @@ void Interpreter::runInterpreter(string &code) {
     {
         gpio_install_isr_service(0);
         std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
-        debug::log("Starting tokenization process");
+        Logger::bootMessage("Starting tokenization process");
         debug::showColor(debug::TOKENIZATION);
 
 
         Tokenizer tokenizer = Tokenizer(code, scope);
         tokenizer.tokenize();
-        debug::log("Starting interpretation process");
+        Logger::bootMessage("Starting interpretation process");
         debug::showColor(debug::INTERPRETATION);
         Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
@@ -340,17 +343,14 @@ void Interpreter::runInterpreter(string &code) {
             1, // Priority, with 0 being the lowest.
             nullptr // Used to pass back the created task's handle.
         );
-        printf("\n--- BOOT DIAGNOSTICS ---\n");
-        printf("Free Internal RAM: %d bytes\n", heap_caps_get_free_size(MALLOC_CAP_INTERNAL));
-        printf("Free PSRAM: %d bytes\n", heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
 
-        BaseType_t result = xTaskCreate(runClock, "MyForeverTask", 8192, nullptr, 10, nullptr);
+        Logger::bootMessage("--- BOOT DIAGNOSTICS ---");
+        Logger::bootMessage(
+            std::string("Free Internal RAM: ") + std::to_string(heap_caps_get_free_size(MALLOC_CAP_INTERNAL)) +
+            " bytes");
+        Logger::bootMessage(
+            std::string("Free PSRAM: ") + std::to_string(heap_caps_get_free_size(MALLOC_CAP_SPIRAM)) + " bytes");
 
-        if (result != pdPASS) {
-            printf("ERROR: Task creation failed! (Likely Out of Memory)\n");
-        } else {
-            printf("SUCCESS: Task created at Priority 10\n");
-        }
-        printf("------------------------\n");
+        xTaskCreate(runClock, "MyForeverTask", 8192, nullptr, 10, nullptr);
     }
 }

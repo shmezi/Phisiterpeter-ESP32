@@ -7,6 +7,7 @@
 #include <algorithm>
 
 #include "Utils.h"
+#include "logging/Logger.h"
 
 std::string ListExpression::expressionName() {
     return "list";
@@ -39,5 +40,5 @@ void ListExpression::append(std::shared_ptr<Expression> item) {
 }
 
 ListExpression::ListExpression(std::deque<std::shared_ptr<Expression> > items) : items(std::move(items)) {
-    debug::print("Created a list with " + std::to_string(this->items.size()) + " items.");
+    Logger::configuration("Created a list with " + std::to_string(this->items.size()) + " items.");
 }

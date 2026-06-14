@@ -8,6 +8,7 @@
 
 #include "Utils.h"
 #include "expressions/Expression.h"
+#include "logging/Logger.h"
 
 
 struct ISRArgs;
@@ -36,7 +37,7 @@ public:
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
 
     ~InterruptPinExpression() override {
-        debug::log("deleting interrupt");
+        Logger::log("deleting interrupt");
     }
 };
 

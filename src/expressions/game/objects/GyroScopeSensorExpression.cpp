@@ -16,6 +16,7 @@
 #include "expressions/value/BooleanExpression.h"
 #include "expressions/value/NumberExpression.h"
 #include "expressions/value/TextExpression.h"
+#include "logging/Logger.h"
 i2c_master_bus_handle_t GyroScopeSensorExpression::i2c0_bus_hdl = nullptr;
 i2c_master_bus_config_t GyroScopeSensorExpression::i2c0_bus_cfg = {};
 
@@ -45,7 +46,7 @@ static void initI2C() {
     ESP_ERROR_CHECK(
         i2c_new_master_bus(&GyroScopeSensorExpression::i2c0_bus_cfg, &GyroScopeSensorExpression::i2c0_bus_hdl));
     if (GyroScopeSensorExpression::i2c0_bus_hdl == nullptr) {
-        debug::runTimeError("i2c master bus handle init failed");
+        Logger::error("i2c master bus handle init failed");
         assert(&GyroScopeSensorExpression::i2c0_bus_hdl);
     }
 }
@@ -65,9 +66,9 @@ GyroScopeSensorExpression::GyroScopeSensorExpression(bool toggle) {
 
     mpu6050_init(i2c0_bus_hdl, &dev_cfg, &dev_hdl);
     if (dev_hdl == nullptr) {
-        debug::runTimeError("mpu6050 handle init failed");
+        Logger::error("mpu6050 handle init failed");
     } else {
-        debug::log("mpu6050 init was a success!");
+        Logger::configuration("mpu6050 init was a success!");
     }
 }
 
