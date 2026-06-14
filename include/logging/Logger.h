@@ -11,6 +11,8 @@ class Logger {
 public:
     static void log(const std::string &contents);
 
+    static void debug(const std::string &contents);
+
     static void warn(const std::string &contents);
 
     static void bootMessage(const std::string &contents);

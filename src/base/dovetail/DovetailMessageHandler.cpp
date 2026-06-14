@@ -18,7 +18,11 @@
 #include "base/dovetail/commands/RegisterSuccessCommand.h"
 #include "base/dovetail/commands/ScriptCommand.h"
 #include "logging/Logger.h"
-std::map<std::string, std::unique_ptr<Command> > DovetailMessageHandler::commands;
+
+static std::map<std::string, std::unique_ptr<Command> > &getCommands() {
+    static std::map<std::string, std::unique_ptr<Command> > commands;
+    return commands;
+}
 
 
 void DovetailMessageHandler::onIncomingMessage(JsonDocument &doc) {
@@ -27,9 +31,9 @@ void DovetailMessageHandler::onIncomingMessage(JsonDocument &doc) {
         Logger::warn("No command field in JSON!");
         return;
     }
-    const auto command = commands.find(cmdName);
+    const auto command = getCommands().find(cmdName);
 
-    if (command == commands.end()) {
+    if (command == getCommands().end()) {
         Logger::warn("Command not found!");
         return;
     }
@@ -38,22 +42,10 @@ void DovetailMessageHandler::onIncomingMessage(JsonDocument &doc) {
 
 void DovetailMessageHandler::registerCommand(std::unique_ptr<Command> command) {
     const std::string name = command->name();
-    commands[name] = std::move(command);
+    getCommands()[name] = std::move(command);
 }
 
 
-
-template<typename F>
-void sendCommand(std::string command, F changes) {
-    JsonDocument doc;
-   
-    doc["command"] = command;
-    changes(doc);
-    char buffer[256];
-    const size_t len = serializeJson(doc, buffer, sizeof(buffer));
-
-    esp_websocket_client_send_text(DovetailWS::client, buffer, len, portMAX_DELAY);
-}
 void DovetailMessageHandler::requestRegistration() {
     sendCommand("register", [](JsonDocument &doc) {
         doc["mac"] = DovetailCore::getFormattedMacAddress();
@@ -92,5 +84,4 @@ void DovetailMessageHandler::registerAllInternalCommands() {
     registerCommand(std::make_unique<RegisterSuccessCommand>());
     registerCommand(std::make_unique<ScriptCommand>());
     registerCommand(std::make_unique<EventCommand>());
-
 }

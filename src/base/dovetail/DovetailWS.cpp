@@ -23,6 +23,8 @@ bool DovetailWS::isPingPongMessage(const esp_websocket_event_data_t *data) {
 }
 
 
+
+
 void DovetailWS::websocket_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id,
                                          void *event_data) {
     auto *data = static_cast<esp_websocket_event_data_t *>(event_data);

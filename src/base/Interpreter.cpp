@@ -68,6 +68,7 @@
 #include "factories/action/arithmetic/AbsExpressionFactory.h"
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
+#include "factories/dovetail/RemoteLogExpressionFactory.h"
 #include "factories/game/functions/AnalogReadExpressionFactory.h"
 #include "factories/game/functions/ServoExpressionFactory.h"
 #include "factories/game/functions/DegreesExpressionFactory.h"
@@ -145,6 +146,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<ServoExpressionFactory>());
     headScope->registerKeyWord(make_unique<InterruptPinExpressionFactory>());
 
+    //Dovetail factories!
+    headScope->registerKeyWord(make_unique<RemoteLogExpressionFactory>());
 
     //Lists
     headScope->registerKeyWord(make_unique<ListExpressionFactory>());
@@ -349,7 +352,5 @@ void Interpreter::runInterpreter(string &code) {
             std::string("Free PSRAM: ") + std::to_string(heap_caps_get_free_size(MALLOC_CAP_SPIRAM)) + " bytes");
 
         xTaskCreate(runClock, "MyForeverTask", 8192, nullptr, 10, nullptr);
-
-
     }
 }

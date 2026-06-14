@@ -9,12 +9,12 @@
 #include <ArduinoJson.h>
 #include <functional>
 
+#include "DovetailWS.h"
+#include "esp_websocket_client.h"
 #include "commands/Command.h"
 
 
 class DovetailMessageHandler {
-    static std::map<std::string, std::unique_ptr<Command> > commands;
-
 public:
     static void onIncomingMessage(JsonDocument &doc);
 
@@ -36,5 +36,15 @@ public:
     static void sendLog(std::string message);
 };
 
+template<typename F>
+void DovetailMessageHandler::sendCommand(std::string command, F changes) {
+    JsonDocument doc;
 
+    doc["command"] = command;
+    changes(doc);
+    char buffer[256];
+    const size_t len = serializeJson(doc, buffer, sizeof(buffer));
+
+    esp_websocket_client_send_text(DovetailWS::client, buffer, len, portMAX_DELAY);
+}
 #endif //PHISITERPETER_ESP32_DOVETAILMESSAGEHANDLER_H

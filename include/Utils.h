@@ -89,6 +89,8 @@ namespace debug {
     };
 
     static void showColor(RGB color) {
+        if (StatusLEDExpression::statusLight == nullptr) return;
+
         led_strip_set_pixel(StatusLEDExpression::statusLight, 0, color.red, color.green, color.blue);
         led_strip_refresh(StatusLEDExpression::statusLight);
         // StatusLEDExpression::leds[0] = Rgb{color.red, color.green, color.blue};

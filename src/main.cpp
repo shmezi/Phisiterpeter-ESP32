@@ -49,7 +49,7 @@ constexpr size_t buffer_size = sizeof(data_buffer); // Get the actual size ONCE
 
 
 void startup() {
-    Logger::bootMessage("PhisilandInterpreter version: " + VERSION);
+    Logger::bootMessage("PhisilandInterpreter version: " + getVersion());
     Logger::bootMessage("PhisilandInterpreter - (c) Created and developed by Ezra Golombek all rights reserved.");
 
 
@@ -117,13 +117,15 @@ extern "C" void app_main(void) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         ret = nvs_flash_init();
     }
+    setupGPIO();
+
     startup();
 
     force_factory_mac();
     ESP_ERROR_CHECK(ret);
     debug::showColor(debug::STARTUP);
 
-    setupGPIO();
+
     DovetailCore::innitDovetail();
     uint8_t mac[6];
     esp_efuse_mac_get_default(mac);

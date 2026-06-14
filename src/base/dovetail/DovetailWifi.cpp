@@ -35,6 +35,7 @@ void DovetailWifi::wifiNetworkHandler(void *arg, esp_event_base_t base, int32_t 
 void DovetailWifi::initWifiClient() {
     // Initialize Event Group
     s_wifi_event_group = xEventGroupCreate();
+    ESP_LOGI("DEBUG", "Step 1 - before wifi init, heap: %lu", esp_get_free_heap_size());
 
     // Standard Init (Assuming NVS is already init in app_main)
     ESP_ERROR_CHECK(esp_netif_init());
@@ -43,11 +44,13 @@ void DovetailWifi::initWifiClient() {
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_LOGI("DEBUG", "Step 2 - before connect, heap: %lu", esp_get_free_heap_size());
 
     // Register the handlers
     ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifiNetworkHandler, NULL, NULL));
     ESP_ERROR_CHECK(
         esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifiNetworkHandler, NULL, NULL));
+    ESP_LOGI("DEBUG", "Step 3 - connected, heap: %lu", esp_get_free_heap_size());
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_start());
