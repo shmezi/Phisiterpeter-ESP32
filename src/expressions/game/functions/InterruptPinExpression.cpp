@@ -38,7 +38,7 @@ std::shared_ptr<Expression> InterruptPinExpression::interpret(std::shared_ptr<Sc
     if (!registered) {
         auto evaluatedPin = static_cast<gpio_num_t>(dynamic_cast<NumberExpression *>(pin->interpret(scope).get())->
             contents);
-        Logger::log("Registering interupt pin on pin: " + std::to_string(evaluatedPin));
+        Logger::log("Registering interrupt pin on pin: " + std::to_string(evaluatedPin));
         registered = true;
         gpio_config_t io_conf = {
             .pin_bit_mask = (1ULL << evaluatedPin),

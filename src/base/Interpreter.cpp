@@ -117,7 +117,7 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<MultiplicationExpressionFactorty>());
     headScope->registerKeyWord(make_unique<AbsExpressionFactory>());
     headScope->registerKeyWord(make_shared<Wrap360ExpressionFactory>());
-        headScope->registerKeyWord(make_shared<MappingExpressionFactory>());
+    headScope->registerKeyWord(make_shared<MappingExpressionFactory>());
 
 
     //Equality factories
@@ -324,7 +324,7 @@ void printStartupMessage() {
 void Interpreter::runInterpreter(string &code) {
     {
         gpio_install_isr_service(0);
-        std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
+        static std::shared_ptr<Scope> scope = std::make_shared<Scope>("headScope", nullptr);
         Logger::bootMessage("Starting tokenization process");
         debug::showColor(debug::TOKENIZATION);
 
@@ -333,7 +333,7 @@ void Interpreter::runInterpreter(string &code) {
         tokenizer.tokenize();
         Logger::bootMessage("Starting interpretation process");
         debug::showColor(debug::INTERPRETATION);
-        Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
+        static Interpreter interpreter = Interpreter(scope, tokenizer.tokens);
         printStartupMessage();
 
         interpreter.run();
