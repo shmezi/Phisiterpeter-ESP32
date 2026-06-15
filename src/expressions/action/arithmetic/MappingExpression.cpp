@@ -20,15 +20,19 @@ MappingExpression::MappingExpression(
 }
 
 std::shared_ptr<Expression> MappingExpression::interpret(std::shared_ptr<Scope> scope) {
-    // Interpret all child expressions to get their numeric values
     float val = dynamic_cast<NumberExpression *>(value->interpret(scope).get())->contents;
     float inMin = dynamic_cast<NumberExpression *>(inputMin->interpret(scope).get())->contents;
     float inMax = dynamic_cast<NumberExpression *>(inputMax->interpret(scope).get())->contents;
     float outMin = dynamic_cast<NumberExpression *>(outputMin->interpret(scope).get())->contents;
     float outMax = dynamic_cast<NumberExpression *>(outputMax->interpret(scope).get())->contents;
 
-    // Linear map: outMin + (val - inMin) * (outMax - outMin) / (inMax - inMin)
-    long mapped = (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    // Arduino formula but in float — no integer truncation
+    float mapped = (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+
+    // Clamp to output range (handles reversed ranges too)
+    float lo = std::min(outMin, outMax);
+    float hi = std::max(outMin, outMax);
+    mapped = std::clamp(mapped, lo, hi);
 
     return std::make_shared<NumberExpression>(mapped);
 }
