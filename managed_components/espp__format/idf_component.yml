@@ -8,7 +8,7 @@ maintainers:
 - William Emfinger <waemfinger@gmail.com>
 repository: git://github.com/esp-cpp/espp.git
 repository_info:
-  commit_sha: e8442f8bda331c24515d9a2f23d2749b6400eb4f
+  commit_sha: 6a0966400ce2a3aba55805c8378e0855b39bd319
   path: components/format
 tags:
 - cpp
@@ -17,4 +17,4 @@ tags:
 - Formatting
 - Logging
 url: https://github.com/esp-cpp/espp/tree/main/components/format
-version: 1.1.0
+version: 1.1.1

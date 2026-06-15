@@ -66,6 +66,7 @@
 #include "../../include/factories/game/functions/WriteExpressionFactory.h"
 #include "../../include/base/dovetail/DovetailCore.h"
 #include "factories/action/arithmetic/AbsExpressionFactory.h"
+#include "factories/action/arithmetic/MappingExpressionFactory.h"
 #include "factories/action/control/AfterExpressionFactory.h"
 #include "factories/action/control/OnceExpressionFactory.h"
 #include "factories/dovetail/RemoteLogExpressionFactory.h"
@@ -116,6 +117,8 @@ void Interpreter::registerFactories() const {
     headScope->registerKeyWord(make_unique<MultiplicationExpressionFactorty>());
     headScope->registerKeyWord(make_unique<AbsExpressionFactory>());
     headScope->registerKeyWord(make_shared<Wrap360ExpressionFactory>());
+        headScope->registerKeyWord(make_shared<MappingExpressionFactory>());
+
 
     //Equality factories
     headScope->registerKeyWord(make_unique<EqualsExpressionFactory>());

@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 
+
 class Scope;
 /*
  * An expression expresses our entire program. Our program is built up of many expressions connected together that are then run

@@ -23,6 +23,8 @@ public:
     std::shared_ptr<Expression> interpret(std::shared_ptr<Scope> scope) override;
     std::string interpretAsString(std::shared_ptr<Scope> scope) override;
 
+    std::string expressionName() override;
+
 private:
     std::unique_ptr<Expression> value;
     std::unique_ptr<Expression> inputMin;
