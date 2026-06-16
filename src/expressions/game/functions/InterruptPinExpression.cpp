@@ -26,6 +26,11 @@ struct ISRArgs {
 };
 
 void InterruptPinExpression::trampoline(int id) {
+    int64_t now = esp_timer_get_time();
+    if (now - lastTriggerTime < 1000000) {
+        return;
+    }
+    lastTriggerTime = now;
     ScheduleLoop::getInstance()->queueIDTask(id, esp_timer_get_time());
 }
 

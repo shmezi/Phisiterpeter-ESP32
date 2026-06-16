@@ -14,6 +14,8 @@
 struct ISRArgs;
 
 class InterruptPinExpression : public Expression, public std::enable_shared_from_this<InterruptPinExpression> {
+    volatile int64_t lastTriggerTime = 0;
+
 public:
     std::shared_ptr<Expression> pin;
     std::shared_ptr<Expression> codeBlock;
